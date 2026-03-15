@@ -2,6 +2,8 @@
 
 ### Inteligentny asystent fotograficzny oparty na OpenAI
 
+![Screenshot App](https://raw.githubusercontent.com/brzozanet/promptly-photo-ai/refs/heads/main/frontend/public/images/gh-cover-promptly-v2.png)
+
 Promptly Photo to **aplikacja webowa z AI asystentem** specjalizującym się w **fotografii**. Asystent udziela porad na temat techniki fotograficznej, kompozycji, wyboru sprzętu, obróbki zdjęć i fotografii specjalistycznej, a na końcu każdej odpowiedzi zaprasza na warsztaty: [fotowarsztaty.com](https://fotowarsztaty.com).
 
 **Geneza**: Projekt bazuje na prostej implementacji czatu AI w terminalu ([example.ts](./example.ts)), która wykorzystuje OpenAI API z zachowaniem historii rozmowy (`previous_response_id`). Celem była transformacja tego rozwiązania w pełnoprawne MVP webowe.
@@ -326,7 +328,3 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 **Status**: ✅ Phase 1 MVP — aplikacja działa na produkcji  
 **Live demo**: [https://promptly-photo-ai.vercel.app](https://promptly-photo-ai.vercel.app)  
 **Ostatnia aktualizacja**: 23.02.2026
-
-<br>
-
-![Screenshot App](https://raw.githubusercontent.com/brzozanet/promptly-photo-ai/refs/heads/main/frontend/public/images/gh-cover-promptly-v1.png)
