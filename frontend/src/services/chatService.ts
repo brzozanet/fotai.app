@@ -47,6 +47,7 @@ export async function askAI(
     if (error instanceof TypeError && error.message.includes("fetch")) {
       throw new Error(
         "Nie można połączyć z serwerem. Sprawdź czy backend działa.",
+        { cause: error },
       );
     }
 

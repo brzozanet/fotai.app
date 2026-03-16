@@ -51,6 +51,10 @@ chatRouter.post("/", async (request: Request, response: Response) => {
 
     return response.json(chatResponse);
   } catch (error) {
+    const internalError: ErrorResponse = {
+      error: "Server crashed succesfully 😵‍💫",
+      details: "OpenAI API is temporarily unavailable",
+    };
     if (typeof error === "object" && error !== null && "status" in error) {
       // NOTE: Różne typy błędów OpenAI
       if (error.status === 401) {
@@ -65,10 +69,8 @@ chatRouter.post("/", async (request: Request, response: Response) => {
           details: "Too many requests. Try again later.",
         } as ErrorResponse);
       }
-      return response.status(500).json({
-        error: "Server crashed succesfully 😵‍💫",
-        details: "OpenAI API is temporarily unavailable",
-      } as ErrorResponse);
+      return response.status(500).json(internalError);
     }
+    return response.status(500).json(internalError);
   }
 });
