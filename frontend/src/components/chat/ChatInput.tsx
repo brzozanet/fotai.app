@@ -41,10 +41,6 @@ export function ChatInput() {
     } catch (error) {
       setError(true);
       console.error("[ChatInput] błąd:", error);
-      throw new Error(
-        "Nie można połączyć z serwerem. Sprawdź czy backend działa.",
-        { cause: error },
-      );
     } finally {
       setIsLoading(false);
     }
