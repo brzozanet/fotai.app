@@ -13,6 +13,13 @@ const client = new OpenAI({
 
 const MODEL = process.env.OPENAI_MODEL;
 const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+if (!MODEL || !SYSTEM_PROMPT || !OPENAI_API_KEY) {
+  throw new Error(
+    "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie.",
+  );
+}
 
 // NOTE: POST /api/chat - główny endpoint czatu
 

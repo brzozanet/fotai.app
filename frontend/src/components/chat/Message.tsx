@@ -44,10 +44,10 @@ export function Message({ role, content, timestamp }: Message) {
               li: ({ children }) => (
                 <li className="leading-relaxed">{children}</li>
               ),
-              a: ({ children }) => (
+              a: ({ children, href }) => (
                 <a
                   className="cursor-pointer font-semibold text-primary underline"
-                  href="https://fotowarsztaty.com"
+                  href={href}
                   target="_blank"
                   rel="noreferrer"
                 >
