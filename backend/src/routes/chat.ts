@@ -12,14 +12,24 @@ const client = new OpenAI({
 });
 
 const MODEL = process.env.OPENAI_MODEL;
-const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT;
+const CURRENT_WORKSHOPS = process.env.CURRENT_WORKSHOPS;
 
-if (!MODEL || !SYSTEM_PROMPT || !OPENAI_API_KEY) {
+if (!MODEL || !OPENAI_API_KEY || !SYSTEM_PROMPT || !CURRENT_WORKSHOPS) {
   throw new Error(
     "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie.",
   );
 }
+
+const buildSystemPrompt = () => {
+  return [
+    SYSTEM_PROMPT.trim(),
+    "<CurrentWorkshops>",
+    CURRENT_WORKSHOPS.trim(),
+    "</CurrentWorkshops>",
+  ].join("\n");
+};
 
 // NOTE: POST /api/chat - główny endpoint czatu
 
@@ -40,12 +50,12 @@ chatRouter.post("/", async (request: Request, response: Response) => {
       previous_response_id: previousResponseId,
       input: [
         {
-          role: "user",
-          content: message,
+          role: "system",
+          content: buildSystemPrompt(),
         },
         {
-          role: "system",
-          content: `${SYSTEM_PROMPT}`,
+          role: "user",
+          content: message,
         },
       ],
     });

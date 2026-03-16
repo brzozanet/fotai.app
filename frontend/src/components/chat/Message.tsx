@@ -31,12 +31,14 @@ export function Message({ role, content, timestamp }: Message) {
         <div className="text-left text-[16px] mb-3 mt-1">
           <ReactMarkdown
             components={{
-              p: ({ children }) => <p className="mb-3">{children}</p>,
+              p: ({ children }) => (
+                <p className="mb-3 leading-relaxed">{children}</p>
+              ),
               strong: ({ children }) => (
                 <strong className="font-bold">{children}</strong>
               ),
               h3: ({ children }) => (
-                <h3 className="text-2xl font-bold mt-3 mb-1">{children}</h3>
+                <h3 className="text-xl font-bold mt-1 mb-4">{children}</h3>
               ),
               ul: ({ children }) => (
                 <ul className="list-disc pl-5 space-y-1 mb-3">{children}</ul>
