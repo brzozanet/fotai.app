@@ -43,14 +43,18 @@ export function ChatInput() {
       console.error("[ChatInput] błąd:", error);
       throw new Error(
         "Nie można połączyć z serwerem. Sprawdź czy backend działa.",
+        { cause: error },
       );
     } finally {
       setIsLoading(false);
     }
   };
 
+  const isInputValid =
+    input.trim().length >= 3 && input.trim().length <= 5000 && !isLoading;
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && isInputValid) {
       sendPrompt(event as unknown as React.SubmitEvent<HTMLFormElement>);
     }
   };
@@ -73,9 +77,6 @@ export function ChatInput() {
   //   .filter((message) => message.role === "user")
   //   .at(-1);
   // const isDuplicate = input.trim() === lastUserMessage?.content;
-
-  const isInputValid =
-    input.trim().length >= 3 && input.trim().length <= 5000 && !isLoading;
 
   return (
     <>
