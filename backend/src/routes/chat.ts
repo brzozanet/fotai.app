@@ -15,8 +15,15 @@ const MODEL = process.env.OPENAI_MODEL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT;
 const CURRENT_WORKSHOPS = process.env.CURRENT_WORKSHOPS;
+const CURRENT_WORKSHOPS_RULES = process.env.CURRENT_WORKSHOPS_RULES;
 
-if (!MODEL || !OPENAI_API_KEY || !SYSTEM_PROMPT || !CURRENT_WORKSHOPS) {
+if (
+  !MODEL ||
+  !OPENAI_API_KEY ||
+  !SYSTEM_PROMPT ||
+  !CURRENT_WORKSHOPS ||
+  !CURRENT_WORKSHOPS_RULES
+) {
   throw new Error(
     "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie.",
   );
@@ -28,6 +35,7 @@ const buildSystemPrompt = () => {
     "<CurrentWorkshops>",
     CURRENT_WORKSHOPS.trim(),
     "</CurrentWorkshops>",
+    CURRENT_WORKSHOPS_RULES.trim(),
   ].join("\n");
 };
 
