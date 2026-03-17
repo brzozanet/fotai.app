@@ -31,7 +31,7 @@ export function Header() {
               src={logoFotai}
               alt="fotai.app"
               title="fotai.app"
-              className="h-10"
+              className="h-8"
             />
           </NavLink>
         </div>
