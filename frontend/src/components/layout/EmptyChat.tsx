@@ -7,7 +7,7 @@ export function EmptyChat() {
       <h1 className="material-enter-up material-delay-1 mb-6 ml-4 text-left text-3xl font-light text-foreground">
         Porozmawiaj z{" "}
         <span className="bg-linear-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-80% bg-clip-text text-transparent font-semibold">
-          Promptly
+          fotAI
         </span>{" "}
         o fotografii
       </h1>

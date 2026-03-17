@@ -33,7 +33,7 @@ export function Header() {
             className="h-10"
           />
           <NavLink to="/">
-            <div>Promptly Photo AI</div>
+            <div>fotAI.app</div>
           </NavLink>
         </div>
         <nav>
