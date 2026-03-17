@@ -1,5 +1,5 @@
 {
-  "name": "promptly-photo-ai",
+  "name": "fotai.app",
   "workspaces": [
     "frontend",
     "backend"

@@ -1,4 +1,4 @@
-# Sprint 3: Integracja & Deploy - Promptly Photo AI
+# Sprint 3: Integracja & Deploy - FOTAI
 
 > 🎯 **Część Phase 1 MVP**: Połączenie Frontend + Backend i wdrożenie na produkcję
 
@@ -38,7 +38,7 @@ W Sprint 3 **łączymy wszystko w całość** i **wdrażamy na produkcję**. Po 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  USER'S BROWSER                                             │
-│  https://promptly-photo-ai.vercel.app                       │
+│  https://fotai.app.vercel.app                       │
 └────────────────┬────────────────────────────────────────────┘
                  │
                  │ HTTP Request
@@ -595,7 +595,7 @@ export function ChatWindow() {
     <div className="flex flex-col h-full bg-white">
       {/* Header czatu */}
       <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-4">
-        <h1 className="text-xl font-bold">📸 Promptly Photo AI</h1>
+        <h1 className="text-xl font-bold">📸 FOTAI</h1>
         <p className="text-sm opacity-90">Zapytaj o fotografię, kompozycję, sprzęt...</p>
       </div>
 
@@ -646,7 +646,7 @@ export function ChatWindow() {
 <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-4">
   <div className="flex items-center justify-between">
     <div>
-      <h1 className="text-xl font-bold">📸 Promptly Photo AI</h1>
+      <h1 className="text-xl font-bold">📸 FOTAI</h1>
       <p className="text-sm opacity-90">Zapytaj o fotografię, kompozycję, sprzęt...</p>
     </div>
 
@@ -703,7 +703,7 @@ export function MessageList({ messages, isLoading }: MessageListProps) {
       <div className="space-y-4">
         {messages.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
-            <p className="text-lg mb-2">👋 Witaj w Promptly Photo AI!</p>
+            <p className="text-lg mb-2">👋 Witaj w FOTAI!</p>
             <p className="text-sm">Zapytaj o cokolwiek związanego z fotografią</p>
             <p className="text-xs text-gray-400 mt-4">
               Przykłady: "Jak robić zdjęcia nocne?", "Jaki obiektyw do portretów?"
@@ -808,7 +808,7 @@ Render to platforma cloud do hostingu aplikacji (backend, frontend, bazy danych)
 **Upewnij się, że masz repozytorium Git**:
 
 ```bash
-# W głównym folderze promptly-photo-ai
+# W głównym folderze fotai.app
 git status
 
 # Jeśli nie ma repo, zainicjuj:
@@ -817,7 +817,7 @@ git add .
 git commit -m "feat: sprint-1-2-3-ready-for-deploy"
 
 # Stwórz repo na GitHubie i wpchnij kod:
-git remote add origin https://github.com/twoj-username/promptly-photo-ai.git
+git remote add origin https://github.com/twoj-username/fotai.app.git
 git push -u origin main
 ```
 
@@ -825,7 +825,7 @@ git push -u origin main
 
 #### 2. Dodaj Plik `render.yaml` (opcjonalnie)
 
-Utwórz w **głównym folderze** `promptly-photo-ai/render.yaml`:
+Utwórz w **głównym folderze** `fotai.app/render.yaml`:
 
 ```yaml
 services:
@@ -864,7 +864,7 @@ git push
 2. **Kliknij "New +"** → **"Web Service"**
 
 3. **Połącz repozytorium GitHub**:
-   - Wybierz `promptly-photo-ai`
+   - Wybierz `fotai.app`
    - Autoryzuj Render do dostępu
 
 4. **Konfiguracja**:
@@ -1013,10 +1013,10 @@ git push
 2. **Kliknij "Add New..."** → **"Project"**
 
 3. **Import repozytorium GitHub**:
-   - Wybierz `promptly-photo-ai`
+   - Wybierz `fotai.app`
 
 4. **Konfiguracja**:
-   - **Project Name**: `promptly-photo-ai` (lub dowolna nazwa)
+   - **Project Name**: `fotai.app` (lub dowolna nazwa)
    - **Framework Preset**: Vite (auto-detect powinno to znaleźć)
    - **Root Directory**: `frontend` ⚠️ **WAŻNE** (inaczej Vercel nie znajdzie package.json)
    - **Build Command**: `npm run build` (auto-fill)
@@ -1045,12 +1045,12 @@ Vercel zacznie build (trwa 1-2 minuty):
 
 #### 4. Testuj Frontend
 
-Vercel da Ci URL typu: `https://promptly-photo-ai-xyz.vercel.app`
+Vercel da Ci URL typu: `https://fotai.app-xyz.vercel.app`
 
 **Otwórz w przeglądarce**:
 
 ```
-https://promptly-photo-ai-xyz.vercel.app
+https://fotai.app-xyz.vercel.app
 ```
 
 **Sprawdź**:
@@ -1075,7 +1075,7 @@ Jeśli masz własną domenę (np. `promptly.yourdomain.com`):
 ### Sprawdzenie
 
 - [x] Frontend wdrożony na Vercel (status "Ready")
-- [x] URL frontendu dostępny (np. `https://promptly-photo-ai-xyz.vercel.app`)
+- [x] URL frontendu dostępny (np. `https://fotai.app-xyz.vercel.app`)
 - [x] Aplikacja ładuje się bez błędów
 - [x] Możesz wysłać wiadomość i otrzymać odpowiedź AI
 - [x] Environment variable `VITE_API_URL` skonfigurowana poprawnie
@@ -1091,7 +1091,7 @@ Upewnienie się, że backend akceptuje requesty z frontendu produkcyjnego (nie t
 
 ### **Problem CORS**
 
-W development backend akceptuje requesty z `http://localhost:5173`. W produkcji frontend jest na `https://promptly-photo-ai-xyz.vercel.app` - musisz dodać ten origin do CORS.
+W development backend akceptuje requesty z `http://localhost:5173`. W produkcji frontend jest na `https://fotai.app-xyz.vercel.app` - musisz dodać ten origin do CORS.
 
 ---
 
@@ -1112,14 +1112,14 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // Development
-      "https://promptly-photo-ai-xyz.vercel.app", // Production (zamień URL)
+      "https://fotai.app-xyz.vercel.app", // Production (zamień URL)
     ],
     credentials: true,
   }),
 );
 ```
 
-**⚠️ Ważne**: Zamień `promptly-photo-ai-xyz.vercel.app` na **prawdziwy URL** z Vercel!
+**⚠️ Ważne**: Zamień `fotai.app-xyz.vercel.app` na **prawdziwy URL** z Vercel!
 
 ---
 
@@ -1144,7 +1144,7 @@ app.use(
 
 **Następnie w Render** (zakładka Environment):
 
-- `FRONTEND_URL` = `http://localhost:5173,https://promptly-photo-ai-xyz.vercel.app`
+- `FRONTEND_URL` = `http://localhost:5173,https://fotai.app-xyz.vercel.app`
 
 **Commit i push**:
 
@@ -1223,7 +1223,8 @@ End-to-End = testowanie całego flow'u od początku do końca:
 4. **Sprawdź**:
    - ✅ Wszystkie wiadomości zniknęły
    - ✅ localStorage wyczyszczony (DevTools → Application → Local Storage)
-   - ✅ Empty state pojawia się ("👋 Witaj w Promptly Photo AI!")
+
+- ✅ Empty state pojawia się ("👋 Witaj w FOTAI!")
 
 #### Test 5: Error Handling
 
@@ -1290,7 +1291,7 @@ Dopracowanie ostatnich szczegółów: favicon, meta tags, README update.
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Meta Tags for SEO & Social Media -->
-    <title>Promptly Photo AI - Photography Assistant</title>
+    <title>FOTAI - Photography Assistant</title>
     <meta
       name="description"
       content="AI asystent fotograficzny - porady o technice, kompozycji, sprzęcie i obróbce zdjęć"
@@ -1301,7 +1302,7 @@ Dopracowanie ostatnich szczegółów: favicon, meta tags, README update.
     />
 
     <!-- Open Graph (Facebook, LinkedIn) -->
-    <meta property="og:title" content="Promptly Photo AI" />
+    <meta property="og:title" content="FOTAI" />
     <meta
       property="og:description"
       content="AI asystent fotograficzny - porady o technice, kompozycji, sprzęcie"
@@ -1314,7 +1315,7 @@ Dopracowanie ostatnich szczegółów: favicon, meta tags, README update.
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Promptly Photo AI" />
+    <meta name="twitter:title" content="FOTAI" />
     <meta name="twitter:description" content="AI asystent fotograficzny" />
   </head>
   <body>
@@ -1331,11 +1332,11 @@ Dopracowanie ostatnich szczegółów: favicon, meta tags, README update.
 **Zaktualizuj główny `README.md`** - dodaj linki do live demo:
 
 ```markdown
-# Promptly Photo - AI Photography Assistant
+# FOTAI - AI Photography Assistant
 
-> 🚀 **Live Demo**: [promptly-photo-ai.vercel.app](https://promptly-photo-ai-xyz.vercel.app)  
+> 🚀 **Live Demo**: [fotai.app.vercel.app](https://fotai.app-xyz.vercel.app)  
 > 🔗 **Backend**: [promptly-backend.onrender.com](https://promptly-backend-abcd.onrender.com/health)  
-> 💻 **GitHub**: [twoj-username/promptly-photo-ai](https://github.com/twoj-username/promptly-photo-ai)
+> 💻 **GitHub**: [twoj-username/fotai.app](https://github.com/twoj-username/fotai.app)
 
 ⚠️ **Zamień** w powyższych linkach na prawdziwe URL!
 ```
@@ -1417,9 +1418,9 @@ Vercel automatycznie zrobi redeploy frontendu (1-2 minuty).
 
 ### Sprawdzenie produkcji (URL)
 
-- [ ] **Frontend URL**: `https://promptly-photo-ai-xyz.vercel.app` (zamień na prawdziwy)
+- [ ] **Frontend URL**: `https://fotai.app-xyz.vercel.app` (zamień na prawdziwy)
 - [ ] **Backend URL**: `https://promptly-backend-abcd.onrender.com` (zamień na prawdziwy)
-- [ ] **GitHub Repo**: `https://github.com/twoj-username/promptly-photo-ai`
+- [ ] **GitHub Repo**: `https://github.com/twoj-username/fotai.app`
 
 ---
 

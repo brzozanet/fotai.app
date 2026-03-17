@@ -2,9 +2,9 @@
 
 Code review wykonany przez **GitHub Copilot**, za pomocą modelu **GPT-5.3-Codex**.
 
-Repozytorium projektu: https://github.com/brzozanet/promptly-photo-ai
+Repozytorium projektu: https://github.com/brzozanet/fotai.app
 
-## Code Review projektu Promptly (`frontend` + `backend`)
+## Code Review projektu FOTAI (`frontend` + `backend`)
 
 Data review: 2026-03-08  
 Zakres: analiza folderów `frontend` i `backend` (bez `scrum`)

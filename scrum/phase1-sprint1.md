@@ -1,4 +1,4 @@
-# Sprint 1: Setup Frontend - Promptly Photo AI
+# Sprint 1: Setup Frontend - FOTAI
 
 > 🎯 **Część Phase 1 MVP**: Transformacja terminal chatbota ([example.ts](./example.ts)) w pełnoprawną aplikację webową
 
@@ -29,14 +29,14 @@ Tworzymy **Frontend** aplikacji Photography AI Assistant. Bazujemy na koncepcji 
 
 ### Cel
 
-Stworzenie struktury projektu: `promptly-photo-ai/` (główny folder) z podfolderem `frontend/` (React + Vite).
+Stworzenie struktury projektu: `fotai.app/` (główny folder) z podfolderem `frontend/` (React + Vite).
 
 ### Kroki
 
 ```bash
 # 1. Stwórz folder główny projektu
-mkdir promptly-photo-ai
-cd promptly-photo-ai
+mkdir fotai.app
+cd fotai.app
 
 # 2. Zainicjuj Git (opcjonalnie, ale zalecane)
 git init
@@ -58,7 +58,7 @@ npm run dev
 ### Oczekiwana struktura po Task 1.1
 
 ```
-promptly-photo-ai/              ← Główny folder projektu
+fotai.app/              ← Główny folder projektu
 ├── .git/                       ← Git repository (opcjonalnie)
 ├── .gitignore
 ├── frontend/                   ← Aplikacja React (Vite)
@@ -81,8 +81,8 @@ promptly-photo-ai/              ← Główny folder projektu
 - [x] Aplikacja wyświetla się w przeglądarce (domyślna strona Vite)
 - [x] Terminal pokazuje `✓ Local: http://localhost:5173/`
 - [x] Brak błędów TypeScript/ESLint
-- [x] Struktura: `promptly-photo-ai/frontend/` ✅
-- [x] Gotowa na dodanie `promptly-photo-ai/backend/` w Sprint 2 ✅
+- [x] Struktura: `fotai.app/frontend/` ✅
+- [x] Gotowa na dodanie `fotai.app/backend/` w Sprint 2 ✅
 
 ---
 
@@ -97,7 +97,7 @@ Skonfigurowanie TailwindCSS dla stylowania (instalacja w `frontend/`).
 **Upewnij się, że jesteś w folderze `frontend/`**:
 
 ```bash
-# Jeśli jesteś w głównym folderze promptly-photo-ai:
+# Jeśli jesteś w głównym folderze fotai.app:
 cd frontend
 
 # Zainstaluj TailwindCSS i narzędzia
@@ -228,7 +228,7 @@ mkdir -p src/services
 ### Oczekiwane drzewo (po Task 1.4)
 
 ```
-promptly-photo-ai/
+fotai.app/
 ├── frontend/
 │   ├── src/
 │   │   ├── components/
@@ -436,7 +436,7 @@ export function Header() {
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <Link to="/" className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-blue-600">📸 Promptly Photo AI</h1>
+          <h1 className="text-xl font-bold text-blue-600">📸 FOTAI</h1>
         </Link>
 
         <nav className="flex gap-6">
@@ -729,7 +729,7 @@ export function ChatWindow() {
   return (
     <Card className="w-full h-screen flex flex-col bg-white">
       <div className="bg-linear-to-r from-purple-600 to-blue-600 text-white p-4">
-        <h1 className="text-xl font-bold">📸 Promptly Photo - AI Photography Assistant</h1>
+        <h1 className="text-xl font-bold">📸 FOTAI - AI Photography Assistant</h1>
         <p className="text-sm opacity-90">Zapytaj o fotografię, kompozycję, sprzęt...</p>
         [...]
 
@@ -872,7 +872,7 @@ Testowanie całego flow'u UI.
 ### Polishing
 
 - [x] Dodaj favicona w `index.html`
-- [x] Zmień title na "Promptly Photo AI"
+- [x] Zmień title na "FOTAI"
 - [x] Sprawdź, czy font jest czytelny na mobile
 
 ---
@@ -930,9 +930,9 @@ npm run preview
 
 ### Weryfikacja struktury projektu
 
-- [ ] Folder główny: `promptly-photo-ai/` ✅
-- [ ] Podfolder: `promptly-photo-ai/frontend/` ✅
-- [ ] Gotowy na dodanie `promptly-photo-ai/backend/` w Sprint 2 ✅
+- [ ] Folder główny: `fotai.app/` ✅
+- [ ] Podfolder: `fotai.app/frontend/` ✅
+- [ ] Gotowy na dodanie `fotai.app/backend/` w Sprint 2 ✅
 
 ### Weryfikacja techniczna
 
@@ -955,8 +955,8 @@ npm run preview
 
 ### Gotowość do Sprint 2
 
-- [ ] Struktura projektu: `promptly-photo-ai/frontend/` ✅
-- [ ] Miejsce na `promptly-photo-ai/backend/` w Sprint 2 ✅
+- [ ] Struktura projektu: `fotai.app/frontend/` ✅
+- [ ] Miejsce na `fotai.app/backend/` w Sprint 2 ✅
 - [ ] `chatService.ts` ma placeholdery do wypełnienia w Sprint 2 ✅
 
 ---

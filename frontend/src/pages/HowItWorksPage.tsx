@@ -3,11 +3,11 @@ export function HowItWorksPage() {
     <>
       <div className="info-page mx-auto w-full max-w-5xl px-4 py-5 md:px-0">
         <h2 className="material-title mb-10 mt-10 text-5xl font-semibold">
-          Jak działa Promptly Photo AI?
+          Jak działa FOTAI?
         </h2>
         <p className="mb-4">
-          <strong>Promptly Photo AI</strong> to webowy asystent oparty o
-          zaawansowany model językowy (LLM), który został{" "}
+          <strong>FOTAI</strong> to webowy asystent oparty o zaawansowany model
+          językowy (LLM), który został{" "}
           <strong>
             specjalnie skonfigurowany do roli instruktora fotografii
           </strong>
@@ -62,7 +62,7 @@ export function HowItWorksPage() {
           Analiza pytania i kontekstu fotograficznego
         </h3>
 
-        <p>Gdy zadasz pytanie, Promptly Photo AI:</p>
+        <p>Gdy zadasz pytanie, fotAI.app:</p>
 
         <ul className="mb-4 list-disc pl-8">
           <li>
@@ -105,7 +105,7 @@ export function HowItWorksPage() {
         </h3>
 
         <p>
-          Promptly Photo AI został zaprojektowany tak, aby
+          FOTAI został zaprojektowany tak, aby
           <strong>symulować rozmowę z prowadzącym warsztaty</strong>:
         </p>
 
@@ -171,7 +171,7 @@ export function HowItWorksPage() {
           Ciągłe doskonalenie
         </h3>
 
-        <p>Promptly Photo AI jest projektowany jako narzędzie rozwijane:</p>
+        <p>FOTAI jest projektowany jako narzędzie rozwijane:</p>
 
         <ul className="mb-4 list-disc pl-8">
           <li>prompt może być rozszerzany o nowe style i scenariusze,</li>
@@ -182,7 +182,7 @@ export function HowItWorksPage() {
         </ul>
 
         <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
-          Promptly Photo AI to:
+          FOTAI to:
         </h3>
 
         <ul className="mb-4 list-disc pl-8">

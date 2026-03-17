@@ -1,10 +1,10 @@
-# 📸 Promptly Photo — AI Photography Assistant
+# 📸 FOTAI — AI Photography Assistant
 
-![Screenshot App](https://raw.githubusercontent.com/brzozanet/promptly-photo-ai/refs/heads/main/frontend/public/images/gh-cover-promptly-v2.png)
+![Screenshot App](https://raw.githubusercontent.com/brzozanet/fotai.app/refs/heads/main/frontend/public/images/gh-cover-promptly-v2.png)
 
 ### Inteligentny asystent fotograficzny oparty na OpenAI
 
-Promptly Photo to **aplikacja webowa z AI asystentem** specjalizującym się w **fotografii**. Asystent udziela porad na temat techniki fotograficznej, kompozycji, wyboru sprzętu, obróbki zdjęć i fotografii specjalistycznej, a na końcu każdej odpowiedzi zaprasza na warsztaty: [fotowarsztaty.com](https://fotowarsztaty.com).
+FOTAI to **aplikacja webowa z AI asystentem** specjalizującym się w **fotografii**. Asystent udziela porad na temat techniki fotograficznej, kompozycji, wyboru sprzętu, obróbki zdjęć i fotografii specjalistycznej, a na końcu każdej odpowiedzi zaprasza na warsztaty: [fotowarsztaty.com](https://fotowarsztaty.com).
 
 **Geneza**: Projekt bazuje na prostej implementacji czatu AI w terminalu ([example.ts](./example.ts)), która wykorzystuje OpenAI API z zachowaniem historii rozmowy (`previous_response_id`). Celem była transformacja tego rozwiązania w pełnoprawne MVP webowe.
 
@@ -20,7 +20,7 @@ Promptly Photo to **aplikacja webowa z AI asystentem** specjalizującym się w *
 
 Aplikacja jest dostępna online pod adresem:
 
-👉 [https://promptly-photo-ai.vercel.app](https://promptly-photo-ai.vercel.app)
+👉 [https://fotai.app.vercel.app](https://fotai.app.vercel.app)
 
 Platformy:
 
@@ -106,7 +106,7 @@ Asystent działa jako **ekspert fotografii z 20+ latami doświadczenia**:
 ## 📂 Struktura projektu
 
 ```
-promptly-photo-ai/
+fotai.app/
 ├── frontend/                        # Aplikacja React (Vite)
 │   ├── src/
 │   │   ├── components/
@@ -222,8 +222,8 @@ VITE_API_URL=http://localhost:3000
 1. **Sklonuj repozytorium:**
 
 ```bash
-git clone https://github.com/brzozanet/promptly-photo-ai.git
-cd promptly-photo-ai
+git clone https://github.com/brzozanet/fotai.app.git
+cd fotai.app
 ```
 
 2. **Zainstaluj zależności (oba workspace'y):**
@@ -326,5 +326,5 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 ---
 
 **Status**: ✅ Phase 1 MVP — aplikacja działa na produkcji  
-**Live demo**: [https://promptly-photo-ai.vercel.app](https://promptly-photo-ai.vercel.app)  
+**Live demo**: [https://fotai.app.vercel.app](https://fotai.app.vercel.app)  
 **Ostatnia aktualizacja**: 23.02.2026

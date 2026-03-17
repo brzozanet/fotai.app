@@ -1,4 +1,4 @@
-# Sprint 2: Backend Proxy - Promptly Photo AI
+# Sprint 2: Backend Proxy - FOTAI
 
 > 🎯 **Część Phase 1 MVP**: Stworzenie backend proxy do OpenAI API
 
@@ -154,10 +154,10 @@ function add(a: number, b: number): number {
 
 ### Kroki
 
-**WAŻNE**: Upewnij się, że jesteś w **głównym folderze projektu** `promptly-photo-ai/`, a nie w `frontend/`!
+**WAŻNE**: Upewnij się, że jesteś w **głównym folderze projektu** `fotai.app/`, a nie w `frontend/`!
 
 ```bash
-# 1. Sprawdź gdzie jesteś (powinieneś być w promptly-photo-ai/)
+# 1. Sprawdź gdzie jesteś (powinieneś być w fotai.app/)
 pwd
 # Jeśli jesteś w frontend/, wróć: cd ..
 
@@ -271,7 +271,7 @@ Otwórz `backend/package.json` i **dodaj/zmień** sekcję `scripts`:
 ### Oczekiwana struktura po Task 2.1
 
 ```
-promptly-photo-ai/
+fotai.app/
 ├── frontend/                  (Sprint 1 - gotowy)
 ├── backend/                   👈 Nowy folder
 │   ├── node_modules/
@@ -284,7 +284,7 @@ promptly-photo-ai/
 
 ### Sprawdzenie
 
-- [x] Folder `backend/` istnieje w `promptly-photo-ai/backend/`
+- [x] Folder `backend/` istnieje w `fotai.app/backend/`
 - [x] Plik `backend/package.json` ma sekcję `scripts` z `dev`, `build`, `start`
 - [x] Plik `backend/tsconfig.json` skonfigurowany (outDir, rootDir, strict)
 - [x] Zależności zainstalowane (sprawdź `node_modules/` folder)
@@ -330,7 +330,7 @@ Backend to nie jeden wielki plik, ale zestaw modułów:
 **Upewnij się, że jesteś w folderze `backend/`**:
 
 ```bash
-# Jeśli jesteś w głównym folderze promptly-photo-ai:
+# Jeśli jesteś w głównym folderze fotai.app:
 cd backend
 
 # Utwórz strukturę folderów
@@ -343,7 +343,7 @@ mkdir -p src/types
 ### Oczekiwane drzewo (po Task 2.2)
 
 ```
-promptly-photo-ai/
+fotai.app/
 └── backend/
     ├── src/
     │   ├── routes/          (endpointy API - utworzysz w Task 2.4)
@@ -453,7 +453,7 @@ SYSTEM_PROMPT="Jesteś ekspertem w fotografii z doświadczeniem 20+ lat..."
 
 #### 4. Dodaj `.env` do `.gitignore`
 
-Edytuj główny plik `.gitignore` (w `promptly-photo-ai/.gitignore`):
+Edytuj główny plik `.gitignore` (w `fotai.app/.gitignore`):
 
 ```gitignore
 # Environment variables
@@ -1541,7 +1541,7 @@ rm -rf dist/
 
 ### Weryfikacja struktury projektu
 
-- [x] Folder `backend/` w głównym projekcie `promptly-photo-ai/backend/` ✅
+- [x] Folder `backend/` w głównym projekcie `fotai.app/backend/` ✅
 - [x] Struktura: `src/index.ts`, `src/routes/chat.ts`, `src/types/chat.ts` ✅
 - [x] Pliki konfiguracyjne: `package.json`, `tsconfig.json`, `.env`, `.env.example` ✅
 

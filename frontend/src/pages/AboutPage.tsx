@@ -3,10 +3,10 @@ export function AboutPage() {
     <>
       <div className="info-page mx-auto mb-10 w-full max-w-5xl px-4 py-5 md:px-0">
         <h2 className="material-title mb-10 mt-10 text-5xl font-semibold">
-          O projekcie Promptly Photo AI
+          O projekcie FOTAI
         </h2>
         <p className="mb-4">
-          Promptly Photo AI powstało na styku dwóch pasji:
+          FOTAI powstało na styku dwóch pasji:
           <strong>programowania i fotografii</strong>. Z jednej strony to
           projekt <strong>portfolio programisty</strong>, z drugiej — realne
           narzędzie wspierające i promujące{" "}
@@ -21,15 +21,15 @@ export function AboutPage() {
         </p>
 
         <p className="mb-4">
-          Promptly Photo AI ma być odpowiednikiem rozmowy z instruktorem:
-          konkretnie, na temat i z myślą o praktycznym wykorzystaniu w terenie.
+          FOTAI ma być odpowiednikiem rozmowy z instruktorem: konkretnie, na
+          temat i z myślą o praktycznym wykorzystaniu w terenie.
         </p>
 
         <p className="mb-4">
           🔗{" "}
           <a
             className="font-semibold text-primary underline"
-            href="https://github.com/brzozanet/promptly-photo-ai"
+            href="https://github.com/brzozanet/fotai.app"
             target="_blank"
           >
             Repozytorium na GitHub
@@ -76,8 +76,8 @@ export function AboutPage() {
         </h3>
 
         <p>
-          Promptly Photo AI nie jest projektem „do szuflady”. To pełnoprawna
-          aplikacja webowa, która demonstruje umiejętności z zakresu:
+          FOTAI nie jest projektem „do szuflady”. To pełnoprawna aplikacja
+          webowa, która demonstruje umiejętności z zakresu:
         </p>
 
         <ul className="mb-4 list-disc pl-8">
@@ -133,14 +133,11 @@ export function AboutPage() {
         </ul>
 
         <p>
-          Promptly Photo AI to połączenie{" "}
-          <strong>programowania, fotografii i AI</strong> w formie, która działa
-          — zarówno jako projekt portfolio, jak i narzędzie wspierające
-          fotografów oraz warsztaty fotograficzne.
+          FOTAI to połączenie <strong>programowania, fotografii i AI</strong> w
+          formie, która działa — zarówno jako projekt portfolio, jak i narzędzie
+          wspierające fotografów oraz warsztaty fotograficzne.
         </p>
       </div>
     </>
   );
 }
-
-// TODO: add About page content

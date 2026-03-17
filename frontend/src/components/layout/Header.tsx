@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { NavLink, useLocation } from "react-router-dom";
 import { useChatStore } from "@/store/chatStore";
-import iconPromptly from "../../assets/icon-promptly.svg";
+import logoFotai from "../../assets/logo/fotai.png";
 
 export function Header() {
   const location = useLocation();
@@ -27,13 +27,13 @@ export function Header() {
       <div className="flex items-center justify-between max-w-5xl mx-auto">
         <div className="flex flex-row gap-3 items-center text-xl font-bold text-black">
           <img
-            src={iconPromptly}
-            alt="Promptly"
-            title="Promptly"
+            src={logoFotai}
+            alt="fotai.app"
+            title="fotai.app"
             className="h-10"
           />
           <NavLink to="/">
-            <div>fotAI.app</div>
+            <div></div>
           </NavLink>
         </div>
         <nav>
