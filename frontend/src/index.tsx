@@ -4,6 +4,7 @@ import { Layout } from "./components/layout/Layout.tsx";
 import { HomePage } from "./pages/HomePage.tsx";
 import { HowItWorksPage } from "./pages/HowItWorksPage.tsx";
 import { AboutPage } from "./pages/AboutPage.tsx";
+import { WorkInProgressPage } from "./pages/WorkInProgressPage.tsx";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
       {
         element: <AboutPage />,
         path: "about.html",
+      },
+      {
+        element: <WorkInProgressPage />,
+        path: "wip.html",
       },
     ],
   },

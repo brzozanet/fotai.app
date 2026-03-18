@@ -36,7 +36,7 @@ export function Header() {
           </NavLink>
         </div>
         <nav>
-          <ul className="flex flex-row gap-6 items-center font-semibold text-black">
+          <ul className="flex flex-row gap-5 items-center font-semibold text-black">
             {messages.length !== 0 &&
             location.pathname !== "/how.html" &&
             location.pathname !== "/about.html" ? (
@@ -75,6 +75,7 @@ export function Header() {
             )}
 
             {location.pathname === "/how.html" ||
+            location.pathname === "/wip.html" ||
             location.pathname === "/about.html" ? (
               <li>
                 <NavLink to="/">
@@ -100,6 +101,14 @@ export function Header() {
                 to="about.html"
               >
                 O projekcie
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className="top-nav-link top-nav-link-gradient"
+                to="wip.html"
+              >
+                Plan rozwoju
               </NavLink>
             </li>
           </ul>

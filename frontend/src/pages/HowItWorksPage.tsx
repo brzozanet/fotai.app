@@ -32,9 +32,9 @@ export function HowItWorksPage() {
 
         <p className="mb-4">
           Kluczowe jest jednak to,{" "}
-          <strong>jak ten model jest prowadzony</strong>. Promptly Photo AI
-          działa w oparciu o <strong>system prompt</strong>, czyli zestaw
-          precyzyjnych instrukcji, które nadają modelowi stałą rolę:
+          <strong>jak ten model jest prowadzony</strong>. FOTAI działa w oparciu
+          o <strong>system prompt</strong>, czyli zestaw precyzyjnych
+          instrukcji, które nadają modelowi stałą rolę:
         </p>
 
         <blockquote className="material-surface relative mb-4 rounded-2xl pl-6 italic">
@@ -62,7 +62,7 @@ export function HowItWorksPage() {
           Analiza pytania i kontekstu fotograficznego
         </h3>
 
-        <p>Gdy zadasz pytanie, fotAI.app:</p>
+        <p>Gdy zadasz pytanie, FOTAI:</p>
 
         <ul className="mb-4 list-disc pl-8">
           <li>
@@ -105,7 +105,7 @@ export function HowItWorksPage() {
         </h3>
 
         <p>
-          FOTAI został zaprojektowany tak, aby
+          FOTAI został zaprojektowany tak, aby{" "}
           <strong>symulować rozmowę z prowadzącym warsztaty</strong>:
         </p>
 
@@ -117,7 +117,7 @@ export function HowItWorksPage() {
         </ul>
 
         <p>
-          Nie chodzi tylko o „jak”, ale też o
+          Nie chodzi tylko o „jak”, ale też o{" "}
           <strong>„dlaczego warto zrobić to w ten sposób”</strong>.
         </p>
 
@@ -140,7 +140,7 @@ export function HowItWorksPage() {
         </ul>
 
         <p>
-          Każda odpowiedź jest tworzona
+          Każda odpowiedź jest tworzona{" "}
           <strong>
             z myślą o praktycznym zastosowaniu w terenie lub podczas obróbki
           </strong>
