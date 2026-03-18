@@ -20,7 +20,7 @@ FOTAI to **aplikacja webowa z AI asystentem** specjalizującym się w **fotograf
 
 Aplikacja jest dostępna online pod adresem:
 
-👉 [https://fotai.app.vercel.app](https://fotai.app.vercel.app)
+👉 [https://fotai.app](https://fotai.app)
 
 Platformy:
 

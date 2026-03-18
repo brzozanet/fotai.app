@@ -1,7 +1,7 @@
 export function Footer() {
   return (
     <>
-      <footer className="relative z-10 border-t border-border/70 bg-card/70 py-4 text-center backdrop-blur-xl">
+      <footer className="relative z-10 border-t border-border/30 bg-card/30 py-4 text-center backdrop-blur-xl">
         <p className="text-muted-foreground">
           Asystent AI może popełniać błędy. Sprawdź ważne informacje.
         </p>
