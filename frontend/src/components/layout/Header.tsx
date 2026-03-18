@@ -39,6 +39,7 @@ export function Header() {
           <ul className="flex flex-row gap-5 items-center font-semibold text-black">
             {messages.length !== 0 &&
             location.pathname !== "/how.html" &&
+            location.pathname !== "/wip.html" &&
             location.pathname !== "/about.html" ? (
               <li>
                 <AlertDialog>

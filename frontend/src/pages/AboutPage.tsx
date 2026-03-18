@@ -6,7 +6,7 @@ export function AboutPage() {
           O projekcie FOTAI
         </h2>
         <p className="mb-4">
-          FOTAI powstało na styku dwóch pasji:{" "}
+          <strong>FOTAI</strong> powstało na styku dwóch pasji:{" "}
           <strong>programowania i fotografii</strong>. Z jednej strony to
           projekt <strong>portfolio programisty</strong>, z drugiej — realne
           narzędzie wspierające i promujące{" "}
