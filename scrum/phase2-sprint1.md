@@ -134,23 +134,26 @@ Jeśli masz Dockera, to najprostszy sposób.
 docker --version
 ```
 
-**Uruchom MySQL**:
+**Uruchom MariaDB** (identyczna wersja jak na cyber_Folks):
 
 ```bash
 docker run --name fotai-mysql \
   -e MYSQL_ROOT_PASSWORD=password \
   -e MYSQL_DATABASE=fotai_dev \
   -p 3306:3306 \
-  -d mysql:8
+  -d mariadb:10.6
 ```
+
+> 📌 **Uwaga**: Twoja baza na cyber_Folks to **MariaDB 10.6**, aby mieć pewność identyczności lokalnie — uruchamiamy tę samą wersję. MariaDB to fork MySQL'a — 100% kompatybilny, Prisma obsługuje go bez zmian (`provider = "mysql"`).
 
 **Co te flagi znaczą?**
 
 - `--name fotai-mysql` — nazwa kontenera
 - `-e MYSQL_ROOT_PASSWORD=password` — hasło root (tylko lokalnie)
 - `-e MYSQL_DATABASE=fotai_dev` — automatycznie tworzy bazę
-- `-p 3306:3306` — mapuje port MySQL na port maszyny
+- `-p 3306:3306` — mapuje port MariaDB na port maszyny
 - `-d` — uruchom w tle
+- `mariadb:10.6` — obraz MariaDB w wersji 10.6 (identyczny z cyber_Folks)
 
 **Sprawdź czy działa**:
 
