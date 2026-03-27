@@ -8,6 +8,7 @@ export function Layout() {
     <div
       className="relative isolate flex h-screen flex-col"
       style={{
+        backgroundColor: "#000",
         backgroundImage: `url(${backgroundAbstract})`,
         backgroundPosition: "bottom center",
         backgroundRepeat: "no-repeat",
