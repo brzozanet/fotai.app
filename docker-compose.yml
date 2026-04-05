@@ -24,6 +24,14 @@ services:
       timeout: 5s
       retries: 10
       start_period: 20s
+  adminer:
+    image: adminer:latest
+    container_name: fotai-adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
 
 volumes:
   fotai_mysql_data:
