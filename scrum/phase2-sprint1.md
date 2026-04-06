@@ -134,39 +134,81 @@ Jeśli masz Dockera, to najprostszy sposób.
 docker --version
 ```
 
-**Uruchom MariaDB** (identyczna wersja jak na cyber_Folks):
+**Skonfiguruj zmienne dla Docker Compose**:
+
+W root repo masz pliki `docker-compose.yml` oraz `.env.example`.
+
+Skopiuj `.env.example` do `.env`:
+
+**Windows PowerShell**:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**Windows CMD**:
+
+```bat
+copy .env.example .env
+```
+
+**macOS / Linux / Git Bash**:
 
 ```bash
-docker run --name fotai-mysql \
-  -e MYSQL_ROOT_PASSWORD=password \
-  -e MYSQL_DATABASE=fotai_dev \
-  -p 3306:3306 \
-  -d mariadb:10.6
+cp .env.example .env
+```
+
+Następnie uzupełnij wartości:
+
+```env
+MYSQL_ROOT_PASSWORD=twoje-lokalne-haslo
+MYSQL_DATABASE=fotai_dev
+MYSQL_PORT=3306
+```
+
+**Uruchom MariaDB przez Docker Compose** (identyczna wersja jak na cyber_Folks):
+
+```bash
+docker compose up -d
 ```
 
 > 📌 **Uwaga**: Twoja baza na cyber_Folks to **MariaDB 10.6**, aby mieć pewność identyczności lokalnie — uruchamiamy tę samą wersję. MariaDB to fork MySQL'a — 100% kompatybilny, Prisma obsługuje go bez zmian (`provider = "mysql"`).
 
-**Co te flagi znaczą?**
+**Co dokładnie robi ten setup?**
 
-- `--name fotai-mysql` — nazwa kontenera
-- `-e MYSQL_ROOT_PASSWORD=password` — hasło root (tylko lokalnie)
-- `-e MYSQL_DATABASE=fotai_dev` — automatycznie tworzy bazę
-- `-p 3306:3306` — mapuje port MariaDB na port maszyny
-- `-d` — uruchom w tle
-- `mariadb:10.6` — obraz MariaDB w wersji 10.6 (identyczny z cyber_Folks)
+- `docker-compose.yml` — opisuje usługę MariaDB 10.6
+- `.env` w root repo — przechowuje wartości dla Compose (`MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_PORT`)
+- `docker compose up -d` — tworzy i uruchamia kontener w tle
+- `fotai_mysql_data` — named volume, w którym Docker przechowuje dane bazy, więc nie znikają po zwykłym restarcie kontenera
+- `3306:3306` — mapowanie portu MariaDB z kontenera na port Twojej maszyny
+
+**Co to jest named volume i po co tu jest?**
+
+Named volume to przestrzeń dyskowa zarządzana przez Dockera, podpinana do kontenera jak „zewnętrzny dysk". W tym projekcie volume `fotai_mysql_data` jest montowany do katalogu `/var/lib/mysql`, czyli miejsca, gdzie MariaDB przechowuje swoje pliki danych.
+
+To ważne, bo bez volume dane bazy byłyby związane z warstwą samego kontenera. Po usunięciu kontenera mógłbyś stracić całą bazę. Dzięki volume możesz bezpiecznie robić `docker compose down` i potem `docker compose up -d`, a dane nadal zostaną.
+
+> 📌 **Praktycznie**: nie pracujesz na tych plikach bezpośrednio z Eksploratora Windows. Dostęp do danych bazy robisz przez Prismę, SQL, Prisma Studio albo klienta DB typu DBeaver.
 
 **Sprawdź czy działa**:
 
 ```bash
-docker ps
+docker compose ps
 ```
 
 Powinieneś zobaczyć `fotai-mysql` ze statusem `Up`.
 
-**Następnym razem** (jeśli kontener jest zatrzymany):
+**Podstawowe komendy na później**:
 
 ```bash
-docker start fotai-mysql
+docker compose stop
+docker compose up -d
+```
+
+Jeśli chcesz zatrzymać i usunąć kontener, ale zostawić dane w volume:
+
+```bash
+docker compose down
 ```
 
 ---
@@ -180,18 +222,18 @@ Pobierz installer ze strony [dev.mysql.com/downloads](https://dev.mysql.com/down
 ### Connection String
 
 ```
-mysql://root:password@localhost:3306/fotai_dev
+mysql://root:TWOJE_LOKALNE_HASLO@localhost:3306/fotai_dev
 ```
 
 Format: `mysql://[user]:[password]@[host]:[port]/[database]`
 
-Zapisz go — będziesz go używać w pliku `.env`.
+Wstaw tu dokładnie to samo hasło, które wpisałeś w `MYSQL_ROOT_PASSWORD`. Tego connection stringa użyjesz potem w `backend/.env` jako `DATABASE_URL`.
 
 ---
 
 ### Sprawdzenie
 
-- [x] MySQL działa lokalnie (Docker: `docker ps` pokazuje kontener `Up`)
+- [x] MySQL działa lokalnie (Docker Compose: `docker compose ps` pokazuje kontener `Up`)
 - [x] Możesz się połączyć (sprawdź w kolejnym kroku przez Prismę)
 
 ---
@@ -311,7 +353,7 @@ W `backend/.env` dodaj (lub zaktualizuj) `DATABASE_URL`:
 
 ```env
 # Lokalny development (Docker MySQL):
-DATABASE_URL="mysql://root:password@localhost:3306/fotai_dev"
+DATABASE_URL="mysql://root:TWOJE_LOKALNE_HASLO@localhost:3306/fotai_dev"
 
 # Produkcja (cyber_Folks) — uzupełnij po założeniu bazy w DirectAdmin:
 # DATABASE_URL="mysql://db_user:db_password@s53.cyber-folks.pl:3306/db_name"
@@ -320,6 +362,8 @@ OPENAI_API_KEY="sk-..."
 # ... pozostałe zmienne
 JWT_SECRET="super-tajny-klucz-do-podpisywania-tokenow-zmien-to-na-produkcji"
 ```
+
+`TWOJE_LOKALNE_HASLO` musi być identyczne jak wartość `MYSQL_ROOT_PASSWORD` z rootowego `.env` używanego przez Docker Compose.
 
 **Ważne o `JWT_SECRET`**: To klucz, którym backend podpisuje tokeny JWT. Musi być:
 
@@ -1310,7 +1354,7 @@ export function Header() {
 
 ### Backend
 
-- [ ] MySQL uruchomiony lokalnie (Docker)
+- [ ] MySQL uruchomiony lokalnie (Docker Compose)
 - [ ] Prisma skonfigurowana, schema z modelami: `User`, `Chat`, `Message`
 - [ ] Migracja `init` wykonana — tabele istnieją w bazie
 - [ ] `backend/src/lib/prisma.ts` — singleton klienta Prismy
