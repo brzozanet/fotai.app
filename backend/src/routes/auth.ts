@@ -52,14 +52,13 @@ authRouter.post("/register", async (request: Request, response: Response) => {
       data: { name: name, email: email, passwordHash: hashedPassword },
     });
 
-    return response
-      .status(200)
-      .json({ name, email, password, existingUser, hashedPassword });
+    return response.status(200).json(newUser);
   } catch (error) {
     const internalError: ErrorResponse = {
       error: "Server crashed succesfully 😵‍💫",
       details: "Database is temporarily unavailable",
     };
+    console.error(error);
     return response.status(500).json(internalError);
   }
 });
