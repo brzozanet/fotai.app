@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { ErrorResponse, RegisterRequest } from "../types/auth";
 import { prisma } from "../lib/prisma";
+import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -45,7 +46,15 @@ authRouter.post("/register", async (request: Request, response: Response) => {
       } as ErrorResponse);
     }
 
-    return response.status(200).json({ name, email, password, existingUser });
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
+
+    const newUser = await prisma.user.create({
+      data: { name: name, email: email, passwordHash: hashedPassword },
+    });
+
+    return response
+      .status(200)
+      .json({ name, email, password, existingUser, hashedPassword });
   } catch (error) {
     const internalError: ErrorResponse = {
       error: "Server crashed succesfully 😵‍💫",

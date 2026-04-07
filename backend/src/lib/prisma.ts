@@ -5,6 +5,18 @@ import dotenv from "dotenv";
 // Wczytuje zmienne z backend/.env do process.env zanim stworzymy adapter i klienta Prisma.
 dotenv.config();
 
+if (
+  !process.env.DB_HOST ||
+  !process.env.DB_USER ||
+  !process.env.DB_PASSWORD ||
+  !process.env.DB_NAME ||
+  !process.env.DB_NAME
+) {
+  throw new Error(
+    "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie",
+  );
+}
+
 // Adapter mówi Prisma 7, jakim sterownikiem i z jakimi danymi ma łączyć się z bazą.
 // Dzięki temu logika zapytań zostaje w Prisma, a szczegóły połączenia są wymienne.
 const adapter = new PrismaMariaDb({
