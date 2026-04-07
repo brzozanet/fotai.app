@@ -1,4 +1,4 @@
-export interface RegisterResponse {
+export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
