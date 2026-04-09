@@ -56,7 +56,7 @@ authRouter.post("/register", async (request: Request, response: Response) => {
   } catch (error) {
     const internalError: ErrorResponse = {
       error: "Server crashed succesfully 😵‍💫",
-      details: "Database is temporarily unavailable",
+      details: `${error}`,
     };
     console.error(error);
     return response.status(500).json(internalError);
