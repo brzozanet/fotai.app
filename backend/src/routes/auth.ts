@@ -64,11 +64,17 @@ authRouter.post("/register", async (request: Request, response: Response) => {
         name: normalizedName,
         passwordHash: hashedPassword,
       },
+      select: {
+        id: true,
+        name: true,
+      },
     });
 
-    // const token =
+    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
-    return response.status(201).json(newUser);
+    return response.status(201).json({ user: newUser, token });
   } catch (error) {
     const internalError: ErrorResponse = {
       error: "Server crashed succesfully 😵‍💫",
