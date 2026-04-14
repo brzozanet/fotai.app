@@ -1,9 +1,10 @@
 import { Router, Request, Response } from "express";
-import { ErrorResponse, RegisterRequest } from "../types/auth";
+import { ErrorResponse, LoginRequest, RegisterRequest } from "../types/auth";
 import { prisma } from "../lib/prisma";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import { request } from "node:http";
 
 dotenv.config();
 
@@ -32,10 +33,20 @@ authRouter.post("/register", async (request: Request, response: Response) => {
   try {
     const { email, name, password }: RegisterRequest = request.body;
 
+    if (
+      typeof email !== "string" ||
+      typeof name !== "string" ||
+      typeof password !== "string"
+    ) {
+      return response
+        .status(400)
+        .json({ error: "Wszystkie dane są wymagane" } as ErrorResponse);
+    }
+
     const normalizedEmail = email.trim().toLowerCase();
     const normalizedName = name.trim();
 
-    if (!normalizedEmail || !normalizedName || !password) {
+    if (!normalizedEmail || !normalizedName || !password.trim()) {
       return response
         .status(400)
         .json({ error: "Wszystkie dane są wymagane" } as ErrorResponse);
@@ -75,6 +86,35 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     });
 
     return response.status(201).json({ user: newUser, token });
+  } catch (error) {
+    const internalError: ErrorResponse = {
+      error: "Server crashed succesfully 😵‍💫",
+      details: `${error}`,
+    };
+    console.error(error);
+    return response.status(500).json(internalError);
+  }
+});
+
+// NOTE: POST /api/auth/login
+
+authRouter.post("/login", (request: Request, response: Response) => {
+  try {
+    const { email, password }: LoginRequest = request.body;
+
+    if (typeof email !== "string" || typeof password !== "string") {
+      return response.status(400).json({
+        error: "Wszystkie pola sa wymagane",
+      } as ErrorResponse);
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail || !password.trim()) {
+      return response.status(400).json({
+        error: "Wszystkie pola sa wymagane",
+      } as ErrorResponse);
+    }
   } catch (error) {
     const internalError: ErrorResponse = {
       error: "Server crashed succesfully 😵‍💫",

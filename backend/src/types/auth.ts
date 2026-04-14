@@ -4,6 +4,11 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
 export interface ErrorResponse {
   error: string;
   details?: string;
