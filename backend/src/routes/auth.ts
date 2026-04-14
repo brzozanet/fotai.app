@@ -30,9 +30,12 @@ export const authRouter = Router();
 
 authRouter.post("/register", async (request: Request, response: Response) => {
   try {
-    const { name, email, password }: RegisterRequest = request.body;
+    const { email, name, password }: RegisterRequest = request.body;
 
-    if (!name || !email || !password) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = name.trim();
+
+    if (!normalizedEmail || !normalizedName || !password) {
       return response
         .status(400)
         .json({ error: "Wszystkie dane są wymagane" } as ErrorResponse);
@@ -53,9 +56,15 @@ authRouter.post("/register", async (request: Request, response: Response) => {
       } as ErrorResponse);
     }
 
-    // const passwordHash =
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
 
-    // const newUser =
+    const newUser = await prisma.user.create({
+      data: {
+        email: normalizedEmail,
+        name: normalizedName,
+        passwordHash: hashedPassword,
+      },
+    });
 
     // const token =
 
