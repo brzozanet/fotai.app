@@ -47,7 +47,7 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     }
 
     const existingUser = await prisma.user.findUnique({
-      where: { email: email },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
