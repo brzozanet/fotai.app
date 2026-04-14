@@ -98,7 +98,7 @@ authRouter.post("/register", async (request: Request, response: Response) => {
 
 // NOTE: POST /api/auth/login
 
-authRouter.post("/login", (request: Request, response: Response) => {
+authRouter.post("/login", async (request: Request, response: Response) => {
   try {
     const { email, password }: LoginRequest = request.body;
 
@@ -115,6 +115,40 @@ authRouter.post("/login", (request: Request, response: Response) => {
         error: "Wszystkie pola sa wymagane",
       } as ErrorResponse);
     }
+
+    // FIXME: W tym fragmencie masz trochę zbędnego rozgałęzienia:
+    // - najpierw sprawdzasz, czy user istnieje,
+    // - potem znowu robisz if z tym samym userem,
+    // - trzymasz zmienną authUser, choć potrzebujesz tylko boola.
+    // To można skrócić i uczynić czytelniejszym.
+    // Flow jest prosty:
+    // - znajdź usera,
+    // - jeśli brak → 401,
+    // - sprawdź hasło,
+    // - jeśli błędne → 401.
+
+    const findUser = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    if (!findUser) {
+      return response.status(401).json({
+        error: "Niepoprawne dane logowania",
+      } as ErrorResponse);
+    }
+
+    let isPasswordValid;
+
+    if (findUser) {
+      isPasswordValid = await bcrypt.compare(password, findUser.passwordHash);
+      if (!isPasswordValid) {
+        return response.status(401).json({
+          error: "Niepoprawne dane logowania",
+        } as ErrorResponse);
+      }
+    }
+
+    return response.status(200).json({ findUser, isPasswordValid });
   } catch (error) {
     const internalError: ErrorResponse = {
       error: "Server crashed succesfully 😵‍💫",
