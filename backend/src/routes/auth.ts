@@ -1,16 +1,16 @@
 import { Router, Request, Response } from "express";
 import { ErrorResponse, LoginRequest, RegisterRequest } from "../types/auth";
 import { prisma } from "../lib/prisma";
+import { Prisma } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { Prisma } from "@prisma/client";
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS || 10);
-const TOKEN_EXPIRES_IN = "1d";
+const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
 
 if (!JWT_SECRET) {
   throw new Error(
