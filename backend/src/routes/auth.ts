@@ -58,6 +58,7 @@ authRouter.post("/register", async (request: Request, response: Response) => {
         .status(400)
         .json({ error: "Wszystkie dane są wymagane" } as ErrorResponse);
     }
+
     if (password.length < 8) {
       return response
         .status(400)
@@ -148,6 +149,7 @@ authRouter.post("/login", async (request: Request, response: Response) => {
         error: "Niepoprawne dane logowania",
       } as ErrorResponse);
     }
+
     const isPasswordValid = await bcrypt.compare(
       password,
       findUser.passwordHash,
