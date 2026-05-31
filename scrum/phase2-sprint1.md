@@ -655,7 +655,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 
 ---
 
-## 🎯 [ ] Task 1.5: Middleware JWT (0.5h)
+## 🎯 [X] Task 1.5: Middleware JWT (0.5h)
 
 ### Cel
 
