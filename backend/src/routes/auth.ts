@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { ErrorResponse, LoginRequest, RegisterRequest } from "../types/auth";
+import { AuthError, LoginRequest, RegisterRequest } from "../types/auth";
 import { prisma } from "../lib/prisma";
 import { Prisma } from "@prisma/client";
 import jwt from "jsonwebtoken";
@@ -41,13 +41,13 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     ) {
       return response
         .status(400)
-        .json({ error: "Wszystkie dane są wymagane" } as ErrorResponse);
+        .json({ error: "Wszystkie dane są wymagane" } as AuthError);
     }
 
     if (password !== password.trim()) {
       return response.status(400).json({
         error: "Hasło nie może zaczynać się ani kończyć spacją",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -56,13 +56,13 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     if (!normalizedEmail || !normalizedName || !password) {
       return response
         .status(400)
-        .json({ error: "Wszystkie dane są wymagane" } as ErrorResponse);
+        .json({ error: "Wszystkie dane są wymagane" } as AuthError);
     }
 
     if (password.length < 8) {
       return response
         .status(400)
-        .json({ error: "Hasło musi mieć minimum 8 znaków" } as ErrorResponse);
+        .json({ error: "Hasło musi mieć minimum 8 znaków" } as AuthError);
     }
 
     const existingUser = await prisma.user.findUnique({
@@ -72,7 +72,7 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     if (existingUser) {
       return response.status(409).json({
         error: "Taki użytkownik już istnieje",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     const hashedPassword = await bcrypt.hash(password, BCRYPT_ROUNDS);
@@ -102,10 +102,10 @@ authRouter.post("/register", async (request: Request, response: Response) => {
     ) {
       return response.status(409).json({
         error: "Taki użytkownik już istnieje",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
-    const internalError: ErrorResponse = {
+    const internalError: AuthError = {
       error: "Wewnętrzny błąd serwera 😵‍💫",
     };
     console.error(error);
@@ -122,13 +122,13 @@ authRouter.post("/login", async (request: Request, response: Response) => {
     if (typeof email !== "string" || typeof password !== "string") {
       return response.status(400).json({
         error: "Wszystkie pola sa wymagane",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     if (password !== password.trim()) {
       return response.status(400).json({
         error: "Hasło nie może zaczynać się ani kończyć spacją",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -136,7 +136,7 @@ authRouter.post("/login", async (request: Request, response: Response) => {
     if (!normalizedEmail || !password) {
       return response.status(400).json({
         error: "Wszystkie pola sa wymagane",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     const findUser = await prisma.user.findUnique({
@@ -147,7 +147,7 @@ authRouter.post("/login", async (request: Request, response: Response) => {
     if (!findUser) {
       return response.status(401).json({
         error: "Niepoprawne dane logowania",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -158,7 +158,7 @@ authRouter.post("/login", async (request: Request, response: Response) => {
     if (!isPasswordValid) {
       return response.status(401).json({
         error: "Niepoprawne dane logowania",
-      } as ErrorResponse);
+      } as AuthError);
     }
 
     const token = jwt.sign({ userId: findUser.id }, JWT_SECRET, {
@@ -174,7 +174,7 @@ authRouter.post("/login", async (request: Request, response: Response) => {
       token,
     });
   } catch (error) {
-    const internalError: ErrorResponse = {
+    const internalError: AuthError = {
       error: "Wewnętrzny błąd serwera 😵‍💫",
     };
     console.error(error);

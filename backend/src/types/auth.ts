@@ -9,6 +9,15 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface ErrorResponse {
+// export interface AuthResponse {
+//   user: {
+//     id: string;
+//     name: string;
+//     email: string;
+//   };
+//   token: string;
+// }
+
+export interface AuthError {
   error: string;
 }
