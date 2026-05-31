@@ -782,7 +782,7 @@ curl http://localhost:3001/api/chats \
 
 ---
 
-## 🎯 [ ] Task 1.6: Typy współdzielone (0.25h)
+## 🎯 [X] Task 1.6: Typy współdzielone (0.25h)
 
 ### Cel
 
