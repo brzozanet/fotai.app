@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 import { ChatRequest, ChatResponse, ErrorResponse } from "../types/chat.js";
+import { authMiddleware } from "../middleware/auth.js";
 import OpenAI from "openai";
 import dotenv from "dotenv";
-import { authMiddleware } from "../middleware/auth.js";
 
 dotenv.config();
 
@@ -46,7 +46,7 @@ export const chatRouter = Router();
 
 chatRouter.post(
   "/",
-  authMiddleware,
+  // authMiddleware,
   async (request: Request, response: Response) => {
     try {
       const { message, previousResponseId }: ChatRequest = request.body;
