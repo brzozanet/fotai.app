@@ -4,6 +4,7 @@ import cors from "cors";
 import chalk from "chalk";
 import { chatRouter } from "./routes/chat.js";
 import { authRouter } from "./routes/auth.js";
+import { authMiddleware } from "./middleware/auth.js";
 
 dotenv.config();
 
@@ -12,7 +13,7 @@ const PORT = process.env.PORT || "3001";
 
 // NOTE: Middleware - funkcje przetwarzające każdy request
 
-// CORS - pozwala frontendowi łączyć się z backendemeem
+// CORS - pozwala frontendowi łączyć się z backendem
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",")
   : ["http://localhost:3000"];
@@ -29,8 +30,8 @@ app.use(express.json());
 
 // NOTE: Routes - definicje endpointów API
 
-app.use("/api/chat", chatRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/chat", authMiddleware, chatRouter);
 
 app.get("/health", (request, response) => {
   response.json({
