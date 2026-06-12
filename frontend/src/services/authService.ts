@@ -1,3 +1,5 @@
+import type { RegisterRequest } from "@/types/auth";
+
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 async function userAuth(path: string, body: object) {
@@ -27,10 +29,10 @@ async function userAuth(path: string, body: object) {
   }
 }
 
-export function userRegister(email, name, password) {
+export async function userRegister(email, name, password) {
   return userAuth("/api/auth/register", { email, name, password });
 }
 
-export function userLogin(email, password) {
+export async function userLogin(email, password) {
   return userAuth("/api/auth/login", { email, password });
 }
