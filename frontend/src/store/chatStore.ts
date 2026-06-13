@@ -18,6 +18,6 @@ export const useChatStore = create<ChatState>()(
 
       setError: (error) => set({ error: error }),
     }),
-    { name: "promptly-chat-storage" },
+    { name: "fotai-chat-storage" }, // klucz w localStorage
   ),
 );
