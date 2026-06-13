@@ -845,7 +845,7 @@ export interface AuthError {
 
 ---
 
-## 🎯 [ ] Task 1.7: authService na Frontendzie (0.5h)
+## 🎯 [X] Task 1.7: authService na Frontendzie (0.5h)
 
 ### Cel
 

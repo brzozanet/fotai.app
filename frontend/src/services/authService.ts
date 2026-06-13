@@ -1,8 +1,16 @@
-import type { RegisterRequest } from "@/types/auth";
+import type {
+  AuthResponseError,
+  AuthResponseSuccess,
+  LoginRequest,
+  RegisterRequest,
+} from "@/types/auth";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
-async function userAuth(path: string, body: object) {
+async function userAuth(
+  path: string,
+  body: LoginRequest | RegisterRequest,
+): Promise<AuthResponseSuccess | AuthResponseError> {
   try {
     // Wyślij POST request do backendu
     const response = await fetch(`${API_URL}${path}`, {
@@ -23,16 +31,25 @@ async function userAuth(path: string, body: object) {
 
     // Parsuj JSON response
     const data = await response.json();
-    return data;
+    return data as AuthResponseSuccess;
   } catch (error) {
     console.error("[authService] błąd:", error);
+
+    // Sprawdź typ błędu i rzuć user-friendly message
+    if (error instanceof TypeError && error.message.includes("fetch")) {
+      throw new Error(
+        "Nie można połączyć z serwerem. Sprawdź czy backend działa.",
+        { cause: error },
+      );
+    }
+    throw new Error("Wystąpił nieoczekiwany błąd.", { cause: error });
   }
 }
 
-export async function userRegister(email, name, password) {
-  return userAuth("/api/auth/register", { email, name, password });
+export async function userRegister(payload: RegisterRequest) {
+  return userAuth("/api/auth/register", payload);
 }
 
-export async function userLogin(email, password) {
-  return userAuth("/api/auth/login", { email, password });
+export async function userLogin(payload: LoginRequest) {
+  return userAuth("/api/auth/login", payload);
 }

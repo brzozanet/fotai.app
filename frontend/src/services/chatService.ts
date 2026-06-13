@@ -43,7 +43,6 @@ export async function askAI(
         { cause: error },
       );
     }
-
-    throw error;
+    throw new Error("Wystąpił nieoczekiwany błąd.", { cause: error });
   }
 }
