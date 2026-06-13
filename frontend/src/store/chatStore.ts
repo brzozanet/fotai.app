@@ -13,9 +13,7 @@ export const useChatStore = create<ChatState>()(
         set((state) => ({ messages: [...state.messages, message] })),
 
       clearMessages: () => set({ messages: [], error: false }),
-
       setIsLoading: (loading) => set({ isLoading: loading }),
-
       setError: (error) => set({ error: error }),
     }),
     { name: "fotai-chat-storage" }, // klucz w localStorage

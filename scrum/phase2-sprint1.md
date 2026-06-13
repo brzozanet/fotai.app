@@ -901,7 +901,7 @@ export async function login(
 
 ---
 
-## 🎯 Task 1.8: authStore (Zustand) (0.5h)
+## 🎯 [X] Task 1.8: authStore (Zustand) (0.5h)
 
 ### Cel
 
@@ -967,7 +967,7 @@ Token JWT zostanie zapisany w `localStorage` pod kluczem `"fotai-auth-storage"`.
 
 ---
 
-## 🎯 Task 1.9: Formularze Rejestracji i Logowania (1h)
+## 🎯 [] Task 1.9: Formularze Rejestracji i Logowania (1h)
 
 ### Cel
 
@@ -1228,7 +1228,7 @@ export function RegisterPage() {
 
 ---
 
-## 🎯 Task 1.10: Routing i Ochrona Tras (0.5h)
+## 🎯 [] Task 1.10: Routing i Ochrona Tras (0.5h)
 
 ### Cel
 
