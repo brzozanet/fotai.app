@@ -31,7 +31,8 @@ app.use(express.json());
 // NOTE: Routes - definicje endpointów API
 
 app.use("/api/auth", authRouter);
-app.use("/api/chat", authMiddleware, chatRouter);
+app.use("/api/chat", chatRouter);
+// app.use("/api/chat", authMiddleware, chatRouter);
 
 app.get("/health", (request, response) => {
   response.json({
