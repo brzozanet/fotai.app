@@ -9,8 +9,10 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       isAuthenticated: false,
 
-      login: (user, token) => set({ user, token, isAuthenticated: true }),
-      logout: () => set({ user: null, token: null, isAuthenticated: false }),
+      setAuthLogin: (user, token) =>
+        set({ user, token, isAuthenticated: true }),
+      setAuthLogout: () =>
+        set({ user: null, token: null, isAuthenticated: false }),
     }),
     { name: "fotai-auth-storage" }, // klucz w localStorage
   ),

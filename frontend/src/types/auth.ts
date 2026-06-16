@@ -28,6 +28,6 @@ export interface AuthState {
   user: AuthUser | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (user: AuthUser, token: string) => void;
-  logout: () => void;
+  setAuthLogin: (user: AuthUser, token: string) => void;
+  setAuthLogout: () => void;
 }
