@@ -6,6 +6,7 @@ import { HowItWorksPage } from "./pages/HowItWorksPage.tsx";
 import { AboutPage } from "./pages/AboutPage.tsx";
 import { WorkInProgressPage } from "./pages/WorkInProgressPage.tsx";
 import "./index.css";
+import { LoginPage } from "./pages/LoginPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         element: <WorkInProgressPage />,
         path: "wip.html",
+      },
+      {
+        element: <LoginPage />,
+        path: "login.html",
       },
     ],
   },
