@@ -32,6 +32,8 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/chat", chatRouter);
+
+// TODO: run middleware after auth add
 // app.use("/api/chat", authMiddleware, chatRouter);
 
 app.get("/health", (request, response) => {
