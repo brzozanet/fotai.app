@@ -1,13 +1,13 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { userRegister } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
+import { registerSchema, type RegisterForm } from "@/types/forms";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { loginSchema, type LoginForm } from "@/types/forms";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { userLogin } from "@/services/authService";
 
-export function LoginPage() {
+export function RegisterPage() {
   const navigate = useNavigate();
   const { setAuthLogin } = useAuthStore();
 
@@ -16,16 +16,14 @@ export function LoginPage() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-  } = useForm<LoginForm>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
     mode: "onTouched",
   });
 
-  const onSubmit = async (data: LoginForm) => {
+  const onSubmit = async (data: RegisterForm) => {
     try {
-      const response = await userLogin(data);
-
-      // zapisujemy token i użytkownika do store
+      const response = await userRegister(data);
       if ("user" in response && "token" in response) {
         setAuthLogin(response.user, response.token);
 
@@ -33,13 +31,13 @@ export function LoginPage() {
         navigate("/");
       } else {
         setError("root", {
-          message: "Błąd logowania",
+          message: "Błąd rejestracji",
         });
       }
     } catch (error) {
       // jeśli backend zwróci błąd, pokażemy go pod formularzem
       setError("root", {
-        message: error instanceof Error ? error.message : "Błąd logowania",
+        message: error instanceof Error ? error.message : "Błąd rejestracji",
       });
     }
   };
@@ -49,7 +47,7 @@ export function LoginPage() {
       <div className="min-h-screen flex items-center justify-center -mt-48">
         <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
           <h2 className="material-title text-3xl leading-15 font-semibold">
-            Zaloguj się
+            Zarejestruj się
           </h2>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -59,6 +57,20 @@ export function LoginPage() {
                 {errors.root.message}
               </div>
             )}
+
+            {/* pole imię */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-black">Imię</label>
+              <Input
+                type="text"
+                placeholder="wpisz swoje imię"
+                className="text-gray-900"
+                {...register("name")}
+              />
+              {errors.name && (
+                <p className="text-xs text-red-500">{errors.name.message}</p>
+              )}
+            </div>
 
             {/* pole email */}
             <div className="space-y-1">
@@ -79,7 +91,7 @@ export function LoginPage() {
               <label className="text-sm font-medium text-black">Hasło</label>
               <Input
                 type="password"
-                placeholder="wpisz swoje hasło"
+                placeholder="minimum 8 znaków"
                 className="text-gray-900"
                 {...register("password")}
               />
@@ -92,14 +104,14 @@ export function LoginPage() {
 
             {/* przycisk */}
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Logowanie..." : "Zaloguj się"}
+              {isSubmitting ? "Zakładanie konta..." : "Zarejestruj się"}
             </Button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-4">
-            Nie masz konta?{" "}
-            <Link to="/register.html" className="text-blue-600 hover:underline">
-              Zarejestruj się
+            Masz już konto?{" "}
+            <Link to="/login.html" className="text-blue-600 hover:underline">
+              Zaloguj się
             </Link>
           </p>
         </div>

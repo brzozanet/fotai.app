@@ -21,12 +21,17 @@ async function userAuth(
 
     // Sprawdź czy response jest OK (status 200-299)
     if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({ error: "Nieznany błąd" }));
-      throw new Error(
-        errorData.error || `HTTP ${response.status}: ${response.statusText}`,
-      );
+      const errorData = (await response.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+
+      const message =
+        typeof errorData?.error === "string" &&
+        errorData.error.trim().length > 0
+          ? errorData.error
+          : `HTTP ${response.status}: ${response.statusText}`;
+
+      throw new Error(message);
     }
 
     // Parsuj JSON response
@@ -35,13 +40,19 @@ async function userAuth(
   } catch (error) {
     console.error("[authService] błąd:", error);
 
-    // Sprawdź typ błędu i rzuć user-friendly message
+    // Zachowaj szczegółowy komunikat z backendu, jeśli został już rzucony.
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    // W przypadku problemu z siecią pokaż bardziej przyjazną informację.
     if (error instanceof TypeError && error.message.includes("fetch")) {
       throw new Error(
         "Nie można połączyć z serwerem. Sprawdź czy backend działa.",
         { cause: error },
       );
     }
+
     throw new Error("Wystąpił nieoczekiwany błąd.", { cause: error });
   }
 }
