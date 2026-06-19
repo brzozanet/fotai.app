@@ -18,6 +18,7 @@ export function LoginPage() {
     setError,
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
+    mode: "onTouched",
   });
 
   const onSubmit = async (data: LoginForm) => {
@@ -46,7 +47,9 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-6">Zaloguj się</h1>
+        <h2 className="material-title text-3xl leading-15 font-semibold">
+          Zaloguj się
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* błąd ogólny z serwera */}
@@ -58,10 +61,11 @@ export function LoginPage() {
 
           {/* pole email */}
           <div className="space-y-1">
-            <label className="text-sm font-medium">Email</label>
+            <label className="text-sm font-medium text-black">Email</label>
             <Input
               type="email"
               placeholder="jan@example.com"
+              className="text-gray-900"
               {...register("email")}
             />
             {errors.email && (
@@ -71,10 +75,11 @@ export function LoginPage() {
 
           {/* pole hasło */}
           <div className="space-y-1">
-            <label className="text-sm font-medium">Hasło</label>
+            <label className="text-sm font-medium text-black">Hasło</label>
             <Input
               type="password"
               placeholder="••••••••"
+              className="text-gray-900"
               {...register("password")}
             />
             {errors.password && (
@@ -90,7 +95,7 @@ export function LoginPage() {
 
         <p className="text-center text-sm text-gray-500 mt-4">
           Nie masz konta?{" "}
-          <Link to="/register" className="text-blue-600 hover:underline">
+          <Link to="/register.html" className="text-blue-600 hover:underline">
             Zarejestruj się
           </Link>
         </p>
