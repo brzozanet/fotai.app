@@ -45,7 +45,7 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center -mt-48">
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
         <h2 className="material-title text-3xl leading-15 font-semibold">
           Zaloguj się
