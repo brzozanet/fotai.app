@@ -102,6 +102,24 @@ export function RegisterPage() {
               )}
             </div>
 
+            {/* pole potwierdzenie hasła */}
+            <div className="space-y-1">
+              <label className="text-sm font-medium text-black">
+                Potwierdź hasło
+              </label>
+              <Input
+                type="password"
+                placeholder="wpisz hasło ponownie"
+                className="text-gray-900"
+                {...register("passwordConfirm")}
+              />
+              {errors.passwordConfirm && (
+                <p className="text-xs text-red-500">
+                  {errors.passwordConfirm.message}
+                </p>
+              )}
+            </div>
+
             {/* przycisk */}
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? "Zakładanie konta..." : "Zarejestruj się"}
