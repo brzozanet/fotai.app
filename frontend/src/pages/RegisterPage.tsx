@@ -22,6 +22,7 @@ export function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterForm) => {
+    // tworzymy registerPayload aby nie przekazywać do backendu passwordConfirm
     const registerPayload = {
       name: data.name,
       email: data.email,

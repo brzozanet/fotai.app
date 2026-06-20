@@ -967,7 +967,7 @@ Token JWT zostanie zapisany w `localStorage` pod kluczem `"fotai-auth-storage"`.
 
 ---
 
-## 🎯 [] Task 1.9: Formularze Rejestracji i Logowania (1h)
+## 🎯 [X] Task 1.9: Formularze Rejestracji i Logowania (1h)
 
 ### Cel
 
