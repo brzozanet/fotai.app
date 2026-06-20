@@ -22,8 +22,13 @@ export function RegisterPage() {
   });
 
   const onSubmit = async (data: RegisterForm) => {
+    const registerPayload = {
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    };
     try {
-      const response = await userRegister(data);
+      const response = await userRegister(registerPayload);
       if ("user" in response && "token" in response) {
         setAuthLogin(response.user, response.token);
 
