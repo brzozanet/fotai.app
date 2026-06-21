@@ -7,7 +7,7 @@ export function ProtectedRoute() {
   if (!isAuthenticated) {
     return (
       <>
-        <Navigate to="/login.html" />
+        <Navigate to="/login.html" replace />
       </>
     );
   } else {
