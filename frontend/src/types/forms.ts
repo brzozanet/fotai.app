@@ -15,6 +15,7 @@ export const registerSchema = z
         message: "Hasło nie może zaczynać ani kończyć się spacją",
       }),
     passwordConfirm: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
+    turnstileToken: z.string(),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: "Hasła nie są identyczne",
