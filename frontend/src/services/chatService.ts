@@ -1,6 +1,6 @@
 import type { ChatRequest, ChatResponse } from "@/types/chat";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_URL: string = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export async function askAI(
   message: string,
