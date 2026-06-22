@@ -28,6 +28,7 @@ export function RegisterPage() {
     },
   });
 
+  // obserwujemy token, by wiedzieć, czy odblokować przycisk Submit (pseudo useState)
   const turnstileToken = watch("turnstileToken");
 
   const onSubmit = async (data: RegisterForm) => {
