@@ -6,30 +6,20 @@ import { registerSchema, type RegisterForm } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { useTurnstile } from "react-turnstile";
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const { setAuthLogin } = useAuthStore();
-  const turnstile = useTurnstile();
 
   const {
     register,
-    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
-    setValue,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
-    defaultValues: {
-      turnstileToken: "", // inicjujemy pustym stringiem
-    },
   });
-
-  // obserwujemy token, by wiedzieć, czy odblokować przycisk Submit (pseudo useState)
-  const turnstileToken = watch("turnstileToken");
 
   const onSubmit = async (data: RegisterForm) => {
     // tworzymy registerPayload aby nie przekazywać do backendu passwordConfirm
@@ -37,7 +27,7 @@ export function RegisterPage() {
       name: data.name,
       email: data.email,
       password: data.password,
-      turnstileToken: data.turnstileToken,
+      // turnstileToken: data.turnstileToken,
     };
     try {
       const response = await userRegister(registerPayload);
@@ -56,10 +46,6 @@ export function RegisterPage() {
       setError("root", {
         message: error instanceof Error ? error.message : "Błąd rejestracji",
       });
-
-      // wymuszenie nowego Turnstile, wyczyszczenie tokenu w stanie formularza
-      turnstile.reset();
-      setValue("turnstileToken", "", { shouldValidate: true });
     }
   };
 
