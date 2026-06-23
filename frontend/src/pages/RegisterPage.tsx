@@ -1,3 +1,4 @@
+import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { userRegister } from "@/services/authService";
@@ -19,22 +20,45 @@ export function RegisterPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
     setError,
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
+    defaultValues: {
+      turnstileToken: "",
+    },
   });
 
   // handler działa wtedy, gdy Turnstile da nam token
+  const handleTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+    setIsTurnstileVerified(true);
+    setValue("turnstileToken", token, { shouldValidate: true });
+  };
 
   // handler resetuje stan, jeśli token wygasł albo coś poszło nie tak
+  const handleTurnstileReset = () => {
+    setTurnstileToken("");
+    setIsTurnstileVerified(false);
+    setValue("turnstileToken", "", { shouldValidate: true });
+  };
 
   const onSubmit = async (data: RegisterForm) => {
+    if (!turnstileToken || !isTurnstileVerified) {
+      setError("turnstileToken", {
+        type: "manual",
+        message: "Potwierdź, że nie jesteś botem",
+      });
+      return;
+    }
+
     // tworzymy registerPayload aby nie przekazywać do backendu passwordConfirm
     const registerPayload = {
       name: data.name,
       email: data.email,
       password: data.password,
+      turnstileToken: data.turnstileToken,
     };
     try {
       const response = await userRegister(registerPayload);
@@ -53,6 +77,8 @@ export function RegisterPage() {
       setError("root", {
         message: error instanceof Error ? error.message : "Błąd rejestracji",
       });
+      // resetujemy stan Turnstile
+      handleTurnstileReset();
     }
   };
 
@@ -135,10 +161,25 @@ export function RegisterPage() {
             </div>
 
             {/* validacja Turnstile */}
-            <div className="space-y-1"></div>
+            <div className="space-y-1 flex justify-center">
+              <TurnstileWidget
+                path={"/register.html"}
+                onVerify={handleTurnstileVerify}
+                onReset={handleTurnstileReset}
+              />
+              {errors.turnstileToken && (
+                <p className="text-xs text-red-500">
+                  {errors.turnstileToken.message}
+                </p>
+              )}
+            </div>
 
             {/* przycisk */}
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!isTurnstileVerified || isSubmitting}
+            >
               {isSubmitting ? "Zakładanie konta..." : "Zarejestruj się"}
             </Button>
           </form>
