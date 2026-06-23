@@ -27,7 +27,6 @@ export function RegisterPage() {
       name: data.name,
       email: data.email,
       password: data.password,
-      // turnstileToken: data.turnstileToken,
     };
     try {
       const response = await userRegister(registerPayload);
