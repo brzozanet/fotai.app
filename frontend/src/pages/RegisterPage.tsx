@@ -4,12 +4,16 @@ import { userRegister } from "@/services/authService";
 import { useAuthStore } from "@/store/authStore";
 import { registerSchema, type RegisterForm } from "@/types/forms";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 export function RegisterPage() {
   const navigate = useNavigate();
   const { setAuthLogin } = useAuthStore();
+
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
 
   const {
     register,
@@ -20,6 +24,10 @@ export function RegisterPage() {
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
   });
+
+  // handler działa wtedy, gdy Turnstile da nam token
+
+  // handler resetuje stan, jeśli token wygasł albo coś poszło nie tak
 
   const onSubmit = async (data: RegisterForm) => {
     // tworzymy registerPayload aby nie przekazywać do backendu passwordConfirm
