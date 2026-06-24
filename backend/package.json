@@ -8,7 +8,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "nodemon --exec tsx src/index.ts",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate && prisma migrate deploy && tsc",
     "start": "nodemon dist/index.js"
   },
   "keywords": [],
