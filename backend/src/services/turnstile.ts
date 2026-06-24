@@ -1,16 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const TURNSTILE_SECRET_KEY_TEST = "1x0000000000000000000000000000000AA";
-const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
-const IS_DEV = process.env.NODE_ENV !== "production";
+const TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA";
+// const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
 
 export async function verifyTurnstileToken(token: string, action: string) {
-  // Podstawienie klucza TURNSTILE_SECRET_KEY_TEST wyłącznie w środowisku developerskim
-  if (IS_DEV && token === TURNSTILE_SECRET_KEY_TEST) {
-    return { ok: true };
-  }
-
   if (!TURNSTILE_SECRET_KEY) {
     throw new Error("Brak TURNSTILE_SECRET_KEY w środowisku");
   }
@@ -38,6 +32,8 @@ export async function verifyTurnstileToken(token: string, action: string) {
     "error-codes"?: string[];
     action: string;
   };
+
+  console.log(data);
 
   // Jeśli Cloudflare uznał token za nieważny, zwracamy błąd z przyczyną
   if (!data.success) {

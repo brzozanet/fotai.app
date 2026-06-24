@@ -81,7 +81,7 @@ export function LoginPage() {
   return (
     <>
       <div className="min-h-screen flex items-center justify-center -mt-48">
-        <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
+        <div className="w-full max-w-md p-8 rounded-xl shadow-md bg-background/70 backdrop-blur-sm">
           <h2 className="material-title text-3xl leading-15 font-semibold">
             Zaloguj się
           </h2>
@@ -100,7 +100,7 @@ export function LoginPage() {
               <Input
                 type="email"
                 placeholder="wpisz swój email"
-                className="text-gray-900"
+                className="text-gray-900 bg-white"
                 {...register("email")}
               />
               {errors.email && (
@@ -114,7 +114,7 @@ export function LoginPage() {
               <Input
                 type="password"
                 placeholder="wpisz swoje hasło"
-                className="text-gray-900"
+                className="text-gray-900 bg-white"
                 {...register("password")}
               />
               {errors.password && (
@@ -131,11 +131,11 @@ export function LoginPage() {
                 onVerify={handleTurnstileVerify}
                 onReset={handleTurnstileReset}
               />
-              {errors.turnstileToken && (
+              {/* {errors.turnstileToken && (
                 <p className="text-xs text-red-500">
                   {errors.turnstileToken.message}
                 </p>
-              )}
+              )} */}
             </div>
 
             {/* przycisk */}
@@ -148,9 +148,9 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-4">
+          <p className="text-center text-sm text-black mt-4">
             Nie masz konta?{" "}
-            <Link to="/register.html" className="text-blue-600 hover:underline">
+            <Link to="/register.html" className="text-blue-800 hover:underline">
               Zarejestruj się
             </Link>
           </p>

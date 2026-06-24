@@ -4,10 +4,10 @@ export function HowItWorksPage() {
       <div className="info-page relative isolate mx-auto w-full max-w-5xl rounded-3xl px-4 py-5 md:px-0">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
+          className="pointer-events-none absolute -inset-x-4 inset-y-0 -z-10 backdrop-blur-2xl md:-inset-x-6"
         />
         <div className="relative z-10">
-          <h2 className="material-title mb-10 mt-10 text-5xl leading-15 font-semibold">
+          <h2 className="mb-10 mt-10 text-5xl leading-15 font-semibold text-white">
             Jak działa FOTAI?
           </h2>
           <p className="mb-4">
@@ -20,7 +20,7 @@ export function HowItWorksPage() {
             doradza jak doświadczony fotograf-praktyk.
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Model AI wyszkolony w roli fotografa-instruktora
           </h3>
 
@@ -63,7 +63,7 @@ export function HowItWorksPage() {
             </li>
           </ul>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Analiza pytania i kontekstu fotograficznego
           </h3>
 
@@ -105,7 +105,7 @@ export function HowItWorksPage() {
             <li>jakie błędy pojawiają się najczęściej.</li>
           </ul>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Odpowiedzi jak na warsztatach fotograficznych
           </h3>
 
@@ -126,7 +126,7 @@ export function HowItWorksPage() {
             <strong>„dlaczego warto zrobić to w ten sposób”</strong>.
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Specjalizacja w różnych dziedzinach fotografii
           </h3>
 
@@ -153,7 +153,7 @@ export function HowItWorksPage() {
             .
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Bezpieczne i przewidywalne odpowiedzi
           </h3>
 
@@ -173,7 +173,7 @@ export function HowItWorksPage() {
             nie generatorem przypadkowych odpowiedzi.
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Ciągłe doskonalenie
           </h3>
 
@@ -187,7 +187,7 @@ export function HowItWorksPage() {
             </li>
           </ul>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             FOTAI to:
           </h3>
 

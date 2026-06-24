@@ -4,10 +4,10 @@ export function WorkInProgressPage() {
       <div className="info-page relative isolate mx-auto w-full max-w-5xl rounded-3xl px-4 py-5 md:px-0">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
+          className="pointer-events-none inset -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
         />
         <div className="relative z-10">
-          <h2 className="material-title mb-10 mt-10 text-5xl leading-15 font-semibold">
+          <h2 className="mb-10 mt-10 text-5xl leading-15 font-semibold text-white">
             Nad czym pracuję dalej?
           </h2>
 
@@ -19,7 +19,7 @@ export function WorkInProgressPage() {
             wygodniejsze, bardziej osobiste i dostępne z każdego miejsca.
           </p>
 
-          <h3 className="material-title mb-4 mt-8 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Twoje konto i historia rozmów
           </h3>
 
@@ -36,7 +36,7 @@ export function WorkInProgressPage() {
             przechowuję w formie zaszyfrowanej (nawet ja ich nie znam).
           </p>
 
-          <h3 className="material-title mb-4 mt-8 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Wiele rozmów naraz
           </h3>
 
@@ -56,7 +56,7 @@ export function WorkInProgressPage() {
             pamiętał, o czym rozmawialiśmy.
           </blockquote>
 
-          <h3 className="material-title mb-4 mt-8 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Odpowiedzi pojawiają się na bieżąco
           </h3>
 
@@ -69,7 +69,7 @@ export function WorkInProgressPage() {
             wiadomość.
           </p>
 
-          <h3 className="material-title mb-4 mt-8 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Co planuję dalej
           </h3>
 
@@ -109,7 +109,7 @@ export function WorkInProgressPage() {
             kroku.
           </p>
 
-          <h3 className="material-title mb-4 mt-8 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Kiedy to będzie gotowe?
           </h3>
 

@@ -4,10 +4,10 @@ export function AboutPage() {
       <div className="info-page relative isolate mx-auto mb-10 w-full max-w-5xl rounded-3xl px-4 py-5 md:px-0">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
+          className="pointer-events-none z -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
         />
         <div className="relative z-10">
-          <h2 className="material-title mb-10 mt-10 text-5xl leading-15 font-semibold">
+          <h2 className="mb-10 mt-10 text-5xl leading-15 font-semibold text-white">
             O projekcie FOTAI
           </h2>
           <p className="mb-4">
@@ -42,7 +42,7 @@ export function AboutPage() {
             </a>
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Połączenie technologii i fotografii
           </h3>
 
@@ -77,7 +77,7 @@ export function AboutPage() {
             uczestnikami.
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Projekt portfolio z realnym zastosowaniem
           </h3>
 
@@ -98,7 +98,7 @@ export function AboutPage() {
             koncepcji, przez UI, po deployment.
           </p>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Stack technologiczny
           </h3>
 
@@ -122,11 +122,11 @@ export function AboutPage() {
 
           <h4>Deployment</h4>
           <ul className="mb-4 list-disc pl-8">
-            <li>Vercel — frontend</li>
-            <li>Railway — backend</li>
+            <li>Vercel (frontend)</li>
+            <li>Railway (backend)</li>
           </ul>
 
-          <h3 className="material-title mb-4 mt-6 text-2xl font-semibold">
+          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Dlaczego ten projekt?
           </h3>
 

@@ -87,8 +87,8 @@ export function RegisterPage() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center -mt-20">
-        <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
+      <div className="min-h-screen flex items-center justify-center -mt-48">
+        <div className="w-full max-w-md p-8 rounded-xl shadow-md bg-background/70 backdrop-blur-sm">
           <h2 className="material-title text-3xl leading-15 font-semibold">
             Zarejestruj się
           </h2>
@@ -107,7 +107,7 @@ export function RegisterPage() {
               <Input
                 type="text"
                 placeholder="wpisz swoje imię"
-                className="text-gray-900"
+                className="text-gray-900 bg-white"
                 {...register("name")}
               />
               {errors.name && (
@@ -121,7 +121,7 @@ export function RegisterPage() {
               <Input
                 type="email"
                 placeholder="wpisz swój email"
-                className="text-gray-900"
+                className="text-gray-900 bg-white"
                 {...register("email")}
               />
               {errors.email && (
@@ -135,7 +135,7 @@ export function RegisterPage() {
               <Input
                 type="password"
                 placeholder="minimum 8 znaków"
-                className="text-gray-900"
+                className="text-gray-900 bg-white"
                 {...register("password")}
               />
               {errors.password && (
@@ -153,7 +153,7 @@ export function RegisterPage() {
               <Input
                 type="password"
                 placeholder="wpisz hasło ponownie"
-                className="text-gray-900"
+                className="text-gray-900 bg-white"
                 {...register("passwordConfirm")}
               />
               {errors.passwordConfirm && (
@@ -170,11 +170,11 @@ export function RegisterPage() {
                 onVerify={handleTurnstileVerify}
                 onReset={handleTurnstileReset}
               />
-              {errors.turnstileToken && (
+              {/* {errors.turnstileToken && (
                 <p className="text-xs text-red-500">
                   {errors.turnstileToken.message}
                 </p>
-              )}
+              )} */}
             </div>
 
             {/* przycisk */}
@@ -187,9 +187,9 @@ export function RegisterPage() {
             </Button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-4">
+          <p className="text-center text-sm text-black mt-4">
             Masz już konto?{" "}
-            <Link to="/login.html" className="text-blue-600 hover:underline">
+            <Link to="/login.html" className="text-blue-800 hover:underline">
               Zaloguj się
             </Link>
           </p>

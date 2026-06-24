@@ -23,6 +23,7 @@ export function TurnstileWidget({
       sitekey={TURNSTILE_SITE_KEY}
       action={action}
       theme="light"
+      size="flexible"
       language="pl"
       fixedSize={true}
       onVerify={(token) => {

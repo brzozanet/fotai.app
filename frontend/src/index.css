@@ -101,7 +101,7 @@
   }
 
   .top-nav-link {
-    @apply relative rounded-full px-3 py-1.5 text-foreground/85 transition-all duration-250 hover:bg-primary/10 hover:text-primary;
+    @apply relative rounded-full bg-sky-900/60 px-3 py-1.5 text-foreground/85 transition-all duration-250 hover:bg-primary/10 hover:text-primary;
   }
 
   .top-nav-link::after {

@@ -1,13 +1,16 @@
 import { Typewriter } from "react-simple-typewriter";
 import { ChatInput } from "../chat/ChatInput";
 import logoFotai from "../../assets/logo/fotai.png";
+import { useAuthStore } from "@/store/authStore";
 
 export function EmptyChat() {
+  const { user, isAuthenticated } = useAuthStore();
+
   return (
     <div className="mx-auto flex min-h-[calc(90vh-260px)] w-full max-w-5xl flex-col justify-center px-3 md:px-0">
       <div className="flex flex-row gap-4">
         <h1 className="material-enter-up material-delay-1 mb-6 ml-4 text-left text-3xl text-white font-light">
-          Porozmawiaj z
+          {!isAuthenticated ? "Porozmawiaj z" : `${user?.name}, porozmawiaj z`}
         </h1>
         <img
           src={logoFotai}

@@ -9,21 +9,30 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import logoFotai from "../../assets/logo/fotai.png";
 import { Button } from "@/components/ui/button";
 import { NavLink, useLocation } from "react-router-dom";
 import { useChatStore } from "@/store/chatStore";
-import logoFotai from "../../assets/logo/fotai.png";
+import { useAuthStore } from "@/store/authStore";
 
 export function Header() {
   const location = useLocation();
+
+  const { isAuthenticated, setAuthLogout } = useAuthStore();
+
   const messages = useChatStore((store) => store.messages);
   const { clearMessages } = useChatStore();
   const handleNewChatButtonClick = () => {
     clearMessages();
   };
 
+  const handleLogoutButton = () => {
+    setAuthLogout();
+    clearMessages();
+  };
+
   return (
-    <header className="material-enter-top sticky top-0 z-50 w-full bg-linear-to-r from-indigo-600 from-10%  via-purple-600 via-40% to-emerald-550 to-70% px-6 py-4 shadow-2xl">
+    <header className="material-enter-top sticky top-0 z-50 w-full bg-linear-to-r from-cyan-700 from-10% via-indigo-600 via-30% to-cyan-700 to-95% px-6 py-4 shadow-2xl">
       <div className="flex items-center justify-between max-w-5xl mx-auto">
         <div className="flex flex-row gap-3 items-center text-xl font-bold text-black">
           <NavLink to="/">
@@ -90,30 +99,72 @@ export function Header() {
             ) : (
               ""
             )}
-            <li>
-              <NavLink
-                className="top-nav-link top-nav-link-gradient"
-                to="how.html"
-              >
-                Jak to działa?
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="top-nav-link top-nav-link-gradient"
-                to="about.html"
-              >
-                O projekcie
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="top-nav-link top-nav-link-gradient"
-                to="wip.html"
-              >
-                Plan rozwoju
-              </NavLink>
-            </li>
+
+            {!isAuthenticated ? (
+              <>
+                <li>
+                  <NavLink
+                    className="top-nav-link top-nav-link-gradient"
+                    to="register.html"
+                  >
+                    Rejestracja
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className="top-nav-link top-nav-link-gradient"
+                    to="login.html"
+                  >
+                    Logowanie
+                  </NavLink>
+                </li>
+              </>
+            ) : (
+              <>
+                {/* <li className="text-white">Witaj, {user?.name}</li> */}
+                <li>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      {messages.length !== 0 ? (
+                        <button className="top-nav-link top-nav-link-gradient">
+                          Wyloguj
+                        </button>
+                      ) : (
+                        <button
+                          className="top-nav-link top-nav-link-gradient"
+                          onClick={handleLogoutButton}
+                        >
+                          Wyloguj
+                        </button>
+                      )}
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-black">
+                          Czy na pewno?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-black">
+                          Wylogowanie spowoduje nieodwracalne usunięcie
+                          aktualnej rozmowy. Historia rozmów będzie dostępna w
+                          kolejnej wersji aplikacji 😊
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="cursor-pointer bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground">
+                          Wróć do aktualnej rozmowy
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={handleLogoutButton}
+                          className="cursor-pointer"
+                        >
+                          Wyloguj
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </li>
+              </>
+            )}
           </ul>
         </nav>
       </div>

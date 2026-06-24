@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import backgroundAbstract from "../../assets/background/abstract.jpg";
+import backgroundAbstract from "../../assets/background/neonblur.jpg";
 
 export function Layout() {
   return (
@@ -10,7 +10,7 @@ export function Layout() {
       style={{
         backgroundColor: "#000",
         backgroundImage: `url(${backgroundAbstract})`,
-        backgroundPosition: "bottom center",
+        backgroundPosition: "top center",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
         backgroundSize: "cover",
