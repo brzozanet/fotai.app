@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-const TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA";
-// const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
+// const TURNSTILE_SECRET_KEY = "1x0000000000000000000000000000000AA";
+const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY;
 
 export async function verifyTurnstileToken(token: string, action: string) {
   if (!TURNSTILE_SECRET_KEY) {
