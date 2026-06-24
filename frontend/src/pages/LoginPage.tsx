@@ -126,7 +126,7 @@ export function LoginPage() {
             {/* validacja Turnstile */}
             <div className="space-y-1">
               <TurnstileWidget
-                // TODO: path="/login.html"
+                action={"login"}
                 onVerify={handleTurnstileVerify}
                 onReset={handleTurnstileReset}
               />

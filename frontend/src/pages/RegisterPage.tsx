@@ -59,6 +59,7 @@ export function RegisterPage() {
       email: data.email,
       password: data.password,
       turnstileToken: data.turnstileToken,
+      turnstileAction: data.turnstileAction,
     };
     try {
       const response = await userRegister(registerPayload);
@@ -163,7 +164,7 @@ export function RegisterPage() {
             {/* validacja Turnstile */}
             <div className="space-y-1">
               <TurnstileWidget
-                // TODO: path={"/register.html"}
+                action={"register"}
                 onVerify={handleTurnstileVerify}
                 onReset={handleTurnstileReset}
               />

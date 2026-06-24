@@ -7,12 +7,17 @@ if (!TURNSTILE_SITE_KEY) {
   throw new Error("Brak klucza Cloudflare Turnstile");
 }
 
-export function TurnstileWidget({ onVerify, onReset }: TurnstileWidgetProps) {
+export function TurnstileWidget({
+  action = "default",
+  onVerify,
+  onReset,
+}: TurnstileWidgetProps) {
   const turnstile = useTurnstile();
 
   return (
     <Turnstile
       sitekey={TURNSTILE_SITE_KEY}
+      action={action}
       theme="light"
       language="pl"
       fixedSize={true}

@@ -16,6 +16,7 @@ export const registerSchema = z
       }),
     passwordConfirm: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
     turnstileToken: z.string().min(1, "Weryfikacja jest wymagana"),
+    turnstileAction: z.string().min(1),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: "Hasła nie są identyczne",
@@ -26,12 +27,14 @@ export const loginSchema = z.object({
   email: z.string().email("Podaj prawidłowy adres email").trim().toLowerCase(),
   password: z.string().min(1, "Hasło jest wymagane"),
   turnstileToken: z.string().min(1, "Weryfikacja jest wymagana"),
+  turnstileAction: z.string().min(1),
 });
 
 export type RegisterForm = z.infer<typeof registerSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
 
 export interface TurnstileWidgetProps {
+  action: string;
   onVerify: (token: string) => void;
   onReset: () => void;
 }
