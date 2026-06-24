@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import chalk from "chalk";
 import { chatRouter } from "./routes/chat.js";
 import { authRouter } from "./routes/auth.js";
@@ -13,35 +14,16 @@ const PORT = process.env.PORT || "3001";
 // NOTE: Middleware - funkcje przetwarzające każdy request
 
 // CORS - pozwala frontendowi łączyć się z backendem
-const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:3000")
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(",")
+  : ["http://localhost:3000"];
 
-app.use((request, response, next) => {
-  const origin = request.headers.origin;
-
-  if (origin && allowedOrigins.includes(origin)) {
-    response.setHeader("Access-Control-Allow-Origin", origin);
-    response.setHeader("Access-Control-Allow-Credentials", "true");
-    response.setHeader("Vary", "Origin");
-  }
-
-  if (request.method === "OPTIONS") {
-    response.setHeader(
-      "Access-Control-Allow-Methods",
-      "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-    );
-    response.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type,Authorization",
-    );
-    response.sendStatus(204);
-    return;
-  }
-
-  next();
-});
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 
 // JSON Parser - automatycznie parsuje body requestów do JSON
 app.use(express.json());
