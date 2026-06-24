@@ -23,6 +23,13 @@ const corsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void,
   ) => {
+    // --- DODAJ TEN FRAGMENT ---
+    console.log("--------------------");
+    console.log("Request Origin:", origin);
+    console.log("Allowed Origins:", allowedOrigins);
+    console.log("--------------------");
+    // -------------------------
+
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
