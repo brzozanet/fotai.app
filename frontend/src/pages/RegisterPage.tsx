@@ -107,8 +107,6 @@ export function RegisterPage() {
               <Input
                 type="text"
                 placeholder="wpisz swoje imię"
-                // TODO: delete before deploy
-                value="Paweł"
                 className="text-gray-900"
                 {...register("name")}
               />
@@ -123,8 +121,6 @@ export function RegisterPage() {
               <Input
                 type="email"
                 placeholder="wpisz swój email"
-                // TODO: delete before deploy
-                value="pawel@brzoza.net"
                 className="text-gray-900"
                 {...register("email")}
               />
@@ -139,8 +135,6 @@ export function RegisterPage() {
               <Input
                 type="password"
                 placeholder="minimum 8 znaków"
-                // TODO: delete before deploy
-                value="qwerty123"
                 className="text-gray-900"
                 {...register("password")}
               />
@@ -159,8 +153,6 @@ export function RegisterPage() {
               <Input
                 type="password"
                 placeholder="wpisz hasło ponownie"
-                // TODO: delete before deploy
-                value="qwerty123"
                 className="text-gray-900"
                 {...register("passwordConfirm")}
               />

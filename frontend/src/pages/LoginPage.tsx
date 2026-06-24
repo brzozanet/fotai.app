@@ -27,6 +27,7 @@ export function LoginPage() {
     mode: "onTouched",
     defaultValues: {
       turnstileToken: "",
+      turnstileAction: "login",
     },
   });
 
