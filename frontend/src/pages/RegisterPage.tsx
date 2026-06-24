@@ -27,6 +27,7 @@ export function RegisterPage() {
     mode: "onTouched",
     defaultValues: {
       turnstileToken: "",
+      turnstileAction: "register",
     },
   });
 
@@ -59,8 +60,9 @@ export function RegisterPage() {
       email: data.email,
       password: data.password,
       turnstileToken: data.turnstileToken,
-      turnstileAction: data.turnstileAction,
+      turnstileAction: "register",
     };
+
     try {
       const response = await userRegister(registerPayload);
       if ("user" in response && "token" in response) {
@@ -85,7 +87,7 @@ export function RegisterPage() {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center -mt-48">
+      <div className="min-h-screen flex items-center justify-center -mt-20">
         <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
           <h2 className="material-title text-3xl leading-15 font-semibold">
             Zarejestruj się
@@ -105,6 +107,8 @@ export function RegisterPage() {
               <Input
                 type="text"
                 placeholder="wpisz swoje imię"
+                // TODO: delete before deploy
+                value="Paweł"
                 className="text-gray-900"
                 {...register("name")}
               />
@@ -119,6 +123,8 @@ export function RegisterPage() {
               <Input
                 type="email"
                 placeholder="wpisz swój email"
+                // TODO: delete before deploy
+                value="pawel@brzoza.net"
                 className="text-gray-900"
                 {...register("email")}
               />
@@ -133,6 +139,8 @@ export function RegisterPage() {
               <Input
                 type="password"
                 placeholder="minimum 8 znaków"
+                // TODO: delete before deploy
+                value="qwerty123"
                 className="text-gray-900"
                 {...register("password")}
               />
@@ -151,6 +159,8 @@ export function RegisterPage() {
               <Input
                 type="password"
                 placeholder="wpisz hasło ponownie"
+                // TODO: delete before deploy
+                value="qwerty123"
                 className="text-gray-900"
                 {...register("passwordConfirm")}
               />

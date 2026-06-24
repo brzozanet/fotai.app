@@ -1,7 +1,11 @@
 import type { TurnstileWidgetProps } from "@/types/forms";
 import { Turnstile, useTurnstile } from "react-turnstile";
 
-const TURNSTILE_SITE_KEY: string = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+// Podstawienie klucza TURNSTILE_SITE_KEY_TEST wyłącznie w środowisku developerskim
+const TURNSTILE_SITE_KEY_TEST: string = "1x00000000000000000000AA";
+const TURNSTILE_SITE_KEY: string = import.meta.env.DEV
+  ? TURNSTILE_SITE_KEY_TEST
+  : (import.meta.env.VITE_TURNSTILE_SITE_KEY ?? "");
 
 if (!TURNSTILE_SITE_KEY) {
   throw new Error("Brak klucza Cloudflare Turnstile");
