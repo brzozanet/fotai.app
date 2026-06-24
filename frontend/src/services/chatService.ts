@@ -1,13 +1,6 @@
 import type { ChatRequest, ChatResponse } from "@/types/chat";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
-
-/**
- * NOTE: Wysyła wiadomość do backend API
- * @param message - Wiadomość użytkownika
- * @param previousResponseId - ID poprzedniej odpowiedzi (dla kontynuacji rozmowy)
- * @returns Odpowiedź AI z ID i timestampem
- */
+const API_URL: string = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export async function askAI(
   message: string,
@@ -32,7 +25,7 @@ export async function askAI(
     if (!response.ok) {
       const errorData = await response
         .json()
-        .catch(() => ({ error: "Unknown error" }));
+        .catch(() => ({ error: "Nieznany błąd" }));
       throw new Error(
         errorData.error || `HTTP ${response.status}: ${response.statusText}`,
       );
@@ -50,7 +43,6 @@ export async function askAI(
         { cause: error },
       );
     }
-
-    throw error;
+    throw new Error("Wystąpił nieoczekiwany błąd.", { cause: error });
   }
 }

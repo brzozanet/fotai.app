@@ -193,16 +193,51 @@ GET /health
 
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
-OPENAI_MODEL=gpt-4o-mini
+OPENAI_MODEL=gpt-5-mini
 PORT=3001
+NODE_ENV=development
+DATABASE_URL=mysql://root:TWOJE_LOKALNE_HASLO@localhost:3306/fotai_dev
+JWT_SECRET=change-me-in-local-env
 FRONTEND_URL=http://localhost:3000
 SYSTEM_PROMPT=Jesteś ekspertem w fotografii...
 ```
 
+### Docker Compose (`./.env` + `docker-compose.yml`)
+
+Lokalna baza MariaDB jest opisana w [docker-compose.yml](./docker-compose.yml), a wartości dla Compose są trzymane w rootowym pliku `.env`:
+
+```env
+MYSQL_ROOT_PASSWORD=twoje-lokalne-haslo
+MYSQL_DATABASE=fotai_dev
+MYSQL_PORT=3306
+```
+
+Najpierw skopiuj przykład do pliku roboczego:
+
+**Windows PowerShell**:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**Windows CMD**:
+
+```bat
+copy .env.example .env
+```
+
+**macOS / Linux / Git Bash**:
+
+```bash
+cp .env.example .env
+```
+
+Compose używa też named volume `fotai_mysql_data`, więc dane MariaDB nie znikają po zwykłym zatrzymaniu lub odtworzeniu kontenera.
+
 ### Frontend (`frontend/.env.local`)
 
 ```env
-VITE_API_URL=http://localhost:3000
+VITE_API_URL=http://localhost:3001
 ```
 
 ---
@@ -213,6 +248,7 @@ VITE_API_URL=http://localhost:3000
 
 - Node.js (wersja LTS)
 - npm
+- Docker Desktop lub Docker Engine
 - Klucz OpenAI API (→ [platform.openai.com](https://platform.openai.com))
 
 ### Instalacja
@@ -227,27 +263,31 @@ cd fotai.app
 2. **Zainstaluj zależności (oba workspace'y):**
 
 ```bash
-cd backend && npm install
-cd ../frontend && npm install
+npm install
 ```
 
-3. **Skonfiguruj zmienne środowiskowe backendu:**
+3. **Uruchom lokalną bazę danych przez Docker Compose:**
 
 ```bash
-cd backend
-cp .env.example .env
-# Uzupełnij OPENAI_API_KEY w pliku .env
+docker compose up -d
 ```
 
-4. **Skonfiguruj zmienne środowiskowe frontendu:**
+To polecenie stawia MariaDB 10.6, mapuje port `3306` i zapisuje dane w named volume `fotai_mysql_data`, więc baza przetrwa restart kontenera.
+
+4. **Skonfiguruj zmienne środowiskowe backendu:**
 
 ```bash
-cd frontend
-# Utwórz plik .env.local z zawartością:
-# VITE_API_URL=http://localhost:3001
+# Plik backend/.env jest już przygotowany pod lokalny development.
+# Uzupełnij w nim co najmniej OPENAI_API_KEY i docelowy JWT_SECRET.
 ```
 
-5. **Uruchom backend** (terminal 1):
+5. **Skonfiguruj zmienne środowiskowe frontendu:**
+
+```bash
+# Plik frontend/.env.local jest już przygotowany.
+```
+
+6. **Uruchom backend** (terminal 1):
 
 ```bash
 cd backend
@@ -255,7 +295,7 @@ npm run dev
 # Nasłuchuje na http://localhost:3001
 ```
 
-6. **Uruchom frontend** (terminal 2):
+7. **Uruchom frontend** (terminal 2):
 
 ```bash
 cd frontend

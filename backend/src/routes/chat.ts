@@ -25,7 +25,7 @@ if (
   !CURRENT_WORKSHOPS_RULES
 ) {
   throw new Error(
-    "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie.",
+    "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie",
   );
 }
 

@@ -2,8 +2,8 @@ import type { Message } from "@/types/chat";
 import ReactMarkdown from "react-markdown";
 import iconClock8 from "../../assets/icons/icon-clock8.svg";
 import iconUser from "../../assets/icons/icon-user.svg";
-// import iconFotai from "../../assets/icons/icon-fotai.svg";
 import iconAssistant from "../../assets/icons/icon-assistant.svg";
+// import iconFotai from "../../assets/icons/icon-fotai.svg";
 
 export function Message({ role, content, timestamp }: Message) {
   const isUser = role === "user";

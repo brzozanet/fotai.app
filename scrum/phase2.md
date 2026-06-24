@@ -92,6 +92,8 @@ Render zasypia po 15 min bezczynności (cold start ~30 s). Railway działa bez p
 
 **Technologie**: `bcrypt`, `jsonwebtoken`, `Prisma` (User model, MySQL), React forms, `authStore` (Zustand), localStorage dla tokenu.
 
+**Local dev setup**: lokalna baza MariaDB działa przez `docker compose up -d` z rootowego `docker-compose.yml`, a dane są trzymane w named volume `fotai_mysql_data`.
+
 **Efekt końcowy**:
 
 - Działający formularz rejestracji i logowania w UI
