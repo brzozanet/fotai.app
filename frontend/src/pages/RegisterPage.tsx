@@ -163,7 +163,7 @@ export function RegisterPage() {
             {/* validacja Turnstile */}
             <div className="space-y-1 flex justify-center">
               <TurnstileWidget
-                path={"/register.html"}
+                // TODO: path={"/register.html"}
                 onVerify={handleTurnstileVerify}
                 onReset={handleTurnstileReset}
               />

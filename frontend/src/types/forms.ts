@@ -15,7 +15,7 @@ export const registerSchema = z
         message: "Hasło nie może zaczynać ani kończyć się spacją",
       }),
     passwordConfirm: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
-    turnstileToken: z.string(),
+    turnstileToken: z.string().min(1),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: "Hasła nie są identyczne",
@@ -29,3 +29,8 @@ export const loginSchema = z.object({
 
 export type RegisterForm = z.infer<typeof registerSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
+
+export interface TurnstileWidgetProps {
+  onVerify: (token: string) => void;
+  onReset: () => void;
+}

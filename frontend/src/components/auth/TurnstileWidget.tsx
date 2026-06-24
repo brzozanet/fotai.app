@@ -1,9 +1,10 @@
+import type { TurnstileWidgetProps } from "@/types/forms";
 import { Turnstile, useTurnstile } from "react-turnstile";
 
 const TURNSTILE_SITE_KEY: string =
   import.meta.env.VITE_TURNSTILE_SITE_KEY || "1x00000000000000000000AA";
 
-export function TurnstileWidget({ onVerify, onReset }) {
+export function TurnstileWidget({ onVerify, onReset }: TurnstileWidgetProps) {
   const turnstile = useTurnstile();
 
   return (
