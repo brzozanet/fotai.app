@@ -86,6 +86,15 @@ export function LoginPage() {
             Zaloguj się
           </h2>
 
+          <p className="text-sm text-black my-2">
+            Aby korzystać z aplikacji, musisz się zalogować.
+            <br />
+            Nie masz konta?{" "}
+            <Link to="/register.html" className="text-blue-800 hover:underline">
+              Zarejestruj się za darmo
+            </Link>
+          </p>
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {/* błąd ogólny z serwera */}
             {errors.root && (
