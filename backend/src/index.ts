@@ -1,6 +1,5 @@
 import express from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 import chalk from "chalk";
 import { chatRouter } from "./routes/chat.js";
 import { authRouter } from "./routes/auth.js";
@@ -19,25 +18,30 @@ const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:3000")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
-const corsOptions = {
-  origin: (
-    origin: string | undefined,
-    callback: (error: Error | null, allow?: boolean) => void,
-  ) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-      return;
-    }
+app.use((request, response, next) => {
+  const origin = request.headers.origin;
 
-    callback(new Error(`Origin not allowed by CORS: ${origin}`));
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-};
+  if (origin && allowedOrigins.includes(origin)) {
+    response.setHeader("Access-Control-Allow-Origin", origin);
+    response.setHeader("Access-Control-Allow-Credentials", "true");
+    response.setHeader("Vary", "Origin");
+  }
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
+  if (request.method === "OPTIONS") {
+    response.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+    );
+    response.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type,Authorization",
+    );
+    response.sendStatus(204);
+    return;
+  }
+
+  next();
+});
 
 // JSON Parser - automatycznie parsuje body requestów do JSON
 app.use(express.json());
