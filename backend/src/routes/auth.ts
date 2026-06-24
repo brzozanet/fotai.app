@@ -1,11 +1,11 @@
+import { prisma } from "../lib/prisma.js";
+import { Prisma } from "@prisma/client";
 import { Router, Request, Response } from "express";
 import { AuthError, LoginRequest, RegisterRequest } from "../types/auth";
-import { prisma } from "../lib/prisma";
-import { Prisma } from "@prisma/client";
+import { verifyTurnstileToken } from "../services/turnstile.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
-import { verifyTurnstileToken } from "../services/turnstile";
 
 dotenv.config();
 

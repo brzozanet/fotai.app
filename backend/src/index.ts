@@ -18,29 +18,14 @@ const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",")
   : ["http://localhost:3000"];
 
-const corsOptions = {
-  origin: (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void,
-  ) => {
-    // --- DODAJ TEN FRAGMENT ---
-    console.log("--------------------");
-    console.log("Request Origin:", origin);
-    console.log("Allowed Origins:", allowedOrigins);
-    console.log("--------------------");
-    // -------------------------
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+// JSON Parser - automatycznie parsuje body requestów do JSON
 app.use(express.json());
 
 // NOTE: Routes - definicje endpointów API
