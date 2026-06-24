@@ -6,22 +6,53 @@ import { loginSchema, type LoginForm } from "@/types/forms";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { userLogin } from "@/services/authService";
+import { useState } from "react";
+import { TurnstileWidget } from "@/components/auth/TurnstileWidget";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { setAuthLogin } = useAuthStore();
 
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [isTurnstileVerified, setIsTurnstileVerified] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    setValue,
     setError,
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     mode: "onTouched",
+    defaultValues: {
+      turnstileToken: "",
+    },
   });
 
+  // handler działa wtedy, gdy Turnstile da nam token
+  const handleTurnstileVerify = (token: string) => {
+    setTurnstileToken(token);
+    setIsTurnstileVerified(true);
+    setValue("turnstileToken", token, { shouldValidate: true });
+  };
+
+  // handler resetuje stan, jeśli token wygasł albo coś poszło nie tak
+  const handleTurnstileReset = () => {
+    setTurnstileToken("");
+    setIsTurnstileVerified(false);
+    setValue("turnstileToken", "", { shouldValidate: true });
+  };
+
   const onSubmit = async (data: LoginForm) => {
+    if (!turnstileToken || !isTurnstileVerified) {
+      setError("turnstileToken", {
+        type: "manual",
+        message: "Weryfikacja jest wymagana",
+      });
+      return;
+    }
+
     try {
       const response = await userLogin(data);
 
@@ -41,6 +72,8 @@ export function LoginPage() {
       setError("root", {
         message: error instanceof Error ? error.message : "Błąd logowania",
       });
+      // resetujemy stan Turnstile
+      handleTurnstileReset();
     }
   };
 
@@ -90,8 +123,26 @@ export function LoginPage() {
               )}
             </div>
 
+            {/* validacja Turnstile */}
+            <div className="space-y-1">
+              <TurnstileWidget
+                // TODO: path="/login.html"
+                onVerify={handleTurnstileVerify}
+                onReset={handleTurnstileReset}
+              />
+              {errors.turnstileToken && (
+                <p className="text-xs text-red-500">
+                  {errors.turnstileToken.message}
+                </p>
+              )}
+            </div>
+
             {/* przycisk */}
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={!isTurnstileVerified || isSubmitting}
+            >
               {isSubmitting ? "Logowanie..." : "Zaloguj się"}
             </Button>
           </form>

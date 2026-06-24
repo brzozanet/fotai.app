@@ -15,7 +15,7 @@ export const registerSchema = z
         message: "Hasło nie może zaczynać ani kończyć się spacją",
       }),
     passwordConfirm: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
-    turnstileToken: z.string().min(1),
+    turnstileToken: z.string().min(1, "Weryfikacja jest wymagana"),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: "Hasła nie są identyczne",
@@ -25,6 +25,7 @@ export const registerSchema = z
 export const loginSchema = z.object({
   email: z.string().email("Podaj prawidłowy adres email").trim().toLowerCase(),
   password: z.string().min(1, "Hasło jest wymagane"),
+  turnstileToken: z.string().min(1, "Weryfikacja jest wymagana"),
 });
 
 export type RegisterForm = z.infer<typeof registerSchema>;

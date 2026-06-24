@@ -48,7 +48,7 @@ export function RegisterPage() {
     if (!turnstileToken || !isTurnstileVerified) {
       setError("turnstileToken", {
         type: "manual",
-        message: "Potwierdź, że nie jesteś botem",
+        message: "Weryfikacja jest wymagana",
       });
       return;
     }
@@ -161,7 +161,7 @@ export function RegisterPage() {
             </div>
 
             {/* validacja Turnstile */}
-            <div className="space-y-1 flex justify-center">
+            <div className="space-y-1">
               <TurnstileWidget
                 // TODO: path={"/register.html"}
                 onVerify={handleTurnstileVerify}
