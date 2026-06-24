@@ -5,6 +5,7 @@ import { Prisma } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
+import { verifyTurnstileToken } from "../services/turnstile";
 
 dotenv.config();
 
@@ -32,7 +33,24 @@ export const authRouter = Router();
 
 authRouter.post("/register", async (request: Request, response: Response) => {
   try {
-    const { email, name, password }: RegisterRequest = request.body;
+    const {
+      email,
+      name,
+      password,
+      turnstileToken,
+      turnstileAction,
+    }: RegisterRequest = request.body;
+
+    const verifyTurnstileResult = await verifyTurnstileToken(
+      turnstileToken,
+      turnstileAction,
+    );
+
+    if (!verifyTurnstileResult.ok) {
+      return response
+        .status(403)
+        .json({ error: "Weryfikacja Turnstile nie powiodła się" } as AuthError);
+    }
 
     if (
       typeof email !== "string" ||
@@ -117,7 +135,8 @@ authRouter.post("/register", async (request: Request, response: Response) => {
 
 authRouter.post("/login", async (request: Request, response: Response) => {
   try {
-    const { email, password }: LoginRequest = request.body;
+    const { email, password, turnstileToken, turnstileAction }: LoginRequest =
+      request.body;
 
     if (typeof email !== "string" || typeof password !== "string") {
       return response.status(400).json({

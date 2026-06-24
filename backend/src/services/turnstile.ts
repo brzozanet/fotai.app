@@ -8,6 +8,7 @@ export async function verifyTurnstileToken(token: string, action: string) {
     throw new Error("Brak TURNSTILE_SECRET_KEY w środowisku");
   }
 
+  // Wysyłamy token do Cloudflare, by sprawdził, czy jest prawidłowy i nie wygasł
   const response = await fetch(
     "https://challenges.cloudflare.com/turnstile/v0/siteverify",
     {
@@ -18,17 +19,20 @@ export async function verifyTurnstileToken(token: string, action: string) {
       body: new URLSearchParams({
         secret: TURNSTILE_SECRET_KEY,
         response: token,
-        // remoteip: request.ip, // opcjonalnie
+        // NOTE: opcjonalnie: można dodać IP użytkownika dla dodatkowej weryfikacji
+        // remoteip: request.ip,
       }),
     },
   );
 
+  // Odczytujemy odpowiedź od Cloudflare
   const data = (await response.json()) as {
     success: boolean;
     "error-codes"?: string[];
     action: string;
   };
 
+  // Jeśli Cloudflare uznał token za nieważny, zwracamy błąd z przyczyną
   if (!data.success) {
     return {
       ok: false,
@@ -36,6 +40,7 @@ export async function verifyTurnstileToken(token: string, action: string) {
     };
   }
 
+  // Jeśli action został podany, sprawdzamy, czy token pasuje do oczekiwanej akcji
   if (action && data.action && data.action !== action) {
     return {
       ok: false,
@@ -43,5 +48,6 @@ export async function verifyTurnstileToken(token: string, action: string) {
     };
   }
 
+  // Jeśli wszystko przeszło poprawnie, token jest akceptowany
   return { ok: true };
 }
