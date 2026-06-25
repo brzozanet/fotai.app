@@ -9,11 +9,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const TOKEN_EXPIRES_IN = (process.env.TOKEN_EXPIRES_IN ??
+  "1d") as jwt.SignOptions["expiresIn"];
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS || 10);
-const TOKEN_EXPIRES_IN = "1d";
+const JWT_SECRET = process.env.JWT_SECRET;
 
-if (!JWT_SECRET) {
+if (!JWT_SECRET || !TOKEN_EXPIRES_IN) {
   throw new Error(
     "Brak wymaganych zmiennych. Uzupełnij plik .env i uruchom backend ponownie",
   );

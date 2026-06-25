@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/authStore";
 import type { ChatRequest, ChatResponse } from "@/types/chat";
 
 const API_URL: string = import.meta.env.VITE_API_URL || "http://localhost:3001";
@@ -25,6 +26,12 @@ export async function askAI(
 
     // Sprawdź czy response jest OK (status 200-299)
     if (!response.ok) {
+      if (response.status === 401) {
+        // Wyloguj z aplikacji po wygaśnięciu tokena zgodnie z TOKEN_EXPIRES_IN
+        useAuthStore.getState().setAuthLogout();
+        window.location.href = "/login.html";
+      }
+
       const errorData = await response
         .json()
         .catch(() => ({ error: "Nieznany błąd" }));
