@@ -138,6 +138,17 @@ authRouter.post("/login", async (request: Request, response: Response) => {
     const { email, password, turnstileToken, turnstileAction }: LoginRequest =
       request.body;
 
+    const verifyTurnstileResult = await verifyTurnstileToken(
+      turnstileToken,
+      turnstileAction,
+    );
+
+    if (!verifyTurnstileResult.ok) {
+      return response
+        .status(403)
+        .json({ error: "Weryfikacja Turnstile nie powiodła się" } as AuthError);
+    }
+
     if (typeof email !== "string" || typeof password !== "string") {
       return response.status(400).json({
         error: "Wszystkie pola sa wymagane",
