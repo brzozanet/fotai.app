@@ -25,7 +25,7 @@ export function EmptyChat() {
           o fotografii
         </h1>
       </div>
-      <h2 className="material-enter-soft material-delay-2 mb-6 ml-4 bg-linear-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-80% bg-clip-text text-left text-5xl leading-15 font-medium text-transparent">
+      <h2 className="material-enter-soft material-delay-2 mb-6 ml-4 bg-linear-to-r from-indigo-400 from-10% via-sky-500 via-30% to-emerald-500 to-80% bg-clip-text text-left text-5xl leading-15 font-medium text-transparent">
         <span className="text-white">Jak </span>
 
         <Typewriter

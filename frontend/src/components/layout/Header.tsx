@@ -32,7 +32,7 @@ export function Header() {
   };
 
   return (
-    <header className="material-enter-top sticky top-0 z-50 w-full bg-linear-to-r from-cyan-700 from-10% via-indigo-700 via-30% to-cyan-700 to-99% px-6 py-4 shadow-2xl">
+    <header className="material-enter-top sticky top-0 z-50 w-full bg-linear-to-r from-indigo-500 from-10% via-sky-600 via-30% to-emerald-500 to-80%px-6 py-4 shadow-2xl">
       <div className="flex items-center justify-between max-w-5xl mx-auto">
         <div className="flex flex-row gap-3 items-center text-xl font-bold text-black">
           <NavLink to="/">
