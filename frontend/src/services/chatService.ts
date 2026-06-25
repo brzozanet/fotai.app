@@ -26,10 +26,11 @@ export async function askAI(
 
     // Sprawdź czy response jest OK (status 200-299)
     if (!response.ok) {
+      // Wyloguj z aplikacji po wygaśnięciu tokena zgodnie z TOKEN_EXPIRES_IN
       if (response.status === 401) {
-        // Wyloguj z aplikacji po wygaśnięciu tokena zgodnie z TOKEN_EXPIRES_IN
         useAuthStore.getState().setAuthLogout();
         window.location.href = "/login.html";
+        throw new Error("UNAUTHORIZED");
       }
 
       const errorData = await response

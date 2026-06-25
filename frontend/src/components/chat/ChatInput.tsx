@@ -49,6 +49,10 @@ export function ChatInput() {
       );
       addMessage({ id, role: "assistant", content: message, timestamp });
     } catch (error) {
+      if (error instanceof Error && error.message === "UNAUTHORIZED") {
+        return;
+      }
+
       setError(true);
       console.error("[ChatInput] błąd:", error);
     } finally {
