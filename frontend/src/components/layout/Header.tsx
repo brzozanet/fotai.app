@@ -29,6 +29,7 @@ export function Header() {
   const handleLogoutButton = () => {
     setAuthLogout();
     clearMessages();
+    window.location.href = "/";
   };
 
   return (
@@ -88,7 +89,8 @@ export function Header() {
 
             {location.pathname === "/how.html" ||
             location.pathname === "/wip.html" ||
-            location.pathname === "/about.html" ? (
+            location.pathname === "/about.html" ||
+            location.pathname === "/account.html" ? (
               <li>
                 <NavLink to="/">
                   <button className="rounded-full border border-white/60 bg-white px-6 py-2 text-sm font-semibold text-black shadow-lg shadow-cyan-950/35 transition hover:border-sky-500 hover:bg-sky-500 hover:text-black hover:shadow-xl hover:shadow-cyan-950/35 disabled:opacity-50 cursor-pointer">
@@ -121,7 +123,14 @@ export function Header() {
               </>
             ) : (
               <>
-                {/* <li className="text-white">Witaj, {user?.name}</li> */}
+                <li>
+                  <NavLink
+                    className="top-nav-link top-nav-link-gradient"
+                    to="account.html"
+                  >
+                    Twoje konto
+                  </NavLink>
+                </li>
                 <li>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>

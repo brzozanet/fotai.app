@@ -8,6 +8,7 @@ import { WorkInProgressPage } from "./pages/WorkInProgressPage.tsx";
 import { LoginPage } from "./pages/LoginPage.tsx";
 import { RegisterPage } from "./pages/RegisterPage.tsx";
 import "./index.css";
+import { UserAccountPage } from "./pages/UserAccountPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         element: <RegisterPage />,
         path: "register.html",
+      },
+      {
+        element: <UserAccountPage />,
+        path: "account.html",
       },
     ],
   },
