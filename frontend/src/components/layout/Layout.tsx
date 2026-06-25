@@ -16,10 +16,9 @@ export function Layout() {
         backgroundSize: "cover",
       }}
     >
-      {/* <div className="absolute inset-0 pointer-events-none bg-linear-to-r from-background/70 via-background/90 to-background/70" /> // backgroundDrawing */}
-      <div className="absolute inset-0 pointer-events-none" />
+      <div className="absolute inset-0 bg-black/10 pointer-events-none" />
       <Header />
-      <main className="material-enter-soft relative z-10 flex-1 overflow-auto">
+      <main className="material-enter-soft relative z-10 flex-1 overflow-y-auto min-h-0">
         <Outlet />
       </main>
       <Footer />

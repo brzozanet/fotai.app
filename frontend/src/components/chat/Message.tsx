@@ -25,8 +25,8 @@ export function Message({ role, content, timestamp }: Message) {
       <div
         className={`max-w-[75%] rounded-3xl border border-white/20 px-4 py-2 text-sm shadow-[0_8px_30px_rgba(15,23,42,0.18)] backdrop-blur-xl ${
           isUser
-            ? "bg-white/20 text-foreground"
-            : "bg-slate-900/20 text-foreground"
+            ? "bg-blue-400/40 text-foreground"
+            : "bg-slate-900/60 text-foreground"
         }`}
       >
         <div className="text-left text-[16px] mb-3 mt-1">
