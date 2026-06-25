@@ -54,8 +54,15 @@ export function LoginPage() {
       return;
     }
 
+    // tworzymy registerPayload aby przekazać do backendu Turnstile
+    const registerPayload = {
+      ...data,
+      turnstileToken,
+      turnstileAction: "login",
+    };
+
     try {
-      const response = await userLogin(data);
+      const response = await userLogin(registerPayload);
 
       // zapisujemy token i użytkownika do store
       if ("user" in response && "token" in response) {

@@ -10,6 +10,22 @@ const TURNSTILE_SECRET_KEY =
     : TURNSTILE_SECRET_KEY_PROD;
 
 export async function verifyTurnstileToken(token: string, action: string) {
+  // Jeśli klient nie dostarczył tokena, od razu blokujemy request
+  if (!token || typeof token !== "string" || !token.trim()) {
+    return {
+      ok: false,
+      reason: "Missing Turnstile token",
+    };
+  }
+
+  // Jeśli nie przekazano akcji, nie możemy zweryfikować, czy token pasuje do właściwego formularza
+  if (!action || typeof action !== "string" || !action.trim()) {
+    return {
+      ok: false,
+      reason: "Missing Turnstile action",
+    };
+  }
+
   if (!TURNSTILE_SECRET_KEY) {
     throw new Error("Brak TURNSTILE_SECRET_KEY w środowisku");
   }
@@ -44,7 +60,7 @@ export async function verifyTurnstileToken(token: string, action: string) {
   if (!data.success) {
     return {
       ok: false,
-      reason: data["error-codes"]?.join(", ") ?? "turnstile failed",
+      reason: data["error-codes"]?.join(", ") ?? "Turnstile failed",
     };
   }
 
@@ -52,7 +68,7 @@ export async function verifyTurnstileToken(token: string, action: string) {
   if (action && data.action && data.action !== action) {
     return {
       ok: false,
-      reason: "action mismatch",
+      reason: "Action mismatch",
     };
   }
 
