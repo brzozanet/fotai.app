@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* --- DEBUG START --- */
+/* * {
+  outline: 1px solid red !important;
+} */
+/* --- DEBUG END --- */
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
