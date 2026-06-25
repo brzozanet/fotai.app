@@ -70,7 +70,10 @@ export function Header() {
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="cursor-pointer bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground">
+                      <AlertDialogCancel
+                        onClick={() => (window.location.href = "/")}
+                        className="cursor-pointer bg-accent text-accent-foreground hover:bg-accent hover:text-accent-foreground"
+                      >
                         Wróć do aktualnej rozmowy
                       </AlertDialogCancel>
                       <AlertDialogAction
