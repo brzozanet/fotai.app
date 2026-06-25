@@ -16,7 +16,7 @@ export function ChatInput() {
   const isLoading = useChatStore((state) => state.isLoading);
   const error = useChatStore((state) => state.error);
   const { addMessage, setIsLoading, setError } = useChatStore();
-  const { isAuthenticated } = useAuthStore();
+  const { token, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
   const redirectIfNotAuthenticated = (): void => {
@@ -43,6 +43,7 @@ export function ChatInput() {
     try {
       setIsLoading(true);
       const { id, message, timestamp } = await askAI(
+        token,
         input,
         lastAssistantMessage?.id,
       );

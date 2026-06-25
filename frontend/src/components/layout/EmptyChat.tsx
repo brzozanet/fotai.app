@@ -1,7 +1,7 @@
 import { Typewriter } from "react-simple-typewriter";
 import { ChatInput } from "../chat/ChatInput";
-import logoFotai from "../../assets/logo/fotai.png";
 import { useAuthStore } from "@/store/authStore";
+import logoFotai from "../../assets/logo/fotai.png";
 
 export function EmptyChat() {
   const { user, isAuthenticated } = useAuthStore();

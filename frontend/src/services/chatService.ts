@@ -3,6 +3,7 @@ import type { ChatRequest, ChatResponse } from "@/types/chat";
 const API_URL: string = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export async function askAI(
+  token: string | null,
   message: string,
   previousResponseId?: string,
 ): Promise<ChatResponse> {
@@ -16,6 +17,7 @@ export async function askAI(
     const response = await fetch(`${API_URL}/api/chat`, {
       method: "POST",
       headers: {
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(requestBody),
