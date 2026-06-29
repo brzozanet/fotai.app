@@ -104,26 +104,29 @@ export function AboutPage() {
 
           <h4>Frontend</h4>
           <ul className="mb-4 list-disc pl-8">
-            <li>React</li>
-            <li>TypeScript</li>
+            <li>React 19 + TypeScript</li>
             <li>Vite</li>
-            <li>Tailwind CSS</li>
-            <li>shadcn/ui</li>
+            <li>Tailwind CSS + shadcn/ui</li>
             <li>Zustand (zarządzanie stanem)</li>
-            <li>UI/UX focused design</li>
+            <li>react-hook-form + zod (formularze i walidacja)</li>
+            <li>Cloudflare Turnstile (ochrona przed botami)</li>
           </ul>
 
           <h4>Backend</h4>
           <ul className="mb-4 list-disc pl-8">
             <li>Node.js + Express.js</li>
-            <li>Integracja z OpenAI API</li>
-            <li>Warstwa API oddzielona od frontendu</li>
+            <li>Integracja z OpenAI API (Responses API)</li>
+            <li>Prisma ORM + MySQL — baza danych użytkowników i historii</li>
+            <li>bcrypt — bezpieczne przechowywanie haseł</li>
+            <li>JWT (jsonwebtoken) — autentykacja użytkowników</li>
           </ul>
 
-          <h4>Deployment</h4>
+          <h4>Deployment i infrastruktura</h4>
           <ul className="mb-4 list-disc pl-8">
             <li>Vercel (frontend)</li>
             <li>Railway (backend)</li>
+            <li>MySQL na shared hostingu cyber_Folks (baza danych)</li>
+            <li>Docker + MariaDB 10.6 (lokalny development)</li>
           </ul>
 
           <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">

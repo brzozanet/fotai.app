@@ -14,38 +14,44 @@ export function WorkInProgressPage() {
           <p className="mb-4">
             <strong>FOTAI</strong> działa i odpowiada na pytania fotograficzne —
             ale to dopiero początek. Poniżej znajdziesz{" "}
-            <strong>opis funkcji, które właśnie buduję</strong>. Każda z nich
-            powstaje z myślą o tym, by korzystanie z asystenta było
-            wygodniejsze, bardziej osobiste i dostępne z każdego miejsca.
+            <strong>
+              opis funkcji, które już dodałem oraz tych, które właśnie buduję
+            </strong>
+            . Każda z nich powstaje z myślą o tym, by korzystanie z asystenta
+            było wygodniejsze, bardziej osobiste i dostępne z każdego miejsca.
           </p>
 
           <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            Twoje konto i historia rozmów
+            ✅ Co jest już gotowe — Twoje konto
           </h3>
 
           <p className="mb-4">
-            Pracuję nad tym, żebyś mógł{" "}
-            <strong>założyć konto i zalogować się</strong> — a wtedy Twoje
-            rozmowy z asystentem będą zapisane i dostępne zawsze, nawet po
-            tygodniu przerwy, na telefonie, tablecie czy innym komputerze.
+            Możesz już <strong>założyć konto i zalogować się do FOTAI</strong>.
+            Rejestracja zajmuje chwilę — podajesz email i hasło, a konto jest
+            gotowe.
           </p>
 
           <p className="mb-4">
-            To działa podobnie jak konto w mailowej skrzynce — rejestrujesz się
-            raz, logujesz i Twoje dane są bezpieczne na serwerze. Hasła
-            przechowuję w formie zaszyfrowanej (nawet ja ich nie znam).
+            Hasła przechowuję w formie zaszyfrowanej — nawet ja ich nie znam.
+            Sesja logowania trwa 7 dni, więc nie musisz logować się przy każdej
+            wizycie.
           </p>
 
           <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            Wiele rozmów naraz
+            Wiele rozmów naraz i historia na każdym urządzeniu
           </h3>
 
           <p className="mb-4">
-            Teraz możliwa jest tylko jedna rozmowa — ta aktywna. Po zalogowaniu
-            będziesz mógł prowadzić{" "}
+            Teraz możliwa jest tylko jedna rozmowa, a jej historia jest zapisana
+            w przeglądarce. Pracuję nad tym, żebyś mógł prowadzić{" "}
             <strong>dowolną liczbę niezależnych chatów</strong>: jeden o
             fotografii nocnej, drugi o sprzęcie, trzeci o obróbce zdjęć. Każdy z
             oddzielną historią, dostępny w panelu bocznym jednym kliknięciem.
+          </p>
+
+          <p className="mb-4">
+            Rozmowy będą wtedy zapisane na serwerze — dostępne zawsze, nawet po
+            tygodniu przerwy, na telefonie, tablecie czy innym komputerze.
           </p>
 
           <blockquote className="material-surface relative mb-4 rounded-2xl pl-6 italic">

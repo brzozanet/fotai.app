@@ -19,7 +19,12 @@ export function HowItWorksPage() {
             . To oznacza, że nie odpowiada „jak ogólny chatbot”, tylko myśli i
             doradza jak doświadczony fotograf-praktyk.
           </p>
-
+          <p className="mb-4">
+            Aby korzystać z FOTAI, musisz{" "}
+            <strong>założyć konto i zalogować się</strong>. Rejestracja jest
+            bezpłatna i zajmuje chwilę. Twoje dane są bezpieczne — hasła
+            przechowywane wyłącznie w formie zaszyfrowanej.
+          </p>
           <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Model AI wyszkolony w roli fotografa-instruktora
           </h3>
