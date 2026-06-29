@@ -1,6 +1,6 @@
 # 📸 FOTAI — AI Photography Assistant
 
-![Screenshot App](https://raw.githubusercontent.com/brzozanet/fotai.app/refs/heads/main/frontend/public/images/gh-cover-fotai-v1.png)
+![Screenshot App](https://raw.githubusercontent.com/brzozanet/fotai.app/refs/heads/main/frontend/public/images/gh-cover-fotai-v02.png)
 
 ### Inteligentny asystent fotograficzny oparty na OpenAI
 
@@ -29,10 +29,11 @@ Platformy:
 
 ### 📦 Architektura
 
-Aplikacja składa się z dwóch części:
+Aplikacja składa się z trzech warstw:
 
 - **Frontend**: React + Vite — hostowany na Vercel
-- **Backend**: Express.js (proxy do OpenAI API) — hostowany na Railway
+- **Backend**: Express.js API — hostowany na Railway
+- **Baza danych**: MySQL — shared hosting [cyber_Folks](https://cyber-folks.pl) (produkcja) / Docker MariaDB 10.6 (development)
 
 ---
 
@@ -80,24 +81,36 @@ Asystent działa jako **ekspert fotografii z 20+ latami doświadczenia**:
 - **Shadcn/ui** + **Radix UI** — komponenty UI
 - **Zustand** + `persist` middleware — zarządzanie stanem + localStorage
 - **React Router DOM v7** — routing
+- **react-hook-form** + **zod** — zarządzanie formularzami i walidacja
 - **react-markdown** — renderowanie odpowiedzi AI jako Markdown
 - **nanoid** — generowanie unikalnych ID wiadomości
 - **lucide-react** — ikony
+- **Cloudflare Turnstile** — weryfikacja CAPTCHA przy rejestracji i logowaniu
 
 ### Backend
 
-- **Express.js v5** + **TypeScript** — serwer proxy
+- **Express.js v5** + **TypeScript** — serwer API
 - **OpenAI SDK** — integracja z OpenAI Responses API
-- **cors** — konfiguracja CORS (Vercel ↔ Render)
+- **Prisma ORM** — ORM + migracje bazy danych (MySQL)
+- **bcrypt** — hashowanie haseł użytkowników
+- **jsonwebtoken** — generowanie i weryfikacja tokenów JWT
+- **cors** — konfiguracja CORS (Vercel ↔ Railway)
 - **dotenv** — zmienne środowiskowe
 - **chalk** — kolorowe logi w terminalu
 - **tsx** + **nodemon** — narzędzia deweloperskie
 
+### Baza danych
+
+- **MySQL** (cyber_Folks shared hosting) — produkcja
+- **MariaDB 10.6** (Docker) — lokalny development i testy
+- **Prisma Studio** — GUI do przeglądania i zarządzania bazą
+
 ### Narzędzia
 
 - **Git & GitHub** — kontrola wersji
+- **Docker** — lokalna baza danych MariaDB 10.6
 - **Vercel** — CI/CD i hosting frontend
-- **Render** — hosting backend
+- **Railway** — hosting backend
 
 ---
 
@@ -108,8 +121,11 @@ fotai.app/
 ├── frontend/                        # Aplikacja React (Vite)
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── auth/
+│   │   │   │   ├── ProtectedRoute.tsx  # Ochrona tras — redirect niezalogowanych
+│   │   │   │   └── TurnstileWidget.tsx # Cloudflare Turnstile CAPTCHA
 │   │   │   ├── layout/
-│   │   │   │   ├── Header.tsx          # Logo + nawigacja
+│   │   │   │   ├── Header.tsx          # Logo + nawigacja + przycisk wyloguj
 │   │   │   │   ├── Footer.tsx          # Stopka
 │   │   │   │   ├── Layout.tsx          # Wrapper całej aplikacji
 │   │   │   │   ├── ChatWindow.tsx      # Kontener: MessageList + ChatInput
@@ -121,36 +137,91 @@ fotai.app/
 │   │   │   └── ui/                 # Komponenty Shadcn/ui
 │   │   ├── pages/
 │   │   │   ├── HomePage.tsx        # Główna strona z czatem
+│   │   │   ├── LoginPage.tsx       # /login — formularz logowania
+│   │   │   ├── RegisterPage.tsx    # /register — formularz rejestracji
 │   │   │   ├── AboutPage.tsx       # /about
 │   │   │   └── HowItWorksPage.tsx  # /how-it-works
 │   │   ├── services/
+│   │   │   ├── authService.ts      # HTTP client: register(), login()
 │   │   │   └── chatService.ts      # HTTP client (fetch POST /api/chat)
 │   │   ├── store/
+│   │   │   ├── authStore.ts        # Zustand: token JWT + dane usera + persist
 │   │   │   └── chatStore.ts        # Zustand store + localStorage persist
 │   │   ├── types/
+│   │   │   ├── auth.ts             # Typy: AuthUser, AuthResponse, AuthError
 │   │   │   └── chat.ts             # Typy TypeScript (Message, ChatRequest, etc.)
 │   │   ├── lib/
 │   │   │   └── utils.ts            # Helper: cn() do łączenia klas Tailwind
-│   │   ├── App.tsx
 │   │   └── index.tsx
 │   ├── index.html
 │   ├── package.json
 │   ├── vite.config.ts
 │   └── tailwind.config.js
-├── backend/                         # Micro-service proxy do OpenAI
+├── backend/                         # Express.js API
 │   ├── src/
+│   │   ├── middleware/
+│   │   │   └── auth.ts             # authMiddleware — weryfikacja tokenu JWT
 │   │   ├── routes/
+│   │   │   ├── auth.ts             # POST /api/auth/register, POST /api/auth/login
 │   │   │   └── chat.ts             # Endpoint POST /api/chat
+│   │   ├── lib/
+│   │   │   └── prisma.ts           # Singleton klienta Prismy
+│   │   ├── types/
+│   │   │   ├── auth.ts             # Typy: RegisterRequest, LoginRequest, AuthResponse
+│   │   │   └── express.d.ts        # Rozszerzenie typów Express (req.user)
 │   │   └── index.ts                # Express server + CORS + middleware
+│   ├── prisma/
+│   │   ├── schema.prisma           # Modele: User, Chat, Message
+│   │   └── migrations/             # Historia migracji bazy danych
 │   ├── package.json
 │   └── tsconfig.json
+├── docker-compose.yml               # Lokalna baza MariaDB 10.6
 ├── example.ts                       # Oryginalna implementacja CLI (geneza projektu)
 └── README.md
 ```
 
 ---
 
-## 🌐 API Endpoint
+## 🌐 API Endpoints
+
+### Autentykacja
+
+```
+POST /api/auth/register
+```
+
+**Request Body:**
+
+```json
+{
+  "email": "jan@example.com",
+  "password": "tajne1234"
+}
+```
+
+**Response:**
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": { "id": "clob...", "email": "jan@example.com" }
+}
+```
+
+```
+POST /api/auth/login
+```
+
+**Request Body:**
+
+```json
+{
+  "email": "jan@example.com",
+  "password": "tajne1234"
+}
+```
+
+---
 
 ### Chat
 
@@ -196,9 +267,13 @@ OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_MODEL=gpt-5-mini
 PORT=3001
 NODE_ENV=development
+# Lokalna baza (Docker MariaDB):
 DATABASE_URL=mysql://root:TWOJE_LOKALNE_HASLO@localhost:3306/fotai_dev
-JWT_SECRET=change-me-in-local-env
+# Produkcja (cyber_Folks shared hosting):
+# DATABASE_URL=mysql://db_user:db_password@s53.cyber-folks.pl:3306/db_name
+JWT_SECRET=change-me-to-long-random-string
 FRONTEND_URL=http://localhost:3000
+TURNSTILE_SECRET_KEY=your_cloudflare_turnstile_secret_key
 SYSTEM_PROMPT=Jesteś ekspertem w fotografii...
 ```
 
@@ -238,6 +313,7 @@ Compose używa też named volume `fotai_mysql_data`, więc dane MariaDB nie znik
 
 ```env
 VITE_API_URL=http://localhost:3001
+VITE_TURNSTILE_SITE_KEY=your_cloudflare_turnstile_site_key
 ```
 
 ---
@@ -307,7 +383,11 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 
 ---
 
-## ✨ Funkcjonalności MVP
+## ✨ Funkcjonalności
+
+> ℹ️ **Dostęp do aplikacji wymaga zalogowania.** Konto możesz założyć samodzielnie pod adresem [fotai.app/register](https://fotai.app/register) lub użyć danych testowych: **login:** `test@example.com` / **hasło:** `fotaitest`
+
+### Phase 1 — MVP
 
 - 💬 Czat z AI Photography Assistant w czasie rzeczywistym
 - 🧠 Zachowanie historii rozmowy (`previous_response_id`) — model pamięta kontekst
@@ -319,6 +399,17 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 - 🌍 Routing: strona główna, /about, /how-it-works
 - 🔐 Klucz API wyłącznie po stronie serwera — bezpieczna architektura proxy
 
+### Phase 2 Sprint 1 — Autentykacja
+
+- 👤 Rejestracja i logowanie użytkowników (email + hasło)
+- 🔒 Hasła hashowane algorytmem bcrypt — nigdy nie przechowywane w plaintext
+- 🪙 Sesja oparta na tokenach JWT (ważność 7 dni) — przechowywanych w localStorage
+- 🤖 Weryfikacja Cloudflare Turnstile przy rejestracji i logowaniu (ochrona przed botami)
+- 🛡️ Middleware JWT — chronione endpointy zwracają 401 bez ważnego tokenu
+- 🗄️ Baza danych MySQL z modelami `User`, `Chat`, `Message` (Prisma ORM)
+- ↩️ Przekierowanie niezalogowanych na `/login` (`ProtectedRoute`)
+- 🔄 Po odświeżeniu strony użytkownik pozostaje zalogowany
+
 ---
 
 ## 📈 Fazy rozwoju
@@ -326,7 +417,7 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 | Faza              | Cel                                               | Status       | Timeframe |
 | ----------------- | ------------------------------------------------- | ------------ | --------- |
 | **Phase 1 (MVP)** | Czat z AI + deploy na produkcję                   | ✅ Ukończona | Q1 2026   |
-| **Phase 2**       | Konta użytkowników, historia chatów, wiele rozmów | 📅 Planowana | Q2 2026   |
+| **Phase 2**       | Konta użytkowników, historia chatów, wiele rozmów | � W toku     | Q2 2026   |
 | **Phase 3**       | Upload zdjęć + ocena przez AI (GPT-4 Vision)      | 📅 Planowana | Q3 2026   |
 | **Phase 4**       | Edycja zdjęć przez AI (komendy tekstowe → DALL-E) | 📅 Planowana | Q4 2026+  |
 | **Phase 5**       | Społeczność & portfolio fotograficzne             | 📅 Planowana | 2027+     |
@@ -335,14 +426,30 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 
 ## 🔄 Co będzie rozwijane następnie
 
-### Phase 2: Konta użytkowników & Historia chatów (Q2 2026)
+### Phase 2 Sprint 1 — Autentykacja ✅ Ukończona
 
-- Rejestracja i logowanie użytkowników
-- Zapisywanie rozmów w bazie danych (MySQL na cyber_Folks + Prisma ORM)
-- Możliwość tworzenia wielu chatów i przełączania się między nimi
-- Historia rozmów dostępna po zalogowaniu
-- Autentykacja: JWT, bcrypt
-- **Infrastruktura**: Frontend (Vercel) + Backend (Railway) + Baza (MySQL na własnym hostingu)
+- ✅ Rejestracja i logowanie użytkowników (JWT + bcrypt)
+- ✅ Weryfikacja Cloudflare Turnstile (ochrona przed botami)
+- ✅ Middleware JWT — ochrona endpointów
+- ✅ Baza MySQL na cyber_Folks (shared hosting) + Prisma ORM
+- ✅ Lokalna baza MariaDB 10.6 na Docker do developmentu
+
+### Phase 2 Sprint 2 — Wieloczatowość (planowane)
+
+- Streaming odpowiedzi asystenta w czasie rzeczywistym
+- Sidebar z listą chatów i przyciskiem „Nowy czat"
+- Endpointy REST dla chatów: `GET/POST/DELETE /api/chats`
+- Wiadomości zapisywane w MySQL (zamiast localStorage)
+- Przełączanie między chatami
+- Zarządzanie czatami: zmiana nazw, usuwanie
+- Historia czatów dostępna po zalogowaniu
+
+### Phase 2 Sprint 3 — Konto użytkownika (planowane)
+
+- Zmiana danych użytkownika (email, hasło)
+- Usuwanie konta
+- Dostęp do usług premium (np. edycja zdjęć użytkownika)
+- Zarządzanie sposobami płatności za usługi premium
 
 ### Phase 3: Upload & Ocena Zdjęć (Q3 2026)
 
@@ -366,6 +473,6 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 
 ---
 
-**Status**: ✅ Phase 1 MVP — aplikacja działa na produkcji  
-**Live demo**: [https://fotai.app.vercel.app](https://fotai.app.vercel.app)  
-**Ostatnia aktualizacja**: 23.02.2026
+**Status**: 🔄 Phase 2 w toku — Sprint 1 (autentykacja) ukończony  
+**Live demo**: [https://fotai.app](https://fotai.app)  
+**Ostatnia aktualizacja**: 29.06.2026
