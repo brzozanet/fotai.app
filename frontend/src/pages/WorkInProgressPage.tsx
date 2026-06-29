@@ -22,22 +22,6 @@ export function WorkInProgressPage() {
           </p>
 
           <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            ✅ Co jest już gotowe — Twoje konto
-          </h3>
-
-          <p className="mb-4">
-            Możesz już <strong>założyć konto i zalogować się do FOTAI</strong>.
-            Rejestracja zajmuje chwilę — podajesz email i hasło, a konto jest
-            gotowe.
-          </p>
-
-          <p className="mb-4">
-            Hasła przechowuję w formie zaszyfrowanej — nawet ja ich nie znam.
-            Sesja logowania trwa 7 dni, więc nie musisz logować się przy każdej
-            wizycie.
-          </p>
-
-          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
             Wiele rozmów naraz i historia na każdym urządzeniu
           </h3>
 
