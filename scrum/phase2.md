@@ -2,20 +2,22 @@
 
 > 🎯 **Cel Phase 2**: Dodanie pełnego systemu autentykacji, persystentnej historii rozmów w bazie danych i możliwości prowadzenia wielu niezależnych chatów.
 
-**Timeframe**: ~3 sprinty (ok. 3-4 dni efektywnej pracy)
+**Timeframe**: ~3 sprinty (ok. 3-4 dni efektywnej pracy)  
+**Status**: 🔄 W toku — Sprint 1 ukończony  
 **Poziom**: Junior (brak doświadczenia z Prisma, MySQL, JWT, bcrypt — wszystkiego nauczysz się w toku pracy)
 
 ---
 
 ## 🗺️ Co zmienia się względem Phase 1?
 
-| Obszar                | Phase 1                               | Phase 2                                            |
-| --------------------- | ------------------------------------- | -------------------------------------------------- |
-| Historia czatu        | localStorage (tylko jeden czat)       | MySQL — cyber_Folks (wiele chatów, wiele urządzeń) |
-| Tożsamość użytkownika | brak — wszyscy są anonimowi           | Rejestracja i logowanie (JWT + bcrypt)             |
-| Trwałość danych       | Po wyczyszczeniu localStorage → brak  | Serwer → dane zawsze dostępne po zalogowaniu       |
-| UI                    | Jeden czat                            | Panel z listą chatów + przełączanie                |
-| Streaming odpowiedzi  | Cała odpowiedź naraz (po zakończeniu) | Słowa pojawiają się sukcesywnie (streaming)        |
+| Obszar                  | Phase 1                               | Phase 2                                            |
+| ----------------------- | ------------------------------------- | -------------------------------------------------- |
+| Historia czatu          | localStorage (tylko jeden czat)       | MySQL — cyber_Folks (wiele chatów, wiele urządzeń) |
+| Tożsamość użytkownika   | brak — wszyscy są anonimowi           | Rejestracja i logowanie (JWT + bcrypt) ✅          |
+| Weryfikacja rejestracji | brak                                  | Cloudflare Turnstile CAPTCHA ✅                    |
+| Trwałość danych         | Po wyczyszczeniu localStorage → brak  | Serwer → dane zawsze dostępne po zalogowaniu       |
+| UI                      | Jeden czat                            | Panel z listą chatów + przełączanie                |
+| Streaming odpowiedzi    | Cała odpowiedź naraz (po zakończeniu) | Słowa pojawiają się sukcesywnie (streaming)        |
 
 ---
 
@@ -65,7 +67,7 @@
 
 ## 📅 Podział na Sprinty
 
-### ⚙️ Krok 0 — Przed Sprint 1: Migracja Backend Render → Railway
+### ⚙️ Krok 0 — Przed Sprint 1: Migracja Backend Render → Railway ✅
 
 > **Czas**: ~30–60 min | **Kiedy**: przed pierwszą linią kodu Phase 2
 
@@ -74,72 +76,81 @@ Render zasypia po 15 min bezczynności (cold start ~30 s). Railway działa bez p
 
 **Kroki**:
 
-1. Utwórz konto na railway.app i połącz z repozytorium GitHub
-2. „New Project → Deploy from GitHub repo" → wybierz `fotai.app`
-3. Ustaw „Root Directory" na `backend`
-4. Dodaj zmienne środowiskowe: `OPENAI_API_KEY`, `FRONTEND_URL`, `PORT=3001` (i pozostałe z Render)
-5. Skopiuj nowy URL Railway (np. `https://fotai-app-production.up.railway.app`)
-6. Zaktualizuj `VITE_API_URL` w ustawieniach Vercel na nowy URL
-7. Usuń serwis na Render
+1. ✅ Utwórz konto na railway.app i połącz z repozytorium GitHub
+2. ✅ „New Project → Deploy from GitHub repo" → wybierz `fotai.app`
+3. ✅ Ustaw „Root Directory" na `backend`
+4. ✅ Dodaj zmienne środowiskowe: `OPENAI_API_KEY`, `FRONTEND_URL`, `PORT=3001` (i pozostałe z Render)
+5. ✅ Skopiuj nowy URL Railway (np. `https://fotai-app-production.up.railway.app`)
+6. ✅ Zaktualizuj `VITE_API_URL` w ustawieniach Vercel na nowy URL
+7. ✅ Usuń serwis na Render
 
 **Weryfikacja**: otwórz `<railway-url>/health` — powinno zwrócić `{ status: 'ok' }`. Przetestuj czat na stronie.
 
 ---
 
-### Sprint 1 — Autentykacja (register/login/JWT/bcrypt)
+### Sprint 1 — Autentykacja ✅ Ukończony
 
 **Cel**: Użytkownik może się zarejestrować i zalogować. Backend chroni endpointy tokenem JWT.
 
-**Technologie**: `bcrypt`, `jsonwebtoken`, `Prisma` (User model, MySQL), React forms, `authStore` (Zustand), localStorage dla tokenu.
+**Technologie**: `bcrypt`, `jsonwebtoken`, `Prisma` (User model, MySQL), `react-hook-form` + `zod`, Cloudflare Turnstile, `authStore` (Zustand + `persist`), localStorage dla tokenu.
 
 **Local dev setup**: lokalna baza MariaDB działa przez `docker compose up -d` z rootowego `docker-compose.yml`, a dane są trzymane w named volume `fotai_mysql_data`.
 
 **Efekt końcowy**:
 
-- Działający formularz rejestracji i logowania w UI
-- Backend wystawia token JWT po poprawnym logowaniu
-- Chronione endpointy odrzucają request bez ważnego tokenu (401 Unauthorized)
-- Użytkownik pozostaje zalogowany po odświeżeniu strony (token w localStorage)
+- ✅ Działający formularz rejestracji i logowania w UI (`react-hook-form` + `zod`)
+- ✅ Cloudflare Turnstile CAPTCHA przy rejestracji i logowaniu (ochrona przed botami)
+- ✅ Backend wystawia token JWT po poprawnym logowaniu (ważność 7 dni)
+- ✅ Hasła hashowane przez bcrypt — nigdy nie przechowywane w plaintext
+- ✅ Chronione endpointy odrzucają request bez ważnego tokenu (401 Unauthorized)
+- ✅ Użytkownik pozostaje zalogowany po odświeżeniu strony (token w localStorage)
+- ✅ Przekierowanie niezalogowanych na `/login` (`ProtectedRoute`)
+- ✅ Baza MySQL na cyber_Folks (produkcja) + MariaDB 10.6 Docker (development)
+- ✅ Modele Prisma: `User`, `Chat`, `Message` z migracją `init`
 
 ---
 
-### Sprint 2 — Danych w bazie & Wieloczatowość
+### Sprint 2 — Wieloczatowość & Streaming (planowany)
 
-**Cel**: Każda rozmowa jest zapisywana w MySQL (cyber_Folks). Użytkownik może tworzyć wiele chatów i przełączać się między nimi.
+**Cel**: Każda rozmowa jest zapisywana w MySQL (cyber_Folks). Użytkownik może tworzyć wiele chatów i przełączać się między nimi. Odpowiedzi asystenta pojawiają się słowo po słowie.
 
-**Technologie**: `Prisma` (Chat + Message models), `uuid`, REST API dla chatów, nowy widok listy chatów w UI.
+**Technologie**: `Prisma` (Chat + Message models), REST API dla chatów, Server-Sent Events (SSE) / chunked transfer dla streamingu, nowy widok Sidebar w UI.
 
 **Efekt końcowy**:
 
-- Panel boczny z listą chatów (Sidebar)
-- Przycisk "Nowy czat" tworzy nowy chat w bazie
-- Wiadomości zapisują się w bazie (nie tylko w localStorage)
+- Streaming odpowiedzi asystenta w czasie rzeczywistym (tekst „pisze się" na żywo)
+- Panel boczny (Sidebar) z listą chatów i przyciskiem „Nowy czat"
+- Wiadomości zapisywane w MySQL (zamiast localStorage)
 - Po zalogowaniu na innym urządzeniu historia jest dostępna
-- Można usunąć czat (DELETE /api/chats/:id)
+- Zarządzanie czatami: zmiana nazw, usuwanie (`DELETE /api/chats/:id`)
+- Przełączanie między chatami
 
 ---
 
-### Sprint 3 — Streaming odpowiedzi & Deploy Phase 2
+### Sprint 3 — Konto użytkownika & Deploy Phase 2 (planowany)
 
-**Cel**: Odpowiedzi asystenta pojawiają się słowo po słowie (streaming SSE). Całość jest wdrożona na produkcję z migracją bazy danych.
+**Cel**: Użytkownik zarządza swoim kontem. Całość wdrożona na produkcję z migracją bazy danych.
 
-**Technologie**: OpenAI streaming, `ReadableStream`, Server-Sent Events (SSE) lub chunked transfer, migracja Prismy na MySQL cyber_Folks, aktualizacja Vercel + Railway.
+**Technologie**: Prisma migracje na MySQL cyber_Folks, aktualizacja Vercel + Railway, integracja płatności (TBD).
 
 **Efekt końcowy**:
 
-- Tekst odpowiedzi AI „pisze się” na żywo
-- Baza danych na produkcji (MySQL na cyber_Folks)
-- Migracje Prisma uruchomione na produkcji
+- Zmiana danych użytkownika (email, hasło)
+- Usuwanie konta
+- Dostęp do usług premium (np. edycja zdjęć użytkownika)
+- Zarządzanie sposobami płatności za usługi premium
+- Baza danych na produkcji (MySQL na cyber_Folks) — migracje Prisma wykonane
 - Backend wdrożony na Railway (GitHub auto-deploy)
 - Pełna aplikacja Phase 2 dostępna online
 
 ---
 
-## 📦 Nowe pakiety (do zainstalowania w toku sprintów)
+## 📦 Pakiety — stan instalacji
 
 ### Backend
 
 ```bash
+# ✅ Zainstalowane (Sprint 1)
 npm install bcrypt jsonwebtoken @prisma/client
 npm install prisma --save-dev
 npm install @types/bcrypt @types/jsonwebtoken --save-dev
@@ -148,6 +159,7 @@ npm install @types/bcrypt @types/jsonwebtoken --save-dev
 ### Frontend
 
 ```bash
+# ✅ Zainstalowane (Sprint 1)
 npm install react-hook-form zod @hookform/resolvers
 ```
 
@@ -168,7 +180,7 @@ model Chat {
   id        String    @id @default(cuid())
   title     String    @default("Nowy czat")
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   messages  Message[]
 }
@@ -179,24 +191,45 @@ model Message {
   content   String   @db.Text
   openaiId  String?  // ID z OpenAI (previousResponseId)
   chatId    String
-  chat      Chat     @relation(fields: [chatId], references: [id])
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 ```
 
 > ⚠️ **Uwaga MySQL**: Pole `content` ma adnotację `@db.Text` — MySQL wymaga tego dla długich stringów (domyślny `VARCHAR(191)` mógłby ciąć długie odpowiedzi AI).
+>
+> ℹ️ `onDelete: Cascade` — usunięcie użytkownika automatycznie usuwa jego chaty i wiadomości (brak osieroconych rekordów).
 
 ---
 
 ## ✅ Definition of Done — Phase 2
 
-- [ ] Rejestracja i logowanie działają (formularz → request → token JWT)
-- [ ] Chronione endpointy wymagają tokenu (401 bez tokenu)
+### Sprint 1 — Autentykacja ✅
+
+- [x] Rejestracja i logowanie działają (formularz → request → token JWT)
+- [x] Weryfikacja Cloudflare Turnstile przy rejestracji i logowaniu
+- [x] Chronione endpointy wymagają tokenu (401 bez tokenu)
+- [x] Hasła hashowane bcrypt — brak plaintext w bazie
+- [x] Token JWT w localStorage — user pozostaje zalogowany po odświeżeniu
+- [x] ProtectedRoute — niezalogowani przekierowywani na `/login`
+- [x] Baza MySQL na cyber_Folks — migracja `init` wykonana
+- [x] Lokalna baza MariaDB 10.6 na Docker — `docker compose up -d`
+
+### Sprint 2 — Wieloczatowość & Streaming
+
+- [ ] Streaming odpowiedzi asystenta (tekst pojawia się sukcesywnie)
 - [ ] Wiadomości zapisywane w MySQL na cyber_Folks (nie w localStorage)
-- [ ] Wiele chatów: tworzenie, lista, przełączanie, usuwanie
+- [ ] Wiele chatów: tworzenie, lista, przełączanie
+- [ ] Zarządzanie czatami: zmiana nazwy, usuwanie
 - [ ] Historia dostępna po zalogowaniu na innym urządzeniu
-- [ ] Streaming — odpowiedź pojawia się sukcesywnie w UI
+
+### Sprint 3 — Konto użytkownika & Deploy
+
+- [ ] Zmiana danych użytkownika (email, hasło)
+- [ ] Usuwanie konta
+- [ ] Dostęp i zarządzanie usługami premium
+- [ ] Zarządzanie sposobami płatności
 - [ ] Backend wdrożony na Railway (GitHub auto-deploy)
-- [ ] Baza MySQL na cyber_Folks — port 3306 otwarty, migracje wykonane
+- [ ] Brak błędów CORS, brak błędów w konsoli przeglądarki
 - [ ] Frontend zaktualizowany na Vercel
 - [ ] Brak błędów CORS, brak błędów w konsoli przeglądarki
