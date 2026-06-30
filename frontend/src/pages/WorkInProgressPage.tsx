@@ -1,121 +1,83 @@
 export function WorkInProgressPage() {
   return (
-    <>
-      <div className="info-page relative isolate mx-auto w-full max-w-5xl rounded-3xl px-4 py-5 md:px-0">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none inset -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
-        />
-        <div className="relative z-10">
-          <h2 className="mb-10 mt-10 text-5xl leading-15 font-semibold text-white">
-            Nad czym pracuję dalej?
-          </h2>
+    <div className="info-page relative isolate mx-auto w-full max-w-5xl rounded-3xl px-4 py-5 md:px-0">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none inset -inset-x-4 inset-y-0 -z-10 rounded-3xl bg-black/65 backdrop-blur-2xl md:-inset-x-6"
+      />
+      <div className="relative z-10">
+        <h2 className="mb-10 mt-10 text-5xl leading-15 font-semibold text-white">
+          Nad czym pracuję dalej?
+        </h2>
 
-          <p className="mb-4">
-            <strong>FOTAI</strong> działa i odpowiada na pytania fotograficzne —
-            ale to dopiero początek. Poniżej znajdziesz{" "}
-            <strong>
-              opis funkcji, które już dodałem oraz tych, które właśnie buduję
-            </strong>
-            . Każda z nich powstaje z myślą o tym, by korzystanie z asystenta
-            było wygodniejsze, bardziej osobiste i dostępne z każdego miejsca.
-          </p>
+        <p className="mb-4">
+          <strong>FOTAI</strong> już pomaga odpowiadać na pytania fotograficzne,
+          ale chcę, żeby był jeszcze wygodniejszy i bardziej przydatny w
+          codziennym życiu.
+        </p>
 
-          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            Wiele rozmów naraz i historia na każdym urządzeniu
-          </h3>
+        <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
+          Co jest już w drodze
+        </h3>
 
-          <p className="mb-4">
-            Teraz możliwa jest tylko jedna rozmowa, a jej historia jest zapisana
-            w przeglądarce. Pracuję nad tym, żebyś mógł prowadzić{" "}
-            <strong>dowolną liczbę niezależnych chatów</strong>: jeden o
-            fotografii nocnej, drugi o sprzęcie, trzeci o obróbce zdjęć. Każdy z
-            oddzielną historią, dostępny w panelu bocznym jednym kliknięciem.
-          </p>
+        <ul className="mb-4 list-disc space-y-2 pl-6">
+          <li>
+            <strong>Wiele rozmów naraz</strong> — każdą tematykę będziesz mógł
+            prowadzić w osobnej rozmowie.
+          </li>
+          <li>
+            <strong>Historia rozmów na różnych urządzeniach</strong> — wrócisz
+            do wcześniejszych pytań także na telefonie czy tablecie.
+          </li>
+          <li>
+            <strong>Odpowiedzi pojawiające się na bieżąco</strong> — asystent
+            będzie odpowiadał bardziej naturalnie, tak jak w popularnych czatach
+            AI.
+          </li>
+          <li>
+            <strong>Lepsze konto użytkownika</strong> — zmiana danych, większa
+            kontrola nad ustawieniami i wygodniejsze korzystanie z aplikacji.
+          </li>
+        </ul>
 
-          <p className="mb-4">
-            Rozmowy będą wtedy zapisane na serwerze — dostępne zawsze, nawet po
-            tygodniu przerwy, na telefonie, tablecie czy innym komputerze.
-          </p>
+        <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
+          Co chcę dodać potem
+        </h3>
 
-          <blockquote className="material-surface relative mb-4 rounded-2xl pl-6 italic">
-            <span className="absolute -left-4 -top-2 text-6xl leading-none text-neutral-300/80">
-              "
-            </span>
-            Wróciłem do rozmowy o fotografii nocnej sprzed tygodnia. Asystent
-            pamiętał, o czym rozmawialiśmy.
-          </blockquote>
+        <ul className="mb-4 list-disc space-y-2 pl-6">
+          <li>
+            <strong>Opinie o własnych zdjęciach</strong> — wrzucisz zdjęcie i
+            FOTAI powie, co jest dobrze, a co można poprawić.
+          </li>
+          <li>
+            <strong>Proste edytowanie zdjęć tekstem</strong> — na przykład
+            „dodaj więcej chmur” albo „usuń element z tła”.
+          </li>
+        </ul>
 
-          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            Odpowiedzi pojawiają się na bieżąco
-          </h3>
+        <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
+          Jeszcze dalej w planach
+        </h3>
 
-          <p className="mb-4">
-            Obecnie asystent „myśli" przez chwilę, a potem wyświetla gotową
-            odpowiedź w całości. Pracuję nad tym, żeby tekst{" "}
-            <strong>pojawiał się słowo po słowie</strong>, tak jak widać to w
-            ChatGPT lub podobnych narzędziach. Dzięki temu poczujesz, że
-            asystent rzeczywiście odpowiada na żywo — bez czekania na kompletną
-            wiadomość.
-          </p>
+        <ul className="mb-4 list-disc space-y-2 pl-6">
+          <li>Wspólna galeria zdjęć i możliwość dzielenia się pracami.</li>
+          <li>Wersja aplikacji bardziej przyjazna na telefon.</li>
+          <li>
+            Jeszcze prostsze i bardziej intuicyjne funkcje dla każdego
+            użytkownika.
+          </li>
+        </ul>
 
-          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            Co planuję dalej
-          </h3>
+        <p className="mb-4">
+          Każda nowa funkcja powstaje powoli, żeby była naprawdę przydatna i
+          działała dobrze.
+        </p>
 
-          <p className="mb-4">
-            Gdy skończę pracę nad kontem i wieloczatowością, zajmę się czymś
-            zupełnie nowym —{" "}
-            <strong>możliwością wysłania własnego zdjęcia do FOTAI</strong>.
-            Asystent przyjrzy mu się i powie Ci wprost, co wyszło dobrze, a co
-            można poprawić: czy kadr jest ciekawy, czy ekspozycja jest
-            prawidłowa, gdzie oko widza naturalnie wędruje i dlaczego.
-          </p>
-
-          <blockquote className="material-surface relative mb-4 rounded-2xl pl-6 italic">
-            <span className="absolute -left-4 -top-2 text-6xl leading-none text-neutral-300/80">
-              "
-            </span>
-            Wrzuciłem zdjęcie z ostatniego wyjazdu. Asystent powiedział, że
-            horyzont jest krzywy, tło za bardzo rozprasza uwagę i zaproponował,
-            jak inaczej wykadrować tę scenę.
-          </blockquote>
-
-          <p className="mb-4">
-            Jeszcze dalej w planach mam coś jeszcze bardziej zaawansowanego —
-            możliwość{" "}
-            <strong>
-              edycji zdjęcia za pomocą zwykłych poleceń tekstowych
-            </strong>
-            . Zamiast żmudnego retuszu w programie graficznym napiszesz po
-            prostu: „usuń drzewo z prawego rogu" albo „dodaj więcej
-            dramatycznych chmur", a AI wykona to za Ciebie. Na ekranie zobaczysz
-            oryginał i wynik obok siebie, a gotowe zdjęcie będzie można od razu
-            pobrać.
-          </p>
-
-          <p className="mb-4">
-            To ambitne cele — ale na tym właśnie polega rozwijanie FOTAI krok po
-            kroku.
-          </p>
-
-          <h3 className="mb-4 mt-6 text-2xl font-semibold text-white">
-            Kiedy to będzie gotowe?
-          </h3>
-
-          <p className="mb-4">
-            Prace trwają aktywnie. Robię to krok po kroku, żeby każda nowa
-            funkcja działała niezawodnie, zanim pojawi się kolejna. Nie obiecuję
-            konkretnej daty — zależy mi na jakości, nie na pośpiechu.
-          </p>
-
-          <p>
-            Jeśli chcesz wiedzieć, kiedy pojawią się nowe funkcje —{" "}
-            <strong>obserwuj apkę, wróć tu za jakiś czas</strong>. Ta strona
-            będzie aktualizowana w miarę postępu prac.
-          </p>
-        </div>
+        <p>
+          Jeśli chcesz śledzić postęp, wracaj tu czasem — ta strona będzie
+          aktualizowana wraz z rozwojem FOTAI.
+        </p>
       </div>
-    </>
+    </div>
   );
 }
