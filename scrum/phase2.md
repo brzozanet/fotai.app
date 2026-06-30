@@ -110,24 +110,39 @@ Render zasypia po 15 min bezczynności (cold start ~30 s). Railway działa bez p
 
 ---
 
-### Sprint 2 — Wieloczatowość & Streaming (planowany)
+### Sprint 2 — Tryb gościa & Streaming (planowany)
 
-**Cel**: Każda rozmowa jest zapisywana w MySQL (cyber_Folks). Użytkownik może tworzyć wiele chatów i przełączać się między nimi. Odpowiedzi asystenta pojawiają się słowo po słowie.
+**Cel**: Odpowiedzi asystenta pojawiają się słowo po słowie. Niezalogowany użytkownik może zadać jedno pytanie próbne bez rejestracji — po odpowiedzi asystenta pojawia się zaproszenie do rejestracji.
 
-**Technologie**: `Prisma` (Chat + Message models), REST API dla chatów, Server-Sent Events (SSE) / chunked transfer dla streamingu, nowy widok Sidebar w UI.
+**Technologie**: SSE streaming na istniejącym `/api/chat`, `ReadableStream` (frontend), `GUEST_QUESTION_LIMIT`, minimalne rozszerzenie `chatStore`.
 
 **Efekt końcowy**:
 
-- Streaming odpowiedzi asystenta w czasie rzeczywistym (tekst „pisze się" na żywo)
+- Niezalogowany użytkownik może zadać jedno pytanie bez rejestracji (tryb gościa)
+- Po odpowiedzi asystenta: prompt logowania zamiast redirecta
+- Odpowiedź asystenta pojawia się słowo po słowie (SSE streaming)
+- Spinner podczas oczekiwania na pierwsze słowo
+
+---
+
+### Sprint 3 — Wieloczatowość (planowany)
+
+**Cel**: Każda rozmowa jest zapisywana w MySQL. Użytkownik może tworzyć wiele chatów i przełączać się między nimi. Odpowiedzi zalogowanych użytkowników również streamowane (przez dedykowany endpoint).
+
+**Technologie**: `Prisma` (Chat + Message models), REST API dla chatów, SSE streaming dla `/api/chats/:id/messages`, nowy widok Sidebar w UI, pełna przebudowa `chatStore`.
+
+**Efekt końcowy**:
+
 - Panel boczny (Sidebar) z listą chatów i przyciskiem „Nowy czat"
 - Wiadomości zapisywane w MySQL (zamiast localStorage)
+- Streaming odpowiedzi dla zalogowanych użytkowników
 - Po zalogowaniu na innym urządzeniu historia jest dostępna
 - Zarządzanie czatami: zmiana nazw, usuwanie (`DELETE /api/chats/:id`)
 - Przełączanie między chatami
 
 ---
 
-### Sprint 3 — Konto użytkownika & Deploy Phase 2 (planowany)
+### Sprint 4 — Konto użytkownika & Deploy Phase 2 (planowany)
 
 **Cel**: Użytkownik zarządza swoim kontem. Całość wdrożona na produkcję z migracją bazy danych.
 
@@ -215,21 +230,21 @@ model Message {
 - [x] Baza MySQL na cyber_Folks — migracja `init` wykonana
 - [x] Lokalna baza MariaDB 10.6 na Docker — `docker compose up -d`
 
-### Sprint 2 — Wieloczatowość & Streaming
+### Sprint 2 — Tryb gościa & Streaming
 
-- [ ] Streaming odpowiedzi asystenta (tekst pojawia się sukcesywnie)
+- [ ] Streaming odpowiedzi asystenta (tekst pojawia się sukcesywnie) dla niezalogowanych
+- [ ] Tryb gościa: jedno pytanie bez logowania, prompt logowania po odpowiedzi
+- [ ] Spinner podczas oczekiwania na pierwsze słowo odpowiedzi
+
+### Sprint 3 — Wieloczatowość
+
 - [ ] Wiadomości zapisywane w MySQL na cyber_Folks (nie w localStorage)
+- [ ] Streaming odpowiedzi dla zalogowanych użytkowników (SSE)
 - [ ] Wiele chatów: tworzenie, lista, przełączanie
 - [ ] Zarządzanie czatami: zmiana nazwy, usuwanie
 - [ ] Historia dostępna po zalogowaniu na innym urządzeniu
 
-### Sprint 3 — Konto użytkownika & Deploy
+### Sprint 4 — Konto użytkownika
 
 - [ ] Zmiana danych użytkownika (email, hasło)
 - [ ] Usuwanie konta
-- [ ] Dostęp i zarządzanie usługami premium
-- [ ] Zarządzanie sposobami płatności
-- [ ] Backend wdrożony na Railway (GitHub auto-deploy)
-- [ ] Brak błędów CORS, brak błędów w konsoli przeglądarki
-- [ ] Frontend zaktualizowany na Vercel
-- [ ] Brak błędów CORS, brak błędów w konsoli przeglądarki

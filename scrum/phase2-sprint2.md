@@ -1,53 +1,34 @@
-# Sprint 2 Phase 2: Wieloczatowość & Streaming — FOTAI
+# Sprint 2 Phase 2: Tryb gościa & Streaming — FOTAI
 
-> 🎯 **Cel sprintu**: Użytkownik może prowadzić wiele niezależnych rozmów, historia każdej rozmowy jest zapisywana w bazie MySQL, a odpowiedzi asystenta pojawiają się na ekranie słowo po słowie w czasie rzeczywistym.
+> 🎯 **Cel sprintu**: Odpowiedzi asystenta pojawiają się słowo po słowie zamiast naraz. Niezalogowany użytkownik może zadać jedno pytanie próbne bez rejestracji — po odpowiedzi asystenta pojawia się zaproszenie do logowania.
 
-**Timeframe**: 1–2 dni (6–8h pracy efektywnej)  
+**Timeframe**: pół dnia (2–3h pracy efektywnej)  
 **Poziom**: Junior — każdy nowy koncept wytłumaczony od zera
 
 ---
 
 ## 📋 Przegląd Sprintu
 
-Do tej pory cała historia czatu żyła w `localStorage` przeglądarki — razem z kodem, który ją obsługiwał. W tym sprincie **przenosimy wiadomości do bazy danych** i budujemy obsługę wielu niezależnych chatów.
+Do tej pory odpowiedź asystenta przychodziła w całości po kilku sekundach — użytkownik patrzył na spinner. W tym sprincie dodajemy **streaming SSE** do istniejącego endpointu `/api/chat`, dzięki czemu tekst pojawia się litera po literze już od pierwszego słowa.
 
-Oprócz tego wprowadzamy **streaming** — odpowiedź asystenta nie będzie już czekać na kompletne wygenerowanie, tylko „pojawi się" na ekranie litera po literze, tak jak w oryginalnym ChatGPT.
+Przy okazji otwieramy ten endpoint dla niezalogowanych użytkowników (**tryb gościa**) — każdy może wypróbować asystenta bez rejestracji. Po jednej odpowiedzi zamiast inputa pojawia się zachęta do założenia konta.
 
 **Na koniec Sprint 2 Phase 2 powinieneś mieć**:
 
-- ✅ Backend: endpointy CRUD dla chatów (`GET/POST/PATCH/DELETE /api/chats`)
-- ✅ Backend: endpoint pobierania wiadomości (`GET /api/chats/:id/messages`)
-- ✅ Backend: endpoint wysyłania wiadomości ze streamingiem (`POST /api/chats/:id/messages`)
-- ✅ Frontend: zaktualizowany `chatService.ts` z nowymi funkcjami
-- ✅ Frontend: przebudowany `chatStore.ts` obsługujący wiele chatów
-- ✅ Frontend: komponent `Sidebar` z listą chatów i przyciskiem „Nowy czat"
-- ✅ Frontend: streaming odpowiedzi asystenta w `ChatInput`
-- ✅ Frontend: zaktualizowany layout z Sidebartem
+- ✅ Backend: `/api/chat` bez uwierzytelniania, odpowiada przez SSE (streaming)
+- ✅ Frontend: typ `ChatState` rozszerzony o `isStreaming`, `streamingContent`, `sendGuestMessage`
+- ✅ Frontend: `chatService.ts` — `askAI` obsługuje strumień SSE przez callbacki
+- ✅ Frontend: `chatStore.ts` — nowe stany streamingu + akcja `sendGuestMessage`
+- ✅ Frontend: `ChatInput.tsx` — tryb gościa z `GUEST_QUESTION_LIMIT`
+- ✅ Frontend: `MessageList.tsx` — tekst „pisze się" podczas streamingu
 
 **Dlaczego to ważne?**
 
-localStorage to "notes na telefonie" — tylko na Twoim urządzeniu, znika jak go wyczyścisz. Baza danych to "chmura" — możesz zalogować się z dowolnego miejsca i mieć całą historię. Streaming z kolei to colosalne polepszenie UX — użytkownik nie patrzy w pustą stronę przez kilka sekund.
+Streaming to **największa poprawa UX** w tym projekcie — zamiast kilku sekund czekania na pustą stronę, użytkownik widzi odpowiedź od razu. Tryb gościa to wzorzec **freemium demo** — użytkownik ocenia wartość produktu zanim zdecyduje się na rejestrację.
 
 ---
 
 ## 🧱 Nowe technologie w tym sprincie
-
-### REST API — CRUD chatów
-
-**CRUD** = Create, Read, Update, Delete. To cztery podstawowe operacje na danych. W HTTP mapują się na metody:
-
-| Operacja | HTTP   | Przykład                |
-| -------- | ------ | ----------------------- |
-| Create   | POST   | `POST /api/chats`       |
-| Read     | GET    | `GET /api/chats`        |
-| Update   | PATCH  | `PATCH /api/chats/:id`  |
-| Delete   | DELETE | `DELETE /api/chats/:id` |
-
-**Dlaczego PATCH, a nie PUT?**
-
-`PUT` zastępuje cały zasób (musisz wysłać wszystkie pola). `PATCH` zmienia tylko wskazane pola — jeśli zmieniasz tylko tytuł czatu, wysyłasz tylko `{ "title": "Nowy tytuł" }`. PATCH to bardziej precyzyjna operacja.
-
----
 
 ### SSE — Server-Sent Events (streaming)
 
@@ -116,637 +97,191 @@ persist(
 
 ---
 
-## 🎯 [ ] Task 2.1: Typy TypeScript (0.25h)
+## 🎯 [ ] Task 2.1: Backend — streaming i tryb gościa (0.5h)
 
 ### Cel
 
-Zaktualizowanie typów po stronie backendu i frontendu, żeby odzwierciedlały nową strukturę danych: wiele chatów, wiadomości z bazy, streaming.
+Dwie zmiany w backendzie: (1) `/api/chat` przestaje wymagać tokenu — niezalogowani mogą go wywołać, (2) endpoint zaczyna strumieniować odpowiedź przez SSE zamiast zwracać ją naraz.
 
----
+### Krok 1: Usuń `authMiddleware` z `/api/chat` w `backend/src/index.ts`
 
-### Backend: `backend/src/types/chat.ts`
-
-**Zastąp istniejącą zawartość** nowym kodem:
+Otwórz `backend/src/index.ts` i zmień jeden wiersz:
 
 ```typescript
-// Typy dla istniejącego endpointu POST /api/chat (backward compatibility)
-export interface ChatRequest {
-  message: string;
-  previousResponseId?: string;
-}
+// BYŁO:
+app.use("/api/chat", authMiddleware, chatRouter);
 
-export interface ChatResponse {
-  id: string;
-  message: string;
-  timestamp: string;
-}
-
-// Typy dla nowych endpointów chatów
-export interface CreateChatResponse {
-  id: string;
-  title: string;
-  userId: string;
-  createdAt: string;
-}
-
-export interface MessageFromDB {
-  id: string;
-  role: string;
-  content: string;
-  openaiId: string | null;
-  chatId: string;
-  createdAt: string;
-}
-
-// Typy dla żądań
-export interface SendMessageRequest {
-  message: string;
-  previousResponseId?: string;
-}
-
-export interface RenameChatRequest {
-  title: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-  details?: string;
-}
+// JEST:
+app.use("/api/chat", chatRouter); // ← endpoint publiczny, bez auth (tryb gościa)
 ```
+
+> ⚠️ Endpoint nie zapisuje nic do bazy danych — wywołanie bez tokenu nie naraża na wyciek danych innych użytkowników.
 
 ---
 
-### Frontend: `frontend/src/types/chat.ts`
+### Krok 2: Dodaj SSE do `backend/src/routes/chat.ts`
 
-**Zastąp istniejącą zawartość** nowym kodem:
+Zastąp całą obsługę endpointu `chatRouter.post("/", ...)` wersją streamującą:
 
 ```typescript
-// Wiadomość — format używany w UI
-export interface Message {
-  id: string; // ID z bazy danych
-  role: "user" | "assistant";
-  content: string;
-  openaiId?: string; // ID z OpenAI (previousResponseId) — tylko dla asystenta
-  timestamp: string;
-}
-
-// Chat — dane z bazy danych
-export interface Chat {
-  id: string;
-  title: string;
-  userId: string;
-  createdAt: string;
-}
-
-// Stan sklepu Zustand
-export interface ChatState {
-  chats: Chat[]; // lista wszystkich chatów usera
-  activeChatId: string | null; // ID aktualnie otwartego czatu
-  messages: Message[]; // wiadomości aktywnego czatu
-  isLoading: boolean; // oczekiwanie na odpowiedź
-  isStreaming: boolean; // streaming w toku
-  streamingContent: string; // treść aktualnie streamowanej odpowiedzi
-  error: boolean;
-
-  // akcje na chatach
-  fetchChats: () => Promise<void>;
-  createChat: () => Promise<void>;
-  deleteChat: (id: string) => Promise<void>;
-  renameChat: (id: string, title: string) => Promise<void>;
-  setActiveChat: (id: string) => Promise<void>;
-
-  // akcje na wiadomościach
-  loadMessages: (chatId: string) => Promise<void>;
-  sendMessage: (content: string) => Promise<void>;
-
-  // pomocnicze
-  clearMessages: () => void;
-  setError: (error: boolean) => void;
-}
-
-// Stare typy — zostawiam dla backward compatibility z obecnym /api/chat
-export interface ChatRequest {
-  message: string;
-  previousResponseId?: string;
-}
-
-export interface ChatResponse {
-  id: string;
-  message: string;
-  timestamp: string;
-}
-```
-
-**Dlaczego zostają stare typy?**
-
-Istniejący endpoint `POST /api/chat` nadal działa (możemy go usunąć dopiero gdy cały UI jest podpięty pod nowe endpointy). Przez okres przejściowy oba działają równolegle.
-
----
-
-### Sprawdzenie
-
-- [ ] `backend/src/types/chat.ts` zaktualizowany
-- [ ] `frontend/src/types/chat.ts` zaktualizowany z nowymi interfejsami
-
----
-
-## 🎯 [ ] Task 2.2: Backend — CRUD chatów (1h)
-
-### Cel
-
-Stworzenie nowego pliku z endpointami do zarządzania chatami: lista, tworzenie, zmiana nazwy, usuwanie.
-
-### Utwórz plik `backend/src/routes/chats.ts`
-
-> ⚠️ **Uwaga**: Tworzymy nowy plik `chats.ts` (liczba mnoga), żeby **nie modyfikować** istniejącego `chat.ts`. Stary endpoint `/api/chat` nadal obsługuje obecne UI — nowe endpointy `/api/chats` będą używane po przebudowie frontendu.
-
-```typescript
-import { Router, Request, Response } from "express";
-import { prisma } from "../lib/prisma.js";
-import { RenameChatRequest } from "../types/chat.js";
-
-export const chatsRouter = Router();
-
-// ─────────────────────────────────────────────────────────────
-// GET /api/chats — lista chatów zalogowanego użytkownika
-// ─────────────────────────────────────────────────────────────
-chatsRouter.get("/", async (req: Request, res: Response) => {
+chatRouter.post("/", async (request: Request, response: Response) => {
   try {
-    const chats = await prisma.chat.findMany({
-      where: { userId: req.user!.userId },
-      orderBy: { createdAt: "desc" }, // najnowsze na górze
-    });
-
-    return res.json(chats);
-  } catch (error) {
-    console.error("[chats/GET]", error);
-    return res.status(500).json({ error: "Błąd serwera." });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────
-// POST /api/chats — utwórz nowy czat
-// ─────────────────────────────────────────────────────────────
-chatsRouter.post("/", async (req: Request, res: Response) => {
-  try {
-    const chat = await prisma.chat.create({
-      data: {
-        userId: req.user!.userId,
-        title: "Nowy czat",
-      },
-    });
-
-    return res.status(201).json(chat);
-  } catch (error) {
-    console.error("[chats/POST]", error);
-    return res.status(500).json({ error: "Błąd serwera." });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────
-// PATCH /api/chats/:id — zmień tytuł czatu
-// ─────────────────────────────────────────────────────────────
-chatsRouter.patch("/:id", async (req: Request, res: Response) => {
-  try {
-    const { title }: RenameChatRequest = req.body;
-
-    if (!title || title.trim().length === 0) {
-      return res.status(400).json({ error: "Tytuł nie może być pusty." });
-    }
-
-    // Sprawdź czy czat należy do zalogowanego usera
-    const chat = await prisma.chat.findFirst({
-      where: { id: req.params.id, userId: req.user!.userId },
-    });
-
-    if (!chat) {
-      return res.status(404).json({ error: "Czat nie istnieje." });
-    }
-
-    const updated = await prisma.chat.update({
-      where: { id: req.params.id },
-      data: { title: title.trim() },
-    });
-
-    return res.json(updated);
-  } catch (error) {
-    console.error("[chats/PATCH]", error);
-    return res.status(500).json({ error: "Błąd serwera." });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────
-// DELETE /api/chats/:id — usuń czat (i wszystkie jego wiadomości przez CASCADE)
-// ─────────────────────────────────────────────────────────────
-chatsRouter.delete("/:id", async (req: Request, res: Response) => {
-  try {
-    // Sprawdź czy czat należy do zalogowanego usera
-    const chat = await prisma.chat.findFirst({
-      where: { id: req.params.id, userId: req.user!.userId },
-    });
-
-    if (!chat) {
-      return res.status(404).json({ error: "Czat nie istnieje." });
-    }
-
-    // onDelete: Cascade w schema.prisma automatycznie usuwa Message[]
-    await prisma.chat.delete({ where: { id: req.params.id } });
-
-    return res.status(204).send(); // 204 No Content — sukces, brak ciała odpowiedzi
-  } catch (error) {
-    console.error("[chats/DELETE]", error);
-    return res.status(500).json({ error: "Błąd serwera." });
-  }
-});
-```
-
-**Wyjaśnienie `req.user!.userId`:**
-
-Wykrzyknik `!` (non-null assertion) mówi TypeScriptowi: "wiem, że `req.user` tutaj istnieje, zaufaj mi". To jest bezpieczne, bo `authMiddleware` gwarantuje istnienie `req.user` — bez ważnego tokenu request nigdy nie dotrze do handlera.
-
-**Dlaczego sprawdzamy `findFirst({ where: { id, userId } })`?**
-
-To kluczowe zabezpieczenie: użytkownik A nie może usunąć czatu użytkownika B, nawet jeśli zna jego ID. Bez tego sprawdzenia atakujący mógłby podać dowolne ID i usunąć cudze dane. To wzorzec **Authorization check** — sprawdzamy nie tylko _czy_ zasób istnieje, ale _czy należy do aktualnego usera_.
-
----
-
-### Podpięcie routera w `backend/src/index.ts`
-
-Otwórz `backend/src/index.ts` i dodaj nowy import oraz mount:
-
-```typescript
-import { chatRouter } from "./routes/chat.js";
-import { authRouter } from "./routes/auth.js";
-import { chatsRouter } from "./routes/chats.js"; // ← dodaj
-import { authMiddleware } from "./middleware/auth.js";
-
-// ... (istniejący kod)
-
-app.use("/api/auth", authRouter);
-app.use("/api/chat", authMiddleware, chatRouter); // stary endpoint — zostaje
-app.use("/api/chats", authMiddleware, chatsRouter); // ← nowe endpointy chatów
-```
-
----
-
-### Sprawdzenie
-
-- [ ] Plik `backend/src/routes/chats.ts` utworzony
-- [ ] `chatsRouter` podpięty w `backend/src/index.ts` pod `/api/chats`
-- [ ] Test ręczny — stworzenie czatu (curl lub Postman):
-
-```bash
-# Pobierz token logując się:
-curl -X POST http://localhost:3001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email": "test@example.com", "password": "tajne1234"}'
-
-# Utwórz czat (wklej TOKEN z odpowiedzi logowania):
-curl -X POST http://localhost:3001/api/chats \
-  -H "Authorization: Bearer TOKEN" \
-  -H "Content-Type: application/json"
-# Oczekiwane: { "id": "clob...", "title": "Nowy czat", "userId": "...", "createdAt": "..." }
-
-# Lista chatów:
-curl http://localhost:3001/api/chats \
-  -H "Authorization: Bearer TOKEN"
-```
-
----
-
-## 🎯 [ ] Task 2.3: Backend — wiadomości i streaming (1h)
-
-### Cel
-
-Dodanie do `chats.ts` dwóch endpointów: GET dla historii wiadomości i POST dla wysyłania wiadomości z streamingiem SSE.
-
-### Czym jest streaming w OpenAI SDK?
-
-Normalnie `client.responses.create()` czeka aż OpenAI wygeneruje **całą** odpowiedź i zwraca ją naraz. Przy długich odpowiedziach to nawet kilkanaście sekund czekania na pustą stronę.
-
-`client.responses.create({ stream: true })` zwraca obiekt `AsyncIterable` — możesz iterować przez niego pętlą `for await`, dostając kolejne fragmenty odpowiedzi na bieżąco.
-
-```typescript
-// BEZ streamingu — czeka kilka sekund, potem naraz zwraca całość
-const response = await client.responses.create({ model: "...", ... });
-console.log(response.output_text); // "Oto długa odpowiedź o fotografii..."
-
-// ZE streamingiem — każda iteracja = kawałek tekstu
-const stream = await client.responses.create({ model: "...", stream: true, ... });
-for await (const event of stream) {
-  if (event.type === "response.output_text.delta") {
-    process.stdout.write(event.delta); // "Oto" " długa" " odpowiedź"...
-  }
-}
-```
-
----
-
-### Dodaj do pliku `backend/src/routes/chats.ts`
-
-Dopisz poniższy kod na końcu pliku (przed ostatnim `export`):
-
-```typescript
-import OpenAI from "openai";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-const MODEL = process.env.OPENAI_MODEL!;
-const SYSTEM_PROMPT = process.env.SYSTEM_PROMPT!;
-const CURRENT_WORKSHOPS = process.env.CURRENT_WORKSHOPS!;
-const CURRENT_WORKSHOPS_RULES = process.env.CURRENT_WORKSHOPS_RULES!;
-
-// Buduje system prompt z połączenia kilku zmiennych env (tak jak w chat.ts)
-const buildSystemPrompt = () =>
-  [
-    SYSTEM_PROMPT.trim(),
-    "<CurrentWorkshops>",
-    CURRENT_WORKSHOPS.trim(),
-    "</CurrentWorkshops>",
-    CURRENT_WORKSHOPS_RULES.trim(),
-  ].join("\n");
-
-// ─────────────────────────────────────────────────────────────
-// GET /api/chats/:id/messages — historia wiadomości czatu
-// ─────────────────────────────────────────────────────────────
-chatsRouter.get("/:id/messages", async (req: Request, res: Response) => {
-  try {
-    // Sprawdź czy czat należy do zalogowanego usera
-    const chat = await prisma.chat.findFirst({
-      where: { id: req.params.id, userId: req.user!.userId },
-    });
-
-    if (!chat) {
-      return res.status(404).json({ error: "Czat nie istnieje." });
-    }
-
-    const messages = await prisma.message.findMany({
-      where: { chatId: req.params.id },
-      orderBy: { createdAt: "asc" }, // od najstarszej do najnowszej
-    });
-
-    return res.json(messages);
-  } catch (error) {
-    console.error("[chats/:id/messages GET]", error);
-    return res.status(500).json({ error: "Błąd serwera." });
-  }
-});
-
-// ─────────────────────────────────────────────────────────────
-// POST /api/chats/:id/messages — wyślij wiadomość (streaming SSE)
-// ─────────────────────────────────────────────────────────────
-chatsRouter.post("/:id/messages", async (req: Request, res: Response) => {
-  try {
-    const { message, previousResponseId } = req.body;
+    const { message, previousResponseId }: ChatRequest = request.body;
 
     if (!message || message.trim() === "") {
-      return res.status(400).json({ error: "Wiadomość nie może być pusta." });
+      return response
+        .status(400)
+        .json({ error: "Message is required" } as ErrorResponse);
     }
 
-    // 1. Sprawdź czy czat należy do zalogowanego usera
-    const chat = await prisma.chat.findFirst({
-      where: { id: req.params.id, userId: req.user!.userId },
-    });
+    // Otwórz strumień SSE — od tego momentu nie można już zmienić statusu HTTP
+    response.setHeader("Content-Type", "text/event-stream");
+    response.setHeader("Cache-Control", "no-cache");
+    response.setHeader("Connection", "keep-alive");
+    response.flushHeaders();
 
-    if (!chat) {
-      return res.status(404).json({ error: "Czat nie istnieje." });
-    }
-
-    // 2. Zapisz wiadomość użytkownika do bazy
-    const userMessage = await prisma.message.create({
-      data: {
-        chatId: req.params.id,
-        role: "user",
-        content: message.trim(),
-      },
-    });
-
-    // 3. Ustaw nagłówki SSE — to "otwiera" strumień
-    res.setHeader("Content-Type", "text/event-stream");
-    res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
-    res.setHeader("X-User-Message-Id", userMessage.id); // ID wiadomości usera dla frontendu
-    res.flushHeaders(); // Wyślij nagłówki natychmiast, zanim OpenAI zacznie odpowiadać
-
-    // 4. Streaming przez OpenAI Responses API
     const stream = await client.responses.create({
       model: MODEL,
       stream: true,
-      previous_response_id: previousResponseId || undefined,
+      previous_response_id: previousResponseId,
       input: [
         { role: "system", content: buildSystemPrompt() },
         { role: "user", content: message.trim() },
       ],
     });
 
-    let fullContent = ""; // zbieramy pełną odpowiedź do zapisu w DB
-    let responseId = ""; // ID odpowiedzi z OpenAI (= previousResponseId dla następnej wiadomości)
+    let responseId = "";
 
     for await (const event of stream) {
       if (event.type === "response.output_text.delta") {
-        fullContent += event.delta;
-        // Wysyłamy każdy kawałek do frontendu w formacie SSE
-        res.write(`data: ${JSON.stringify({ delta: event.delta })}\n\n`);
+        // Każdy kawałek tekstu → natychmiast do przeglądarki
+        response.write(`data: ${JSON.stringify({ delta: event.delta })}\n\n`);
       }
-
       if (event.type === "response.completed") {
         responseId = event.response.id;
       }
     }
 
-    // 5. Zapisz pełną odpowiedź asystenta do bazy
-    const assistantMessage = await prisma.message.create({
-      data: {
-        chatId: req.params.id,
-        role: "assistant",
-        content: fullContent,
-        openaiId: responseId,
-      },
-    });
-
-    // 6. Wyślij zdarzenie zakończenia — frontend wie, że może zakończyć odczyt
-    res.write(
-      `data: ${JSON.stringify({
-        done: true,
-        responseId,
-        assistantMessageId: assistantMessage.id,
-      })}\n\n`,
-    );
-
-    res.end();
+    // Sygnał końca — frontend wie, że może zatrzymać odczyt
+    response.write(`data: ${JSON.stringify({ done: true, responseId })}\n\n`);
+    response.end();
   } catch (error) {
-    console.error("[chats/:id/messages POST]", error);
-    // Przy streamingu nie możemy już zmienić statusu (headers zostały wysłane),
-    // więc wysyłamy błąd jako SSE event
-    res.write(`data: ${JSON.stringify({ error: "Błąd serwera." })}\n\n`);
-    res.end();
+    console.error("[chat]", error);
+    if (!response.headersSent) {
+      // Nagłówki jeszcze nie wysłane — możemy zwrócić normalny błąd
+      return response
+        .status(500)
+        .json({ error: "Server error" } as ErrorResponse);
+    }
+    // Nagłówki SSE już wysłane — błąd jako event
+    response.write(`data: ${JSON.stringify({ error: "Błąd serwera." })}\n\n`);
+    response.end();
   }
 });
 ```
 
-> ⚠️ **Ważne**: `res.flushHeaders()` powoduje natychmiastowe wysłanie nagłówków HTTP do klienta. Bez tego Express buforuje odpowiedź i frontend czekałby na pierwsze bajty. Po `flushHeaders()` nie możesz już ustawić nowych nagłówków ani zmienić kodu statusu — wszystko idzie jako strumień danych.
+**Kluczowa różnica od poprzedniej wersji**: zamiast `await client.responses.create(...)` (czekamy na całość) używamy `stream: true` i iterujemy `for await`. Każde `event.delta` trafia do klienta natychmiast przez `response.write()`.
 
 ---
 
 ### Sprawdzenie
 
-- [ ] Endpointy `GET /:id/messages` i `POST /:id/messages` dodane do `chats.ts`
-- [ ] Import `OpenAI` i `dotenv` dodany na początku pliku
-- [ ] Test GET historii wiadomości:
+- [ ] `authMiddleware` usunięty z `/api/chat` w `index.ts`
+- [ ] Endpoint `/api/chat` działa bez tokenu JWT
+- [ ] Test streamingu bez autoryzacji:
 
 ```bash
-# Wstaw ID czatu z poprzedniego kroku
-curl http://localhost:3001/api/chats/CHAT_ID/messages \
-  -H "Authorization: Bearer TOKEN"
-# Oczekiwane: [] (pusta tablica — czat jest nowy)
-```
-
-- [ ] Test streamingu (curl pokazuje dane przyrastające w konsoli):
-
-```bash
-curl -X POST http://localhost:3001/api/chats/CHAT_ID/messages \
-  -H "Authorization: Bearer TOKEN" \
+curl -X POST http://localhost:3001/api/chat \
   -H "Content-Type: application/json" \
   -d '{"message": "Co to jest złota godzina w fotografii?"}' \
   --no-buffer
-# Oczekiwane: linie data: {"delta":"..."} pojawiające się stopniowo
+# Oczekiwane: kolejne linie data: {"delta":"..."} bez nagłówka Authorization
+```
+
+- [ ] Test z zalogowanym userem (token nadal działa — endpoint go przyjmuje, ale nie wymaga):
+
+```bash
+curl -X POST http://localhost:3001/api/chat \
+  -H "Authorization: Bearer TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Czym różni się f/1.8 od f/2.8?"}' \
+  --no-buffer
 ```
 
 ---
 
-## 🎯 [ ] Task 2.4: Frontend — chatService (0.5h)
+## 🎯 [ ] Task 2.2: Frontend typy (0.25h)
 
 ### Cel
 
-Rozszerzenie `frontend/src/services/chatService.ts` o nowe funkcje do zarządzania chatami i wysyłania wiadomości ze streamingiem.
+Minimalna aktualizacja `frontend/src/types/chat.ts` — tylko to, czego potrzebuje Sprint 2. Typy dla wieloczatowości (`Chat`, `activeChatId`, lista chatów) przyjdą w Sprint 3.
+
+### Zaktualizuj `frontend/src/types/chat.ts`
+
+Do istniejącego interfejsu `ChatState` **dodaj** trzy pola. Nie usuwaj istniejących:
+
+```typescript
+export interface ChatState {
+  messages: Message[];
+  isLoading: boolean;
+  isStreaming: boolean; // ← NOWE: streaming SSE w toku
+  streamingContent: string; // ← NOWE: treść aktualnie streamowanej odpowiedzi
+  error: boolean;
+
+  addMessage: (message: Message) => void;
+  clearMessages: () => void;
+  setIsLoading: (loading: boolean) => void;
+  setError: (error: boolean) => void;
+  sendGuestMessage: (content: string) => Promise<void>; // ← NOWE: tryb gościa
+}
+```
+
+**Dlaczego nie przepisujemy całego `ChatState`?**
+
+Pełny refaktor typów (z `chats[]`, `activeChatId`, `fetchChats`, itp.) będzie potrzebny w Sprint 3, gdy piszemy Sidebar i wieloczatowość. W Sprint 2 wystarczą trzy nowe pola — reszta kodu (m.in. `ChatInput.tsx`, `MessageList.tsx`) nadal używa istniejących typów.
+
+---
+
+### Sprawdzenie
+
+- [ ] `isStreaming`, `streamingContent`, `sendGuestMessage` dodane do `ChatState`
+- [ ] Brak błędów TypeScript (`tsc --noEmit`)
+
+---
+
+## 🎯 [ ] Task 2.3: Frontend — chatService (0.5h)
+
+### Cel
+
+Aktualizacja funkcji `askAI` w `frontend/src/services/chatService.ts`, żeby czytała odpowiedź przez SSE (streaming) zamiast czekać na kompletny JSON.
 
 ### Zaktualizuj `frontend/src/services/chatService.ts`
 
-**Zastąp całą zawartość pliku**:
+Zastąp funkcję `askAI` wersją streamującą. Reszta pliku bez zmian:
 
 ```typescript
-import { useAuthStore } from "@/store/authStore";
-import type { Chat, ChatRequest, ChatResponse, Message } from "@/types/chat";
-
-const API_URL: string = import.meta.env.VITE_API_URL || "http://localhost:3001";
-
-// ── Pomocnicze ───────────────────────────────────────────────────────────────
-
-// Obsługuje odpowiedzi 401 — wylogowuje i przekierowuje na stronę logowania
-function handleUnauthorized(): never {
-  useAuthStore.getState().setAuthLogout();
-  window.location.href = "/login.html";
-  throw new Error("UNAUTHORIZED");
-}
-
-// Generyczna funkcja do JSON requestów (GET/POST/PATCH/DELETE)
-async function apiRequest<T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
-  const { token } = useAuthStore.getState();
-
-  const response = await fetch(`${API_URL}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...options.headers,
-    },
+// Streaming — czyta SSE przez callbacki
+export async function askAI(params: {
+  message: string;
+  previousResponseId?: string;
+  onDelta: (delta: string) => void; // wywołany przy każdym kawałku tekstu
+  onDone: (responseId: string) => void; // wywołany po zakończeniu streamingu
+  onError: (error: string) => void; // wywołany przy błędzie serwera
+}): Promise<void> {
+  const response = await fetch(`${API_URL}/api/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: params.message,
+      previousResponseId: params.previousResponseId,
+    }),
   });
-
-  if (response.status === 401) handleUnauthorized();
 
   if (!response.ok) {
     const errorData = await response
       .json()
       .catch(() => ({ error: "Nieznany błąd" }));
     throw new Error(errorData.error || `HTTP ${response.status}`);
-  }
-
-  // 204 No Content (DELETE) nie ma ciała
-  if (response.status === 204) return undefined as T;
-
-  return response.json();
-}
-
-// ── Zarządzanie chatami ──────────────────────────────────────────────────────
-
-export async function getChats(): Promise<Chat[]> {
-  return apiRequest<Chat[]>("/api/chats");
-}
-
-export async function createChat(): Promise<Chat> {
-  return apiRequest<Chat>("/api/chats", { method: "POST" });
-}
-
-export async function renameChat(id: string, title: string): Promise<Chat> {
-  return apiRequest<Chat>(`/api/chats/${id}`, {
-    method: "PATCH",
-    body: JSON.stringify({ title }),
-  });
-}
-
-export async function deleteChat(id: string): Promise<void> {
-  return apiRequest<void>(`/api/chats/${id}`, { method: "DELETE" });
-}
-
-// ── Wiadomości ───────────────────────────────────────────────────────────────
-
-export async function getChatMessages(chatId: string): Promise<Message[]> {
-  const raw = await apiRequest<
-    Array<{
-      id: string;
-      role: string;
-      content: string;
-      openaiId: string | null;
-      chatId: string;
-      createdAt: string;
-    }>
-  >(`/api/chats/${chatId}/messages`);
-
-  // Mapujemy dane z bazy na format używany przez UI
-  return raw.map((m) => ({
-    id: m.id,
-    role: m.role as "user" | "assistant",
-    content: m.content,
-    openaiId: m.openaiId ?? undefined,
-    timestamp: m.createdAt,
-  }));
-}
-
-// Streaming — wysyła wiadomość i zwraca dane przez callbacki
-export async function streamMessage(params: {
-  chatId: string;
-  message: string;
-  previousResponseId?: string;
-  onDelta: (delta: string) => void; // wywołany przy każdym kawałku tekstu
-  onDone: (responseId: string, assistantMessageId: string) => void; // wywołany po zakończeniu
-  onError: (error: string) => void; // wywołany przy błędzie
-}): Promise<void> {
-  const { token } = useAuthStore.getState();
-
-  const response = await fetch(
-    `${API_URL}/api/chats/${params.chatId}/messages`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        message: params.message,
-        previousResponseId: params.previousResponseId,
-      }),
-    },
-  );
-
-  if (response.status === 401) handleUnauthorized();
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
   }
 
   // Czytamy strumień SSE
@@ -757,273 +292,101 @@ export async function streamMessage(params: {
     const { done, value } = await reader.read();
     if (done) break;
 
-    // Dekodujemy bajty na tekst
     const text = decoder.decode(value, { stream: true });
-
-    // Każda linia SSE zaczyna się od "data: "
-    const lines = text.split("\n").filter((line) => line.startsWith("data: "));
+    const lines = text.split("\n").filter((l) => l.startsWith("data: "));
 
     for (const line of lines) {
       try {
-        const data = JSON.parse(line.slice(6)); // odcinamy "data: "
-
+        const data = JSON.parse(line.slice(6));
         if (data.error) {
           params.onError(data.error);
           return;
         }
-
         if (data.delta) {
           params.onDelta(data.delta);
         }
-
         if (data.done) {
-          params.onDone(data.responseId, data.assistantMessageId);
+          params.onDone(data.responseId);
         }
       } catch {
-        // Ignoruj nieprawidłowo sformatowane linie
+        // ignoruj niepoprawne linie
       }
     }
   }
 }
-
-// ── Backward compatibility — stary endpoint /api/chat ───────────────────────
-
-export async function askAI(
-  token: string | null,
-  message: string,
-  previousResponseId?: string,
-): Promise<ChatResponse> {
-  const requestBody: ChatRequest = {
-    message,
-    ...(previousResponseId && { previousResponseId }),
-  };
-
-  const response = await fetch(`${API_URL}/api/chat`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestBody),
-  });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      useAuthStore.getState().setAuthLogout();
-      window.location.href = "/login.html";
-      throw new Error("UNAUTHORIZED");
-    }
-    const errorData = await response
-      .json()
-      .catch(() => ({ error: "Nieznany błąd" }));
-    throw new Error(errorData.error || `HTTP ${response.status}`);
-  }
-
-  return response.json();
-}
 ```
 
-**Wyjaśnienie wzorca `onDelta / onDone / onError`:**
+**Dlaczego nowa sygnatura zamiast starej?**
 
-Funkcja `streamMessage` jest asynchroniczna i trwa przez cały czas streamingu. Żeby poinformować store o każdym kawałku tekstu, przekazujemy **callbacki** — funkcje, które zostaną wywołane w odpowiednim momencie. To wzorzec **Callback / Observer**.
-
-```typescript
-// Wywołanie w chatStore:
-await streamMessage({
-  chatId,
-  message,
-  onDelta: (delta) => {
-    // Ta funkcja wywoła się ~50-100 razy podczas streamingu
-    set((state) => ({ streamingContent: state.streamingContent + delta }));
-  },
-  onDone: (responseId, assistantMessageId) => {
-    // Ta wywoła się raz, gdy OpenAI skończy generować
-    set({ isStreaming: false });
-  },
-  onError: (error) => {
-    set({ error: true, isStreaming: false });
-  },
-});
-```
+Stara `askAI(token, message, previousResponseId)` czekała na cały JSON. Nowa przyjmuje **callbacki** (`onDelta`, `onDone`, `onError`) — to jedyny sposób reagowania na dane, które przychodzą stopniowo przez strumień. Wzorzec Callback/Observer.
 
 ---
 
 ### Sprawdzenie
 
-- [ ] `frontend/src/services/chatService.ts` zaktualizowany
-- [ ] Eksportuje: `getChats`, `createChat`, `renameChat`, `deleteChat`, `getChatMessages`, `streamMessage`, `askAI` (backward compat)
-- [ ] Brak błędów TypeScript w pliku
+- [ ] `chatService.ts` — `askAI` przyjmuje obiekt z `onDelta`, `onDone`, `onError`
+- [ ] Brak błędów TypeScript
 
 ---
 
-## 🎯 [ ] Task 2.5: Frontend — chatStore (przebudowa) (1h)
+## 🎯 [ ] Task 2.4: Frontend — chatStore (0.5h)
 
 ### Cel
 
-Całkowita przebudowa `frontend/src/store/chatStore.ts`. Nowy store obsługuje wiele chatów, ładuje wiadomości z backendu i zarządza stanem streamingu.
+Rozszerzenie istniejącego `chatStore.ts` o stany streamingu i akcję `sendGuestMessage`. **Nie przepisujemy całego store** — to zadanie Sprint 3.
 
-### Zastąp `frontend/src/store/chatStore.ts`
+### Zaktualizuj `frontend/src/store/chatStore.ts`
+
+Dodaj nowe pola do stanu początkowego i nową akcję:
 
 ```typescript
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { ChatState } from "@/types/chat";
-import * as chatService from "@/services/chatService";
-import { useAuthStore } from "./authStore";
-
 export const useChatStore = create<ChatState>()(
   persist(
     (set, get) => ({
-      chats: [],
-      activeChatId: null,
       messages: [],
       isLoading: false,
-      isStreaming: false,
-      streamingContent: "",
+      isStreaming: false, // ← NOWE
+      streamingContent: "", // ← NOWE
       error: false,
 
-      // ── Czaty ──────────────────────────────────────────────────────────────
+      // ... istniejące akcje (addMessage, clearMessages, setIsLoading, setError) bez zmian ...
 
-      fetchChats: async () => {
-        try {
-          const chats = await chatService.getChats();
-          set({ chats });
-        } catch (error) {
-          console.error("[chatStore] fetchChats:", error);
-        }
-      },
-
-      createChat: async () => {
-        try {
-          const chat = await chatService.createChat();
-          // Dodaj nowy czat na początek listy i aktywuj go
-          set((state) => ({
-            chats: [chat, ...state.chats],
-            activeChatId: chat.id,
-            messages: [], // nowy czat = puste wiadomości
-          }));
-        } catch (error) {
-          console.error("[chatStore] createChat:", error);
-          set({ error: true });
-        }
-      },
-
-      deleteChat: async (id: string) => {
-        try {
-          await chatService.deleteChat(id);
-          set((state) => {
-            const filteredChats = state.chats.filter((c) => c.id !== id);
-            // Jeśli usuwamy aktywny czat, aktywuj pierwszy dostępny lub null
-            const newActiveChatId =
-              state.activeChatId === id
-                ? (filteredChats[0]?.id ?? null)
-                : state.activeChatId;
-
-            return {
-              chats: filteredChats,
-              activeChatId: newActiveChatId,
-              // Jeśli usunęliśmy aktywny czat — wyczyść wiadomości
-              messages: state.activeChatId === id ? [] : state.messages,
-            };
-          });
-
-          // Załaduj wiadomości nowego aktywnego czatu
-          const { activeChatId } = get();
-          if (activeChatId) {
-            await get().loadMessages(activeChatId);
-          }
-        } catch (error) {
-          console.error("[chatStore] deleteChat:", error);
-          set({ error: true });
-        }
-      },
-
-      renameChat: async (id: string, title: string) => {
-        try {
-          const updated = await chatService.renameChat(id, title);
-          set((state) => ({
-            chats: state.chats.map((c) => (c.id === id ? updated : c)),
-          }));
-        } catch (error) {
-          console.error("[chatStore] renameChat:", error);
-          set({ error: true });
-        }
-      },
-
-      setActiveChat: async (id: string) => {
-        set({ activeChatId: id, messages: [], error: false });
-        await get().loadMessages(id);
-      },
-
-      // ── Wiadomości ─────────────────────────────────────────────────────────
-
-      loadMessages: async (chatId: string) => {
-        try {
-          set({ isLoading: true });
-          const messages = await chatService.getChatMessages(chatId);
-          set({ messages, isLoading: false });
-        } catch (error) {
-          console.error("[chatStore] loadMessages:", error);
-          set({ isLoading: false, error: true });
-        }
-      },
-
-      sendMessage: async (content: string) => {
-        const { activeChatId, messages } = get();
-
-        if (!activeChatId) {
-          console.error("[chatStore] Brak aktywnego czatu");
-          return;
-        }
-
-        // Optymistyczne dodanie wiadomości usera do UI (nie czekamy na backend)
-        const tempUserMessage = {
-          id: `temp-${Date.now()}`,
-          role: "user" as const,
-          content,
-          timestamp: new Date().toISOString(),
-        };
+      // ── Wiadomość gościa (bez logowania) ─────────────────────────────────
+      sendGuestMessage: async (content: string) => {
+        // Optymistyczne dodanie wiadomości usera
+        const tempId = `guest-${Date.now()}`;
         set((state) => ({
-          messages: [...state.messages, tempUserMessage],
+          messages: [
+            ...state.messages,
+            {
+              id: tempId,
+              role: "user" as const,
+              content,
+              timestamp: new Date().toISOString(),
+            },
+          ],
           isStreaming: true,
           streamingContent: "",
           error: false,
         }));
 
-        // Znajdź previousResponseId — openaiId ostatniej wiadomości asystenta
-        const lastAssistantMsg = [...messages]
-          .reverse()
-          .find((m) => m.role === "assistant");
-        const previousResponseId = lastAssistantMsg?.openaiId;
-
         try {
-          await chatService.streamMessage({
-            chatId: activeChatId,
+          await askAI({
             message: content,
-            previousResponseId,
-
             onDelta: (delta) => {
-              // Doklejamy każdy kawałek do streamingContent
               set((state) => ({
                 streamingContent: state.streamingContent + delta,
               }));
             },
-
-            onDone: (responseId, assistantMessageId) => {
+            onDone: (responseId) => {
               const { streamingContent } = get();
-
-              // Zastępujemy tymczasową wiadomość usera prawdziwą z DB
-              // i dodajemy finalną wiadomość asystenta
               set((state) => ({
                 messages: [
-                  // Usuń temp wiadomość usera
-                  ...state.messages.filter((m) => !m.id.startsWith("temp-")),
-                  // Dodaj wiadomość asystenta z pełną treścią
+                  ...state.messages.filter((m) => m.id !== tempId),
                   {
-                    id: assistantMessageId,
+                    id: responseId,
                     role: "assistant" as const,
                     content: streamingContent,
-                    openaiId: responseId,
                     timestamp: new Date().toISOString(),
                   },
                 ],
@@ -1031,14 +394,10 @@ export const useChatStore = create<ChatState>()(
                 streamingContent: "",
               }));
             },
-
             onError: (error) => {
-              console.error("[chatStore] streaming error:", error);
+              console.error("[chatStore] sendGuestMessage error:", error);
               set((state) => ({
-                // Usuń tymczasową wiadomość usera przy błędzie
-                messages: state.messages.filter(
-                  (m) => !m.id.startsWith("temp-"),
-                ),
+                messages: state.messages.filter((m) => m.id !== tempId),
                 isStreaming: false,
                 streamingContent: "",
                 error: true,
@@ -1046,270 +405,34 @@ export const useChatStore = create<ChatState>()(
             },
           });
         } catch (error) {
-          console.error("[chatStore] sendMessage:", error);
+          console.error("[chatStore] sendGuestMessage:", error);
           set((state) => ({
-            messages: state.messages.filter((m) => !m.id.startsWith("temp-")),
+            messages: state.messages.filter((m) => m.id !== tempId),
             isStreaming: false,
             streamingContent: "",
-            error: error instanceof Error && error.message !== "UNAUTHORIZED",
+            error: true,
           }));
         }
       },
-
-      // ── Pomocnicze ────────────────────────────────────────────────────────
-
-      clearMessages: () => set({ messages: [], error: false }),
-      setError: (error) => set({ error }),
     }),
-    {
-      name: "fotai-chat-storage",
-      // Persystujemy TYLKO activeChatId — reszta ładuje się z DB
-      partialize: (state) => ({ activeChatId: state.activeChatId }),
-    },
+    { name: "fotai-chat-storage" },
   ),
 );
 ```
 
-**Wyjaśnienie „optymistycznego UI":**
-
-```typescript
-// Najpierw pokazujemy wiadomość w UI (natychmiast)
-set((state) => ({ messages: [...state.messages, tempUserMessage] }));
-
-// Potem wysyłamy do backendu (asynchronicznie)
-await chatService.streamMessage({ ... });
-```
-
-Gdybyśmy czekali na potwierdzenie z backendu, UI „zamrożyłoby się" po kliknięciu „Wyślij". Zamiast tego natychmiast pokazujemy wiadomość (z tymczasowym ID `temp-...`), a gdy backend potwierdzi zapis, podmieniamy ją na prawdziwą. Taki wzorzec nazywa się **Optimistic UI** i jest standardem w nowoczesnych aplikacjach.
-
----
-
-### Aktualizacja `frontend/src/store/authStore.ts`
-
-Wylogowanie powinno czyścić stan czatów. Zaktualizuj `authStore.ts`:
-
-```typescript
-import type { AuthState } from "@/types/auth";
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-
-      setAuthLogin: (user, token) => {
-        set({ user, token, isAuthenticated: true });
-        // Wczytaj chaty po zalogowaniu (lazy import żeby uniknąć circular dependency)
-        import("./chatStore").then(({ useChatStore }) => {
-          useChatStore.getState().fetchChats();
-        });
-      },
-
-      setAuthLogout: () => {
-        set({ user: null, token: null, isAuthenticated: false });
-        // Wyczyść stan czatów
-        import("./chatStore").then(({ useChatStore }) => {
-          useChatStore.setState({
-            chats: [],
-            activeChatId: null,
-            messages: [],
-            isStreaming: false,
-            streamingContent: "",
-            error: false,
-          });
-        });
-      },
-    }),
-    { name: "fotai-auth-storage" },
-  ),
-);
-```
-
-> 📌 **Dlaczego `import()` zamiast `useChatStore.getState()`?** Bezpośredni import `chatStore` w `authStore` i odwrotnie tworzyłby **circular dependency** (pętlę zależności), co może powodować błędy inicjalizacji modułów. `import()` (dynamic import) ładuje moduł leniwie, już po inicjalizacji obu storów.
+> 📌 **Uwaga**: import `askAI` z `chatService` dodaj na górze pliku:
+>
+> ```typescript
+> import { askAI } from "@/services/chatService";
+> ```
 
 ---
 
 ### Sprawdzenie
 
-- [ ] `frontend/src/store/chatStore.ts` zastąpiony nową wersją
-- [ ] `frontend/src/store/authStore.ts` zaktualizowany (lazy import chatStore)
+- [ ] `isStreaming`, `streamingContent` w stanie początkowym (wartości: `false`, `""`)
+- [ ] Akcja `sendGuestMessage` dodana
 - [ ] Brak błędów TypeScript
-
----
-
-## 🎯 [ ] Task 2.6: Frontend — Sidebar (1h)
-
-### Cel
-
-Stworzenie komponentu `Sidebar` wyświetlającego listę chatów użytkownika z opcjami tworzenia, usuwania i zmiany nazwy.
-
-### Utwórz `frontend/src/components/layout/Sidebar.tsx`
-
-```typescript
-import { useState, useEffect } from "react";
-import { useChatStore } from "@/store/chatStore";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PlusIcon, TrashIcon, PencilIcon, CheckIcon, XIcon } from "lucide-react";
-
-export function Sidebar() {
-  const {
-    chats,
-    activeChatId,
-    isStreaming,
-    fetchChats,
-    createChat,
-    deleteChat,
-    renameChat,
-    setActiveChat,
-  } = useChatStore();
-
-  // ID czatu, którego tytuł aktualnie edytujemy
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-
-  // Załaduj listę chatów przy pierwszym renderze
-  useEffect(() => {
-    fetchChats();
-  }, [fetchChats]);
-
-  const handleCreateChat = async () => {
-    await createChat();
-  };
-
-  const handleStartEdit = (id: string, currentTitle: string) => {
-    setEditingId(id);
-    setEditTitle(currentTitle);
-  };
-
-  const handleConfirmRename = async (id: string) => {
-    if (editTitle.trim().length > 0) {
-      await renameChat(id, editTitle.trim());
-    }
-    setEditingId(null);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingId(null);
-    setEditTitle("");
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent, id: string) => {
-    if (e.key === "Enter") handleConfirmRename(id);
-    if (e.key === "Escape") handleCancelEdit();
-  };
-
-  return (
-    <aside className="flex h-full w-64 flex-col border-r border-white/10 bg-black/40 backdrop-blur-sm">
-      {/* Przycisk Nowy czat */}
-      <div className="p-3">
-        <Button
-          onClick={handleCreateChat}
-          disabled={isStreaming}
-          className="w-full gap-2"
-          variant="outline"
-        >
-          <PlusIcon className="h-4 w-4" />
-          Nowy czat
-        </Button>
-      </div>
-
-      {/* Lista chatów */}
-      <nav className="flex-1 overflow-y-auto px-2 pb-3">
-        {chats.length === 0 && (
-          <p className="px-2 py-4 text-center text-sm text-white/40">
-            Brak chatów. Kliknij „Nowy czat".
-          </p>
-        )}
-
-        {chats.map((chat) => (
-          <div
-            key={chat.id}
-            onClick={() => !editingId && setActiveChat(chat.id)}
-            className={`
-              group mb-1 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-sm
-              transition-colors hover:bg-white/10
-              ${activeChatId === chat.id ? "bg-white/15 text-white" : "text-white/70"}
-            `}
-          >
-            {/* Tytuł lub pole edycji */}
-            {editingId === chat.id ? (
-              <Input
-                value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
-                onKeyDown={(e) => handleKeyDown(e, chat.id)}
-                onClick={(e) => e.stopPropagation()}
-                autoFocus
-                className="h-6 flex-1 border-0 bg-transparent p-0 text-sm focus-visible:ring-0"
-              />
-            ) : (
-              <span className="flex-1 truncate">{chat.title}</span>
-            )}
-
-            {/* Przyciski akcji */}
-            {editingId === chat.id ? (
-              <div className="flex gap-1" onClick={(e) => e.stopPropagation()}>
-                <button
-                  onClick={() => handleConfirmRename(chat.id)}
-                  className="text-green-400 hover:text-green-300"
-                >
-                  <CheckIcon className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  className="text-red-400 hover:text-red-300"
-                >
-                  <XIcon className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            ) : (
-              <div className="hidden gap-1 group-hover:flex">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleStartEdit(chat.id, chat.title);
-                  }}
-                  className="text-white/40 hover:text-white"
-                >
-                  <PencilIcon className="h-3.5 w-3.5" />
-                </button>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    deleteChat(chat.id);
-                  }}
-                  className="text-white/40 hover:text-red-400"
-                >
-                  <TrashIcon className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
-      </nav>
-    </aside>
-  );
-}
-```
-
-**Wyjaśnienie `e.stopPropagation()`:**
-
-Kiedy klikasz ikonkę Edytuj wewnątrz `<div>` czatu, zdarzenie kliknięcia "puchnie" w górę drzewa DOM (event bubbling) i dociera do kontenera — który zaczyna ładować wiadomości czatu.
-
-`stopPropagation()` zatrzymuje to "puchnięcie" — zdarzenie nie trafi do rodzica. Dzięki temu kliknięcie przycisku edycji nie przełączy aktywnego czatu.
-
----
-
-### Sprawdzenie
-
-- [ ] `frontend/src/components/layout/Sidebar.tsx` utworzony
-- [ ] Widoczna lista chatów, przycisk „Nowy czat", ikony edycji/usuwania
-- [ ] Kliknięcie czatu ładuje jego wiadomości
-
----
 
 ## 🎯 [ ] Task 2.7: Frontend — ChatInput ze streamingiem (0.5h)
 
@@ -1323,33 +446,52 @@ Aktualizacja `ChatInput.tsx` aby korzystał z nowego `sendMessage` ze sklepu zam
 
 ```typescript
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { useChatStore } from "@/store/chatStore";
+import { useAuthStore } from "@/store/authStore";
 import { ThreeCircles } from "react-loader-spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
+
+// Próg darmowych odpowiedzi dla niezalogowanych użytkowników.
+// Zmień na 2 aby zezwolić na dwie pełne wymiany bez rejestracji.
+const GUEST_QUESTION_LIMIT = 1;
 
 export function ChatInput() {
   const [input, setInput] = useState<string>("");
 
   const activeChatId = useChatStore((state) => state.activeChatId);
+  const messages = useChatStore((state) => state.messages);
   const isLoading = useChatStore((state) => state.isLoading);
   const isStreaming = useChatStore((state) => state.isStreaming);
   const error = useChatStore((state) => state.error);
-  const { sendMessage, setError } = useChatStore();
+  const { sendMessage, sendGuestMessage, setError } = useChatStore();
+  const { isAuthenticated } = useAuthStore();
+
+  // Liczba pełnych odpowiedzi asystenta — wyznacza limit dla gościa.
+  // Liczymy TYLKO wiadomości asystenta, bo wiadomość usera pojawia się
+  // w tablicy PRZED odpowiedzią — nie triggerujemy prompta za wcześnie.
+  const guestAnswersReceived = messages.filter((m) => m.role === "assistant").length;
 
   const isBusy = isLoading || isStreaming;
 
   const handleSend = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!isInputValid || !activeChatId) return;
+    if (!isInputValid) return;
 
     setError(false);
     const content = input.trim();
     setInput("");
 
-    await sendMessage(content);
+    if (isAuthenticated && activeChatId) {
+      // Zalogowany użytkownik — streaming do konkretnego czatu w DB
+      await sendMessage(content);
+    } else if (!isAuthenticated && guestAnswersReceived < GUEST_QUESTION_LIMIT) {
+      // Niezalogowany, limit nie osiągnięty — tryb gościa
+      await sendGuestMessage(content);
+    }
   };
 
   const isInputValid =
@@ -1361,8 +503,33 @@ export function ChatInput() {
     }
   };
 
-  // Brak aktywnego czatu — nie renderuj inputa
-  if (!activeChatId) return null;
+  // ─── Gość po osiągnięciu limitu — wyświetl prompt logowania ─────────────
+  if (!isAuthenticated && guestAnswersReceived >= GUEST_QUESTION_LIMIT) {
+    return (
+      <div className="rounded-xl border border-white/20 bg-black/50 p-5 text-center backdrop-blur-sm">
+        <p className="mb-1 font-semibold text-white">
+          Chcesz zadać kolejne pytanie?
+        </p>
+        <p className="mb-4 text-sm text-white/60">
+          Zaloguj się lub zarejestruj bezpłatnie — historia rozmów będzie
+          zapisana i dostępna z każdego urządzenia.
+        </p>
+        <div className="flex justify-center gap-3">
+          <Link to="/login.html">
+            <Button variant="outline" size="sm">
+              Zaloguj się
+            </Button>
+          </Link>
+          <Link to="/register.html">
+            <Button size="sm">Zarejestruj się</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Zalogowany bez aktywnego czatu — nie renderuj inputa ────────────────
+  if (isAuthenticated && !activeChatId) return null;
 
   return (
     <div className="space-y-2">
@@ -1400,13 +567,111 @@ export function ChatInput() {
 }
 ```
 
+**Wyjaśnienie logiki warunkowej renderowania:**
+
+```
+isAuthenticated + activeChatId                          → normalny czat z DB + streaming
+isAuthenticated + !activeChatId                         → null (sidebar pokaże listę chatów)
+!isAuthenticated + guestAnswers < GUEST_QUESTION_LIMIT  → input widoczny, pytanie do /api/chat
+!isAuthenticated + guestAnswers >= GUEST_QUESTION_LIMIT → prompt logowania (brak inputa)
+```
+
+Zmiana limitu z 1 na 2 to wyłącznie edycja stałej `GUEST_QUESTION_LIMIT` w tym pliku. Zero innych zmian w kodzie.
+
 ---
 
 ### Sprawdzenie
 
-- [ ] `ChatInput.tsx` zaktualizowany — używa `sendMessage` ze store
-- [ ] Przycisk zablokowany gdy `isStreaming`
+- [ ] `ChatInput.tsx` zaktualizowany — tryb gościa i zalogowanego obsługiwane oddzielnie
+- [ ] Pierwsze pytanie niezalogowanego użytkownika jest wysyłane przez `sendGuestMessage`
+- [ ] Po odpowiedzi asystenta pojawia się prompt logowania zamiast inputa
+- [ ] Zalogowany użytkownik używa `sendMessage` (streaming do DB)
 - [ ] `Enter` wysyła, `Shift+Enter` dodaje nową linię
+
+---
+
+## 🎯 [ ] Task 2.10: Tryb gościa — jedno pytanie bez logowania (0.5h)
+
+### Cel
+
+Zamiast natychmiastowego przekierowania na `/login.html` przy wejściu do czatu, niezalogowany użytkownik może zadać **jedno pytanie próbne**. Dopiero przy próbie zadania drugiego pytania pojawia się prośba o logowanie — jako część UI czatu, nie jako gwałtowny redirect.
+
+### Dlaczego to ważne?
+
+**Aktualny problem**: Focus na textarea natychmiast wywołuje redirect na `/login.html`. Użytkownik widzi formularz logowania, zanim zdążył ocenić wartość aplikacji.
+
+**Cel**: Użytkownik najpierw doświadcza produktu (zadaje pytanie, dostaje odpowiedź), a dopiero potem, z własnej woli i z pełnym zrozumieniem wartości, decyduje się na rejestrację. To wzorzec **freemium demo** stosowany przez wiele produktów SaaS.
+
+### Co już zostało zrobione w tym sprincie
+
+Ta funkcjonalność jest wbudowana w zadania poprzednie. Dla przejrzystości — lista zmian powiązanych z trybem gościa:
+
+| Zadanie  | Zmiana                                                       | Plik            |
+| -------- | ------------------------------------------------------------ | --------------- |
+| Task 2.2 | Usunięcie `authMiddleware` z `/api/chat`                     | `index.ts`      |
+| Task 2.5 | Akcja `sendGuestMessage` wywołująca `askAI(null, ...)`       | `chatStore.ts`  |
+| Task 2.7 | Stała `GUEST_QUESTION_LIMIT = 1` — próg darmowych odpowiedzi | `ChatInput.tsx` |
+| Task 2.7 | Warunek oparty na `messages.filter(assistant).length`        | `ChatInput.tsx` |
+| Task 2.7 | Prompt logowania gdy `guestAnswers >= GUEST_QUESTION_LIMIT`  | `ChatInput.tsx` |
+
+### Schemat przepływu dla niezalogowanego użytkownika
+
+```
+Wejście na stronę (nie zalogowany)
+        ↓
+EmptyChat / ChatWindow z inputem (bez redirecta!)
+        ↓
+Użytkownik pisze pytanie → "Wyślij"
+        ↓
+guestAnswersReceived < GUEST_QUESTION_LIMIT → sendGuestMessage()
+        ↓
+POST /api/chat (bez tokenu, bez auth) → odpowiedź asystenta
+        ↓
+messages.filter(assistant).length === GUEST_QUESTION_LIMIT → prompt pojawia się
+        ↓
+Zamiast inputa pojawia się:
+┌──────────────────────────────────────────┐
+│  Chcesz zadać kolejne pytanie?           │
+│  Zaloguj się lub zarejestruj bezpłatnie. │
+│  [ Zaloguj się ]  [ Zarejestruj się ]    │
+└──────────────────────────────────────────┘
+        ↓
+Użytkownik klika "Zarejestruj się" → /register.html → rejestracja
+        ↓
+Po zalogowaniu: pełny dostęp (sidebar, wiele chatów, streaming, historia)
+```
+
+### Uwagi implementacyjne
+
+**Dlaczego liczymy odpowiedzi asystenta, a nie wiadomości usera?**
+
+Po kliknięciu „Wyślij" wiadomość użytkownika trafia do tablicy `messages` natychmiast (Optimistic UI), zanim OpenAI zdąży odpowiedzieć. Gdybyśmy sprawdzali `messages.length > 0`, prompt logowania pojawiałby się podczas ładowania — zanim gość zobaczy odpowiedź. Filtrowanie po `role === 'assistant'` eliminuje ten problem: prompt pojawia się dopiero gdy asystent faktycznie odpowiedział.
+
+**Jak zmienić limit?**
+
+Wyłącznie stała `GUEST_QUESTION_LIMIT` w `ChatInput.tsx`. Zero innych zmian:
+
+```typescript
+const GUEST_QUESTION_LIMIT = 2; // zezwól na dwie wymiany zamiast jednej
+```
+
+**Czy limit przetrwa odświeżenie strony?**
+
+Nie. `messages` nie jest persystowane (brak w `partialize`), więc po odświeżeniu tablica jest pusta — `guestAnswersReceived = 0`. Gość może zadać kolejne „pierwsze" pytanie. Jest to celowe — nie blokujemy, a jedynie delikatnie zachęcamy do rejestracji.
+
+**Rate limiting** (ograniczenie liczby zapytań do `/api/chat` bez tokenu) to temat na przyszłość — jeśli endpoint będzie nadużywany, można dodać prostą ochronę po IP przez `express-rate-limit`.
+
+---
+
+### Sprawdzenie Task 2.10
+
+- [ ] Niezalogowany użytkownik widzi input (brak natychmiastowego redirecta)
+- [ ] Pierwsze pytanie niezalogowanego wysyłane do `/api/chat` (bez `Authorization`)
+- [ ] Po odpowiedzi asystenta (`guestAnswers >= GUEST_QUESTION_LIMIT`) input zamienia się na prompt
+- [ ] Prompt zawiera linki do `/login.html` i `/register.html`
+- [ ] Po odświeżeniu strony `guestAnswersReceived` wraca do 0 — gość może zadać nowe pytanie
+- [ ] Zmiana `GUEST_QUESTION_LIMIT = 2` → zezwala na dwie wymiany bez rejestracji
+- [ ] Zalogowany użytkownik nie widzi promptu logowania — używa normalnego inputa
 
 ---
 
@@ -1483,141 +748,41 @@ export function MessageList() {
 
 ---
 
-## 🎯 [ ] Task 2.9: Frontend — Layout z Sidebarrem (0.25h)
-
-### Cel
-
-Aktualizacja `Layout.tsx` i `HomePage.tsx` aby Sidebar był widoczny gdy użytkownik jest zalogowany.
-
-### Zaktualizuj `frontend/src/components/layout/Layout.tsx`
-
-```typescript
-import { Outlet } from "react-router-dom";
-import { Header } from "./Header";
-import { Footer } from "./Footer";
-import { Sidebar } from "./Sidebar";
-import { useAuthStore } from "@/store/authStore";
-import backgroundAbstract from "../../assets/background/neonblur.jpg";
-
-export function Layout() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
-  return (
-    <div
-      className="relative isolate flex h-screen flex-col"
-      style={{
-        backgroundColor: "#000",
-        backgroundImage: `url(${backgroundAbstract})`,
-        backgroundPosition: "top center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-        backgroundSize: "cover",
-      }}
-    >
-      <div className="absolute inset-0 bg-black/10 pointer-events-none" />
-      <Header />
-      <div className="material-enter-soft relative z-10 flex flex-1 min-h-0 overflow-hidden">
-        {/* Sidebar widoczny tylko dla zalogowanych */}
-        {isAuthenticated && <Sidebar />}
-
-        {/* Główna treść strony */}
-        <main className="flex-1 overflow-y-auto">
-          <Outlet />
-        </main>
-      </div>
-      <Footer />
-    </div>
-  );
-}
-```
-
-### Zaktualizuj `frontend/src/pages/HomePage.tsx`
-
-```typescript
-import { useEffect } from "react";
-import { ChatWindow } from "@/components/layout/ChatWindow";
-import { EmptyChat } from "@/components/layout/EmptyChat";
-import { useChatStore } from "@/store/chatStore";
-
-export function HomePage() {
-  const activeChatId = useChatStore((state) => state.activeChatId);
-  const chats = useChatStore((state) => state.chats);
-  const messages = useChatStore((state) => state.messages);
-  const { loadMessages } = useChatStore();
-
-  // Przy wejściu na stronę — załaduj wiadomości aktywnego czatu
-  useEffect(() => {
-    if (activeChatId) {
-      loadMessages(activeChatId);
-    }
-  }, [activeChatId, loadMessages]);
-
-  // Mamy aktywny czat z wiadomościami lub streaming w toku
-  const hasChatContent = activeChatId && messages.length > 0;
-
-  return (
-    <div className="flex h-full w-full flex-col items-center gap-6 text-center">
-      {hasChatContent ? <ChatWindow /> : <EmptyChat />}
-    </div>
-  );
-}
-```
-
----
-
-### Sprawdzenie
-
-- [ ] `Layout.tsx` zaktualizowany — Sidebar widoczny po zalogowaniu
-- [ ] `HomePage.tsx` zaktualizowany — ładuje wiadomości aktywnego czatu
-- [ ] Brak błędów TypeScript
-
----
-
 ## ✅ Checklist Sprint 2 Phase 2 — Finał
 
 ### Backend
 
-- [ ] `backend/src/routes/chats.ts` — nowy plik z endpointami CRUD i streamingiem
-- [ ] `GET /api/chats` — zwraca listę chatów usera
-- [ ] `POST /api/chats` — tworzy nowy czat
-- [ ] `PATCH /api/chats/:id` — zmienia tytuł czatu
-- [ ] `DELETE /api/chats/:id` — usuwa czat (Cascade usuwa wiadomości)
-- [ ] `GET /api/chats/:id/messages` — zwraca historię wiadomości
-- [ ] `POST /api/chats/:id/messages` — wysyła wiadomość ze streamingiem SSE
-- [ ] `chatsRouter` podpięty w `index.ts` pod `/api/chats` z `authMiddleware`
+- [ ] `authMiddleware` usunięty z `/api/chat` w `index.ts`
+- [ ] `backend/src/routes/chat.ts` — streaming SSE (`stream: true`, `flushHeaders`, `res.write`)
 
 ### Frontend
 
-- [ ] `frontend/src/types/chat.ts` — nowe typy `Chat`, zaktualizowany `ChatState`
-- [ ] `frontend/src/services/chatService.ts` — funkcje CRUD i `streamMessage`
-- [ ] `frontend/src/store/chatStore.ts` — multi-chat, streaming, `partialize`
-- [ ] `frontend/src/store/authStore.ts` — lazy import chatStore przy logout
-- [ ] `frontend/src/components/layout/Sidebar.tsx` — lista chatów, nowy czat, edycja, usuwanie
-- [ ] `frontend/src/components/chat/ChatInput.tsx` — używa `sendMessage` ze store
-- [ ] `frontend/src/components/chat/MessageList.tsx` — streaming content
-- [ ] `frontend/src/components/layout/Layout.tsx` — Sidebar w layoucie
-- [ ] `frontend/src/pages/HomePage.tsx` — ładuje wiadomości aktywnego czatu
+- [ ] `frontend/src/types/chat.ts` — `isStreaming`, `streamingContent`, `sendGuestMessage` w `ChatState`
+- [ ] `frontend/src/services/chatService.ts` — `askAI` z callbackami `onDelta / onDone / onError`
+- [ ] `frontend/src/store/chatStore.ts` — `sendGuestMessage`, `isStreaming`, `streamingContent`
+- [ ] `frontend/src/components/chat/ChatInput.tsx` — `GUEST_QUESTION_LIMIT`, tryb gościa, prompt logowania
+- [ ] `frontend/src/components/chat/MessageList.tsx` — streaming content, spinner
 
 ### Testy manualne
 
-- [ ] Utwórz nowy czat — pojawia się w Sidebarze
-- [ ] Wyślij wiadomość — odpowiedź pojawia się litera po literze
-- [ ] Odśwież stronę — aktywny czat i jego historia są wczytywane z DB
-- [ ] Zaloguj na innym urządzeniu/przeglądarce — widzisz tę samą historię
-- [ ] Zmień nazwę czatu — aktualizuje się w Sidebarze
-- [ ] Usuń czat — znika z Sidebara, aktywuje się następny
-- [ ] Prisma Studio: tabele `Chat` i `Message` zawierają dane
-- [ ] Brak duplikatów wiadomości w DB
+- [ ] **Streaming**: odpowiedź pojawia się słowo po słowie (nie naraz)
+- [ ] **Spinner**: widoczny zanim pojawi się pierwsze słowo
+- [ ] **Tryb gościa**: niezalogowany widzi input — brak natychmiastowego redirecta
+- [ ] **Tryb gościa**: pierwsze pytanie dostaje odpowiedź (bez tokenu)
+- [ ] **Tryb gościa**: po odpowiedzi pojawia się prompt „Zaloguj się / Zarejestruj się"
+- [ ] **Tryb gościa**: po odświeżeniu gość może zadać nowe pytanie (brak blokady)
+- [ ] Zalogowany użytkownik: czat działa jak dotychczas (input widoczny, odpowiedzi streamowane)
 
 ---
 
-## 🚀 Co dalej? Sprint 3 Phase 2
+## 🚀 Co dalej? Sprint 3 Phase 2 — Wieloczatowość
 
-W Sprint 3 skupiasz się na **zarządzaniu kontem użytkownika i przygotowaniu do deploy**:
+W Sprint 3 skupiasz się na **wieloczatowości** — zapisywaniu rozmów w bazie danych i panelu bocznym z listą chatów:
 
-- Strona ustawień konta (`/account.html`) — zmiana emaila i hasła
-- Usuwanie konta (z potwierdzeniem przez `alert-dialog`)
-- Endpointy: `PATCH /api/auth/account`, `DELETE /api/auth/account`
-- Przygotowanie do usług premium (infrastruktura płatności — TBD)
-- Migracja Prisma na produkcyjną bazę MySQL na cyber_Folks
-- Deploy: Railway (backend) + Vercel (frontend)
+- Backend: nowy plik `chats.ts` z endpointami CRUD (`GET/POST/PATCH/DELETE /api/chats`)
+- Backend: endpoint SSE dla zalogowanych użytkowników (`POST /api/chats/:id/messages`)
+- Frontend: pełna przebudowa `chatStore.ts` (multi-chat, `activeChatId`, `chats[]`)
+- Frontend: pełna aktualizacja `chatService.ts` (CRUD + `streamMessage`)
+- Frontend: nowy komponent `Sidebar` z listą chatów
+- Frontend: aktualizacja `Layout.tsx` i `HomePage.tsx`
+- Wiadomości zapisywane w MySQL — historia dostępna po zalogowaniu na innym urządzeniu

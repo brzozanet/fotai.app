@@ -417,7 +417,7 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 
 - 👤 Rejestracja i logowanie użytkowników (email + hasło)
 - 🔒 Hasła hashowane algorytmem bcrypt — nigdy nie przechowywane w plaintext
-- 🪙 Sesja oparta na tokenach JWT (ważność 7 dni) — przechowywanych w localStorage
+- 🪙 Sesja oparta na tokenach JWT — przechowywanych w localStorage
 - 🤖 Weryfikacja Cloudflare Turnstile przy rejestracji i logowaniu (ochrona przed botami)
 - 🛡️ Middleware JWT — chronione endpointy zwracają 401 bez ważnego tokenu
 - 🗄️ Baza danych MySQL z modelami `User`, `Chat`, `Message` (Prisma ORM)
@@ -428,58 +428,53 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 
 ## 📈 Fazy rozwoju
 
-| Faza              | Cel                                               | Status       | Timeframe |
-| ----------------- | ------------------------------------------------- | ------------ | --------- |
-| **Phase 1 (MVP)** | Czat z AI + deploy na produkcję                   | ✅ Ukończona | Q1 2026   |
-| **Phase 2**       | Konta użytkowników, historia chatów, wiele rozmów | � W toku     | Q2 2026   |
-| **Phase 3**       | Upload zdjęć + ocena przez AI (GPT-4 Vision)      | 📅 Planowana | Q3 2026   |
-| **Phase 4**       | Edycja zdjęć przez AI (komendy tekstowe → DALL-E) | 📅 Planowana | Q4 2026+  |
-| **Phase 5**       | Społeczność & portfolio fotograficzne             | 📅 Planowana | 2027+     |
+| Faza              | Cel                                               | Status       |
+| ----------------- | ------------------------------------------------- | ------------ |
+| **Phase 1 (MVP)** | Czat z AI + deploy na produkcję                   | ✅ Ukończona |
+| **Phase 2**       | Konta użytkowników, historia chatów, wiele rozmów | ⏳ W toku    |
+| **Phase 3**       | Upload zdjęć + ocena przez AI (GPT-4 Vision)      | 📅 Planowana |
+| **Phase 4**       | Edycja zdjęć przez AI (komendy tekstowe → DALL-E) | 📅 Planowana |
+| **Phase 5**       | Społeczność & portfolio fotograficzne             | 📅 Planowana |
 
 ---
 
 ## 🔄 Co będzie rozwijane następnie
 
-### Phase 2 Sprint 1 — Autentykacja ✅ Ukończona
+### Phase 2 Sprint 2 — Tryb gościa & Streaming (planowane)
 
-- ✅ Rejestracja i logowanie użytkowników (JWT + bcrypt)
-- ✅ Weryfikacja Cloudflare Turnstile (ochrona przed botami)
-- ✅ Middleware JWT — ochrona endpointów
-- ✅ Baza MySQL na cyber_Folks (shared hosting) + Prisma ORM
-- ✅ Lokalna baza MariaDB 10.6 na Docker do developmentu
+- Streaming odpowiedzi asystenta w czasie rzeczywistym (tekst pojawia się słowo po słowie)
+- Tryb gościa: jedno pytanie bez logowania, prompt logowania po odpowiedzi
+- Spinner podczas oczekiwania na pierwsze słowo
 
-### Phase 2 Sprint 2 — Wieloczatowość (planowane)
+### Phase 2 Sprint 3 — Wieloczatowość (planowane)
 
-- Streaming odpowiedzi asystenta w czasie rzeczywistym
 - Sidebar z listą chatów i przyciskiem „Nowy czat"
-- Endpointy REST dla chatów: `GET/POST/DELETE /api/chats`
+- Endpointy REST dla chatów: `GET/POST/PATCH/DELETE /api/chats`
 - Wiadomości zapisywane w MySQL (zamiast localStorage)
+- Streaming dla zalogowanych użytkowników (SSE przez `/api/chats/:id/messages`)
 - Przełączanie między chatami
 - Zarządzanie czatami: zmiana nazw, usuwanie
 - Historia czatów dostępna po zalogowaniu
 
-### Phase 2 Sprint 3 — Konto użytkownika (planowane)
+### Phase 2 Sprint 4 — Konto użytkownika (planowane)
 
 - Zmiana danych użytkownika (email, hasło)
 - Usuwanie konta
-- Dostęp do usług premium (np. edycja zdjęć użytkownika)
-- Zarządzanie sposobami płatności za usługi premium
 
-### Phase 3: Upload & Ocena Zdjęć (Q3 2026)
+### Phase 3: Upload & Ocena Zdjęć (planowane)
 
 - Użytkownik uploaduje zdjęcie → AI analizuje (kompozycja, ekspozycja, błędy)
 - Integracja GPT-4 Vision API
 - **Migracja bazy**: MySQL (cyber_Folks) → PostgreSQL (Supabase Free Tier)
 - **Storage zdjęć**: Supabase Storage (zamiast S3/Cloudinary)
-- Backend zostaje na Railway (unikamy timeoutów Vercel przy przetwarzaniu zdjęć)
 
-### Phase 4: Edycja Zdjęć przez AI (Q4 2026+)
+### Phase 4: Edycja Zdjęć przez AI (planowane)
 
 - Użytkownik podaje komendy tekstowe: „usuń drzewo", „dodaj chmury"
 - AI wykonuje edycję zdjęcia (DALL-E 3 / inpainting)
 - Widok before/after + eksport edytowanego zdjęcia
 
-### Phase 5: Społeczność & Portfolio (2027+)
+### Phase 5: Społeczność & Portfolio (planowane)
 
 - Galeria publiczna zdjęć użytkowników
 - Komentarze i oceny społeczności
