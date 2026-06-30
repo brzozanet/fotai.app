@@ -22,6 +22,20 @@ Aplikacja jest dostępna online pod adresem:
 
 👉 [https://fotai.app](https://fotai.app)
 
+**Testowe dane dostępowe:**
+
+Login:
+
+```
+test@example.com
+```
+
+Hasło:
+
+```
+fotaitest
+```
+
 Platformy:
 
 - **Frontend**: [Vercel](https://vercel.com/) — hosting React / Vite
@@ -33,7 +47,7 @@ Aplikacja składa się z trzech warstw:
 
 - **Frontend**: React + Vite — hostowany na Vercel
 - **Backend**: Express.js API — hostowany na Railway
-- **Baza danych**: MySQL — shared hosting [cyber_Folks](https://cyber-folks.pl) (produkcja) / Docker MariaDB 10.6 (development)
+- **Baza danych**: MySQL — hosting [cyber_Folks](https://cyber-folks.pl) (produkcja) / Docker MariaDB 10.6 (development)
 
 ---
 
