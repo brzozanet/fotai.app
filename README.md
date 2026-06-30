@@ -377,21 +377,15 @@ To polecenie stawia MariaDB 10.6, mapuje port `3306` i zapisuje dane w named vol
 # Plik frontend/.env.local jest już przygotowany.
 ```
 
-6. **Uruchom backend** (terminal 1):
+6. **Uruchom oba serwisy jednocześnie** (z poziomu root):
 
 ```bash
-cd backend
 npm run dev
-# Nasłuchuje na http://localhost:3001
+# Backend:  http://localhost:3001
+# Frontend: http://localhost:5173
 ```
 
-7. **Uruchom frontend** (terminal 2):
-
-```bash
-cd frontend
-npm run dev
-# Nasłuchuje na http://localhost:5173
-```
+> Projekt używa **npm workspaces** (monorepo) — skrypt `dev` w root `package.json` uruchamia backend i frontend równolegle przez `npm-run-all`. Nie musisz otwierać osobnych terminali.
 
 Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 
