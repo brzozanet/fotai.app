@@ -297,6 +297,7 @@ datasource db {
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
+  name         String   @default("") // nazwa wyświetlana użytkownika
   passwordHash String
   createdAt    DateTime @default(now())
   chats        Chat[]

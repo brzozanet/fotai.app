@@ -142,21 +142,19 @@ Render zasypia po 15 min bezczynności (cold start ~30 s). Railway działa bez p
 
 ---
 
-### Sprint 4 — Konto użytkownika & Deploy Phase 2 (planowany)
+### Sprint 4 — Konto użytkownika (planowany)
 
-**Cel**: Użytkownik zarządza swoim kontem. Całość wdrożona na produkcję z migracją bazy danych.
+**Cel**: Użytkownik zarządza danymi swojego konta — może zmieniać email, hasło, nazwę wyświetlaną oraz trwale usunąć konto z potwierdzeniem bezpieczeństwa przez wpisanie hasła.
 
-**Technologie**: Prisma migracje na MySQL cyber_Folks, aktualizacja Vercel + Railway, integracja płatności (TBD).
+**Technologie**: `PATCH /api/auth/account`, `DELETE /api/auth/account`, Prisma migration (pole `name` w modelu User), `alert-dialog` (Shadcn/ui), `react-hook-form` + `zod`.
 
 **Efekt końcowy**:
 
-- Zmiana danych użytkownika (email, hasło)
-- Usuwanie konta
-- Dostęp do usług premium (np. edycja zdjęć użytkownika)
-- Zarządzanie sposobami płatności za usługi premium
-- Baza danych na produkcji (MySQL na cyber_Folks) — migracje Prisma wykonane
-- Backend wdrożony na Railway (GitHub auto-deploy)
-- Pełna aplikacja Phase 2 dostępna online
+- Zmiana emaila (z weryfikacją dostępności)
+- Zmiana hasła (wymagane potwierdzenie aktualnym hasłem)
+- Zmiana nazwy wyświetlanej
+- Trwałe usunięcie konta z potwierdzeniem przez wpisanie hasła
+- Opcjonalnie: reset hasła przez email
 
 ---
 
@@ -186,6 +184,7 @@ npm install react-hook-form zod @hookform/resolvers
 model User {
   id           String   @id @default(cuid())
   email        String   @unique
+  name         String   @default("") // nazwa wyświetlana użytkownika
   passwordHash String
   createdAt    DateTime @default(now())
   chats        Chat[]
@@ -246,5 +245,7 @@ model Message {
 
 ### Sprint 4 — Konto użytkownika
 
-- [ ] Zmiana danych użytkownika (email, hasło)
-- [ ] Usuwanie konta
+- [ ] Zmiana emaila, hasła i nazwy wyświetlanej
+- [ ] Usuwanie konta z potwierdzeniem hasłem
+- [ ] Strona `/account.html` z formularzami edycji
+- [ ] Opcjonalnie: reset hasła przez email

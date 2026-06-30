@@ -431,16 +431,18 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 | Faza              | Cel                                               | Status       |
 | ----------------- | ------------------------------------------------- | ------------ |
 | **Phase 1 (MVP)** | Czat z AI + deploy na produkcję                   | ✅ Ukończona |
-| **Phase 2**       | Konta użytkowników, historia chatów, wiele rozmów | ⏳ W toku    |
-| **Phase 3**       | Upload zdjęć + ocena przez AI (GPT-4 Vision)      | 📅 Planowana |
-| **Phase 4**       | Edycja zdjęć przez AI (komendy tekstowe → DALL-E) | 📅 Planowana |
-| **Phase 5**       | Społeczność & portfolio fotograficzne             | 📅 Planowana |
+| **Phase 2**       | Konta użytkowników, historia chatów, wiele rozmów | 🔄 W toku    |
+| **Phase 3**       | Migracja: Next.js App Router, CI/CD, testy E2E    | 📅 Planowana |
+| **Phase 4**       | Analiza zdjęć AI + model premium + storage        | 📅 Planowana |
+| **Phase 5**       | Edycja zdjęć AI, kamera, reader EXIF              | 📅 Planowana |
+| **Phase 6**       | Społeczność, galeria, PWA, Realtime               | 📅 Planowana |
+| **Phase 7**       | Jakość: a11y, performance, rozszerzenie testów    | 📅 Planowana |
 
 ---
 
 ## 🔄 Co będzie rozwijane następnie
 
-### Phase 2 Sprint 2 — Tryb gościa & Streaming (planowane)
+### Phase 2 Sprint 2 — Tryb gościa & Streaming (w realizacji)
 
 - Streaming odpowiedzi asystenta w czasie rzeczywistym (tekst pojawia się słowo po słowie)
 - Tryb gościa: jedno pytanie bez logowania, prompt logowania po odpowiedzi
@@ -452,33 +454,49 @@ Otwórz **[http://localhost:3000](http://localhost:3000)** w przeglądarce.
 - Endpointy REST dla chatów: `GET/POST/PATCH/DELETE /api/chats`
 - Wiadomości zapisywane w MySQL (zamiast localStorage)
 - Streaming dla zalogowanych użytkowników (SSE przez `/api/chats/:id/messages`)
-- Przełączanie między chatami
-- Zarządzanie czatami: zmiana nazw, usuwanie
-- Historia czatów dostępna po zalogowaniu
+- Przełączanie i zarządzanie chatami (zmiana nazw, usuwanie)
+- Historia chatów dostępna po zalogowaniu na dowolnym urządzeniu
 
 ### Phase 2 Sprint 4 — Konto użytkownika (planowane)
 
-- Zmiana danych użytkownika (email, hasło)
-- Usuwanie konta
+- Zmiana danych użytkownika (email, hasło, nazwa wyświetlana)
+- Usuwanie konta z potwierdzeniem przez wpisanie hasła
+- Opcjonalnie: reset/przypomnienie hasła przez email
 
-### Phase 3: Upload & Ocena Zdjęć (planowane)
+### Phase 3: Migracja (planowane)
 
-- Użytkownik uploaduje zdjęcie → AI analizuje (kompozycja, ekspozycja, błędy)
-- Integracja GPT-4 Vision API
-- **Migracja bazy**: MySQL (cyber_Folks) → PostgreSQL (Supabase Free Tier)
-- **Storage zdjęć**: Supabase Storage (zamiast S3/Cloudinary)
+- React + Vite → **Next.js App Router** (SSR, `next/image`, OG meta tags)
+- **GitHub Actions CI/CD** — lint, type check, build na każdym PR
+- **Playwright E2E tests** — krytyczne przepływy (rejestracja, czat, profil)
+- Opcjonalnie: MySQL (cyber_Folks) → Supabase PostgreSQL
 
-### Phase 4: Edycja Zdjęć przez AI (planowane)
+### Phase 4: Analiza Zdjęć AI + Premium (planowane)
 
-- Użytkownik podaje komendy tekstowe: „usuń drzewo", „dodaj chmury"
-- AI wykonuje edycję zdjęcia (DALL-E 3 / inpainting)
+- Upload zdjęcia → AI analizuje (kompozycja, ekspozycja, błędy) — funkcja premium
+- Model premium: subskrypcja miesięczna lub pay-per-use (Stripe)
+- Zarządzanie płatnościami i sposobami płatności
+- Storage zdjęć: Supabase Storage lub Cloudflare R2
+
+### Phase 5: Edycja Zdjęć AI (planowane)
+
+- Komendami tekstowymi: „usuń drzewo", „dodaj chmury" → DALL-E inpainting — funkcja premium
 - Widok before/after + eksport edytowanego zdjęcia
+- Camera integration — zdjęcie bezpośrednio z kamery urządzenia
+- EXIF reader — automatyczne odczytanie metadanych zdjęcia (ISO, ogniskowa, GPS)
 
-### Phase 5: Społeczność & Portfolio (planowane)
+### Phase 6: Społeczność (planowane)
 
-- Galeria publiczna zdjęć użytkowników
-- Komentarze i oceny społeczności
-- Portfolio fotograficzne dla każdego użytkownika
+- Galeria publiczna zdjęć użytkowników + portfolio fotograficzne
+- Udostępnianie rozmów — publiczny link `/share/[id]` (read-only)
+- Wyszukiwanie w historii chatów (full-text search)
+- Supabase Realtime — live notifications, typing indicators
+- PWA — aplikacja instalowalna na telefonie, działa offline
+
+### Phase 7: Jakość (planowane)
+
+- Accessibility (WCAG 2.1 AA) — screen reader, keyboard navigation
+- Performance — Core Web Vitals, Lighthouse score ≥ 90
+- Rozszerzone testy Playwright — pełne pokrycie krytycznych przepływów
 
 ---
 
