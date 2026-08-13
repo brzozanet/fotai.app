@@ -30,6 +30,7 @@ export function EmptyChat() {
 
         <Typewriter
           words={[
+            "fotografować pociągi w ruchu?",
             "robić ostre zdjęcia?",
             "fotografować ludzi w plenerze?",
             "upiększyć zdjęcia z wakacji?",
