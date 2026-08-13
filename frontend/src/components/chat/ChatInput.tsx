@@ -8,7 +8,8 @@ import { ThreeCircles } from "react-loader-spinner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
-import { useNavigate } from "react-router-dom";
+// TODO: autentykacja, logowanie każdego użytkownika
+// import { useNavigate } from "react-router-dom";
 
 export function ChatInput() {
   const [input, setInput] = useState<string>("");
@@ -16,14 +17,17 @@ export function ChatInput() {
   const isLoading = useChatStore((state) => state.isLoading);
   const error = useChatStore((state) => state.error);
   const { addMessage, setIsLoading, setError } = useChatStore();
-  const { token, isAuthenticated } = useAuthStore();
-  const navigate = useNavigate();
+  const { token } = useAuthStore();
+  // TODO: autentykacja, logowanie każdego użytkownika
+  // const { token, isAuthenticated } = useAuthStore();
+  // const navigate = useNavigate();
 
-  const redirectIfNotAuthenticated = (): void => {
-    if (!isAuthenticated) {
-      navigate("/login.html", { replace: true });
-    }
-  };
+  // TODO: autentykacja, logowanie każdego użytkownika
+  // const redirectIfNotAuthenticated = (): void => {
+  //   if (!isAuthenticated) {
+  //     navigate("/login.html", { replace: true });
+  //   }
+  // };
 
   const sendPrompt = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -130,7 +134,8 @@ export function ChatInput() {
         onSubmit={sendPrompt}
       >
         <Textarea
-          onFocus={redirectIfNotAuthenticated}
+          // TODO: autentykacja, logowanie każdego użytkownika
+          // onFocus={redirectIfNotAuthenticated}
           className="min-h-30 resize-none rounded-2xl border-border/70 bg-background/70 text-base text-black shadow-none placeholder:text-black md:text-base"
           placeholder="Pytaj o fotografię... (Shift+Enter = nowa linia)"
           disabled={isLoading}

@@ -94,8 +94,9 @@ export function LoginPage() {
           </h2>
 
           <p className="text-sm text-black my-2">
-            Aby korzystać z aplikacji, musisz się zalogować.
-            <br />
+            {/* TODO: autentykacja, logowanie każdego użytkownika */}
+            {/* Aby korzystać z aplikacji, musisz się zalogować.
+            <br /> */}
             Nie masz konta?{" "}
             <Link to="/register.html" className="text-blue-800 hover:underline">
               Zarejestruj się za darmo
